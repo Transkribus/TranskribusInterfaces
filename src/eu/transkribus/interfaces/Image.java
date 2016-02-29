@@ -6,7 +6,9 @@
 package eu.transkribus.interfaces;
 
 import java.awt.Polygon;
+import java.awt.image.BufferedImage;
 import java.net.URL;
+import javax.imageio.ImageTypeSpecifier;
 
 /**
  *
@@ -19,6 +21,7 @@ public class Image {
     private int imageWidth;
     private int imageHeight;
     private URL imageUrl;
+    private BufferedImage imageBufferedImage;
 
     private Polygon polygon;
     private String[] properties;
@@ -49,6 +52,15 @@ public class Image {
     }
 
     /**
+     * as first workaround - maybe deleted later
+     *
+     * @param imageBufferedImage
+     */
+    public Image(BufferedImage imageBufferedImage) {
+        this.imageBufferedImage = imageBufferedImage;
+    }
+
+    /**
      * when the image is neighter in local memory nor online, it has to be
      * transfered directly. It has to be discussed, which format is the best and
      * which image depth is enough (byte, float,...)
@@ -73,6 +85,15 @@ public class Image {
 
     public long getImagePointer() {
         return imagePointer;
+    }
+
+    /**
+     * as first workaround - maybe deleted later
+     *
+     * @return
+     */
+    public BufferedImage getImageBufferedImage() {
+        return imageBufferedImage;
     }
 
     public byte[] getImageData() {
