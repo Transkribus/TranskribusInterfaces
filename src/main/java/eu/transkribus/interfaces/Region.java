@@ -19,12 +19,19 @@ public class Region {
 //    public String id;
     private Polygon polygon;
     private String[] properties;
+    private String transcription;
 
     public Region(Polygon polygon, String[] properties) {
         this.polygon = polygon;
         this.properties = properties;
     }
 
+    public Region(Polygon polygon, String[] properties, String transcription) {
+        this.polygon = polygon;
+        this.properties = properties;
+        this.transcription = transcription;
+    }
+    
 //    public Region(int[] x, int[] y, int n, String[] properties) {
 //        this(new Polygon(x, y, n), properties);
 //    }
@@ -40,4 +47,7 @@ public class Region {
         return properties;
     }
 
+    public String getTranscription(){
+    	return transcription;
+    }
 }
