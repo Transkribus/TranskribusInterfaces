@@ -5,6 +5,9 @@
  */
 package eu.transkribus.interfaces;
 
+import eu.transkribus.interfaces.types.Image;
+import eu.transkribus.interfaces.types.Region;
+
 /**
  * Interface to calculate to given baseline the corresponding surrounding
  * polygons. The number (and order) of returned regions have to match the number

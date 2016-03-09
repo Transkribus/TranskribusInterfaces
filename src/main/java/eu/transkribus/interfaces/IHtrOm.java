@@ -5,6 +5,7 @@
  */
 package eu.transkribus.interfaces;
 
+import eu.transkribus.interfaces.types.Image;
 import java.io.Serializable;
 
 /**

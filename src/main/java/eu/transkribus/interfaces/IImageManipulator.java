@@ -5,6 +5,8 @@
  */
 package eu.transkribus.interfaces;
 
+import eu.transkribus.interfaces.types.Image;
+
 /**
  * this interface can be used in many ways. For example ContrastEnhancement,
  * Binarization, SkewNormalization, SlantNormalization,...

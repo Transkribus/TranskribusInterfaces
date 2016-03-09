@@ -5,6 +5,9 @@
  */
 package eu.transkribus.interfaces;
 
+import eu.transkribus.interfaces.types.Image;
+import eu.transkribus.interfaces.types.Region;
+
 /**
  * This is just a starting point of discussing - NCSR,CVL should change it as
  * they want. Please leave the structure shallow, otherwise an easy
