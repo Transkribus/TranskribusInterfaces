@@ -23,4 +23,5 @@ public interface IImageManipulator {
      */
     public Image process(Image image);
 
+    public Image process(Image image, String[] props);
 }

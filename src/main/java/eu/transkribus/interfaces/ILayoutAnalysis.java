@@ -19,6 +19,17 @@ import eu.transkribus.interfaces.types.Region;
  */
 public interface ILayoutAnalysis {
 
+//	public boolean processLayout(String xmlFileIn, String xmlFileOut, String[] ids);
+	
+	public boolean processLayout(Image image, String xmlFileIn, String xmlFileOut);
+
+//	public boolean processLayout(Image image, String xmlFileOut);
+
+//	public boolean processLayout(String xmlFileIn, String xmlFileOut, String[] props);
+
+	public boolean process(Image image, String xmlFileIn, String xmlFileOut, String[] ids, String[] props);
+	
+
     /**
      * find basic elements in the image. Each region can have some properties,
      * like id, type(line, block, ...), parent(id from parent element),
@@ -28,6 +39,21 @@ public interface ILayoutAnalysis {
      */
     public Region[] processLayout(Image image);
 
+	/**
+	 * find basic elements in the image. Each region can have some properties,
+     * like id, type(line, block, ...), parent(id from parent element),
+     *
+	 * CVL 18.04.2016
+	 * The blocks are either GT, created by a human, or the results of
+	 * previous processes (e.g. a rough page estimation, text region, etc...)
+	 * 
+     * @param image
+	 * @param blocks contains previously processed blocks
+     * @return
+     */
+    public Region[] processLayout(Image image, Region[] blocks);
+	
+	
     /**
      * for each block there can be done a line finding. The blocks should have
      * an id. The result are line which all have the property "parent=block_id"

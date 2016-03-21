@@ -20,13 +20,19 @@ public class Image {
     private BufferedImage imageBufferedImage;
     private Mat imageOpenCVImage;
 
-    private Polygon polygon;
-    private String[] properties;
+//    private Polygon polygon;
+//    private String[] properties;
     private Type type;
 
+    public enum Depth{
+        BYTE, BINARY
+    }
+    
     public enum Type {
         URL, OPEN_CV, JAVA
     }
+    
+    public Depth getDepth(){return null;}
 
     /**
      * This type already exists as instance in C++ <br/>
