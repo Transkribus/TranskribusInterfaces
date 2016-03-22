@@ -6,9 +6,6 @@
 package eu.transkribus.interfaces;
 
 import eu.transkribus.interfaces.types.Image;
-import eu.transkribus.interfaces.types.Region;
-
-import java.io.Serializable;
 
 /**
  * For a given input, the representation (Confmat, WordGraph,...) is calculated.
@@ -27,7 +24,7 @@ public interface IHtr {
      * @param properties set of parameters for recognition (has to be documented)
      * @return
      */
-    public static boolean process(
+    public boolean process(
         String pathToModels,
         Image image, 
         String pageXmlIn, 

@@ -6,7 +6,6 @@
 package eu.transkribus.interfaces;
 
 import eu.transkribus.interfaces.types.Image;
-import eu.transkribus.interfaces.types.Region;
 
 /**
  * This is just a starting point of discussing - NCSR,CVL should change it as
@@ -37,7 +36,7 @@ public interface ILayoutAnalysis {
      * @param image
      * @return
      */
-    public Region[] processLayout(Image image);
+//    public Region[] processLayout(Image image);
 
 	/**
 	 * find basic elements in the image. Each region can have some properties,
@@ -51,7 +50,7 @@ public interface ILayoutAnalysis {
 	 * @param blocks contains previously processed blocks
      * @return
      */
-    public Region[] processLayout(Image image, Region[] blocks);
+//    public Region[] processLayout(Image image, Region[] blocks);
 	
 	
     /**
@@ -62,7 +61,7 @@ public interface ILayoutAnalysis {
      * @param blocks
      * @return
      */
-    public Region[] processBaseline(Image image, Region[] blocks);
+//    public Region[] processBaseline(Image image, Region[] blocks);
 
     /**
      * both methods
@@ -74,6 +73,6 @@ public interface ILayoutAnalysis {
      * @param image
      * @return
      */
-    public Region[] processBaseline(Image image);
+//    public Region[] processBaseline(Image image);
 
 }

@@ -6,7 +6,6 @@
 package eu.transkribus.interfaces;
 
 import eu.transkribus.interfaces.types.Image;
-import eu.transkribus.interfaces.types.Region;
 
 /**
  * Interface to calculate to given surrounding polygons the corresponding
@@ -25,14 +24,7 @@ public interface ICoords2BaseLine {
      * @param coords
      * @return
      */
-    public Region process(Image img, Region coords);
+	public boolean process(Image img, String pageXmlIn, String pageXmlOut);
 
-    /**
-     *
-     * @param img
-     * @param coords
-     * @return
-     */
-    public Region[] process(Image img, Region[] coords);
-
+    public boolean process(Image img, String pageXmlIn, String pageXmlOut, String[] idxs, String[] props);
 }

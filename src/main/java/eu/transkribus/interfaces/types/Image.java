@@ -5,9 +5,9 @@
  */
 package eu.transkribus.interfaces.types;
 
-import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+
 import org.opencv.core.Mat;
 
 /**
@@ -23,6 +23,7 @@ public class Image {
 //    private Polygon polygon;
 //    private String[] properties;
     private Type type;
+    private Depth depth;
 
     public enum Depth{
         BYTE, BINARY
@@ -32,7 +33,9 @@ public class Image {
         URL, OPEN_CV, JAVA
     }
     
-    public Depth getDepth(){return null;}
+    public Depth getDepth(){
+    	return this.depth;
+    }
 
     /**
      * This type already exists as instance in C++ <br/>
@@ -66,22 +69,6 @@ public class Image {
     public Image(BufferedImage imageBufferedImage) {
         this.imageBufferedImage = imageBufferedImage;
         type = Type.JAVA;
-    }
-
-    public void setProperties(String[] properties) {
-        this.properties = properties;
-    }
-
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
-    }
-
-    public Polygon getPolygon() {
-        return polygon;
-    }
-
-    public String[] getProperties() {
-        return properties;
     }
 
     /**

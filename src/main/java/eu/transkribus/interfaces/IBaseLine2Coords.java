@@ -6,7 +6,6 @@
 package eu.transkribus.interfaces;
 
 import eu.transkribus.interfaces.types.Image;
-import eu.transkribus.interfaces.types.Region;
 
 /**
  * Interface to calculate to given baseline the corresponding surrounding
