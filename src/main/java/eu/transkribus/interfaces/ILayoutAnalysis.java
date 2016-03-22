@@ -27,6 +27,11 @@ public interface ILayoutAnalysis {
 //	public boolean processLayout(String xmlFileIn, String xmlFileOut, String[] props);
 
 	public boolean process(Image image, String xmlFileIn, String xmlFileOut, String[] ids, String[] props);
+    
+    public String usage();
+    public String getToolName();
+    public String getVersion();
+    public String getProvider();
 	
 
     /**

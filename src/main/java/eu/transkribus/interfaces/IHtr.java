@@ -33,6 +33,11 @@ public interface IHtr {
         String[] props, 
         String[] lines
         );
+    
+    public String usage();
+    public String getToolName();
+    public String getVersion();
+    public String getProvider();
         
 //    public static boolean process(String pathToModels, Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);
 //    public boolean process(Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);

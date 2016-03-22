@@ -24,4 +24,9 @@ public interface IImageManipulator {
     public Image process(Image image);
 
     public Image process(Image image, String[] props);
+    
+    public String usage();
+    public String getToolName();
+    public String getVersion();
+    public String getProvider();
 }

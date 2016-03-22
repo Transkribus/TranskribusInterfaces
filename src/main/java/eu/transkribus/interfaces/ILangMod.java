@@ -18,6 +18,11 @@ public interface ILangMod {
     public Token[] nextTokens(Token[] prefix);
 
     public Token[] getTokens();
+    
+    public String usage();
+    public String getToolName();
+    public String getVersion();
+    public String getProvider();
 
 //    public double getProb(Token[] prefix);
 }

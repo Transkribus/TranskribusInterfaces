@@ -20,4 +20,8 @@ public interface IBaseLine2Coords {
 
     public boolean process(Image img, String pageXmlIn, String pageXmlOut, String[] idxs, String[] props);
 
+    public String usage();
+    public String getToolName();
+    public String getVersion();
+    public String getProvider();
 }

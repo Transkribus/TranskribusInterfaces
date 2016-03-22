@@ -27,4 +27,9 @@ public interface ICoords2BaseLine {
 	public boolean process(Image img, String pageXmlIn, String pageXmlOut);
 
     public boolean process(Image img, String pageXmlIn, String pageXmlOut, String[] idxs, String[] props);
+    
+    public String usage();
+    public String getToolName();
+    public String getVersion();
+    public String getProvider();
 }
