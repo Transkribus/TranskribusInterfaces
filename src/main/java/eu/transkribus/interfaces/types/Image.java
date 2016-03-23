@@ -6,17 +6,12 @@
 package eu.transkribus.interfaces.types;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.imageio.ImageIO;
-
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
 
-import eu.transkribus.interfaces.types.util.ImageConvertUtils;
+import eu.transkribus.interfaces.types.util.ImageUtils;
 
 /**
  *
@@ -100,7 +95,7 @@ public class Image {
 	public BufferedImage getImageBufferedImage() {
 		if (imageBufferedImage == null) {
 			throw new RuntimeException(
-					"no convertion done from " + type.toString() + " to " + Type.JAVA + " implemented.");
+					"no conversion done from " + type.toString() + " to " + Type.JAVA + " implemented.");
 		}
 		return imageBufferedImage;
 	}
@@ -143,20 +138,18 @@ public class Image {
 			if (this.hasType(Type.JAVA)) {
 				break;
 			} else if (this.hasType(Type.OPEN_CV)) {
-				imageBufferedImage = ImageConvertUtils.convertToBufferedImage(imageOpenCVImage);
+				imageBufferedImage = ImageUtils.convertToBufferedImage(imageOpenCVImage);
 			} else if (this.hasType(Type.URL)) {
-				imageBufferedImage = ImageIO.read(imageUrl);
+				imageBufferedImage = ImageUtils.convertToBufferedImage(imageUrl);
 			}
 			break;
 		case OPEN_CV:
 			if (this.hasType(Type.OPEN_CV)) {
 				break;
 			} else if (this.hasType(Type.URL)) {
-				File imgFile = ImageConvertUtils.downloadImgFile(imageUrl);
-				System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-				imageOpenCVImage = Highgui.imread(imgFile.getAbsolutePath());
+				imageOpenCVImage = ImageUtils.convertToOpenCvImage(imageUrl);
 			} else if(this.hasType(Type.JAVA)){
-				//TODO
+				imageOpenCVImage = ImageUtils.convertToOpenCvImage(imageBufferedImage);
 			}
 			break;
 		case URL:
