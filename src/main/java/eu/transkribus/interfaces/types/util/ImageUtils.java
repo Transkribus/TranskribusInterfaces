@@ -19,7 +19,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 /**
- * A class with static methods with all kinds of image operations
+ * A class with static methods with image operations needed for conversion of types
  * @author philip
  *
  */
