@@ -13,7 +13,7 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface IImageManipulator {
+public interface IImageManipulator extends IModuleDescription{
 
     /**
      * process an image with maybe some properties
@@ -25,8 +25,4 @@ public interface IImageManipulator {
 
     public Image process(Image image, String[] props);
     
-    public String usage();
-    public String getToolName();
-    public String getVersion();
-    public String getProvider();
 }

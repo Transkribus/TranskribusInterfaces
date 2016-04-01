@@ -13,15 +13,19 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface IHtr {
+public interface IHtr extends IModuleDescription{
 
     /**
      * in URO-CITlab this is done by an MDRNN (sprnn). Output in this case would
      * be a Confidence-Matrix.
      *
-     * @param lineImage
-     * @param pathToModel is either path to serialized RNN or path to directory with HMM/LM/etc.
-     * @param properties set of parameters for recognition (has to be documented)
+     * @param pathToModels is either path to serialized RNN or path to directory with HMM/LM/etc.
+     * @param image
+     * @param pageXmlIn
+     * @param pageXmlOut
+     * @param storageDir
+     * @param props set of parameters for recognition (has to be documented)
+     * @param lines 
      * @return
      */
     public boolean process(
@@ -34,11 +38,6 @@ public interface IHtr {
         String[] lines
         );
     
-    public String usage();
-    public String getToolName();
-    public String getVersion();
-    public String getProvider();
-        
 //    public static boolean process(String pathToModels, Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);
 //    public boolean process(Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);
 //    public boolean processDecoding(String pathToModel, Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);
