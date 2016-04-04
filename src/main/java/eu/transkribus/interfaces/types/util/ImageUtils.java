@@ -18,7 +18,7 @@ import javax.imageio.ImageIO;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
+//import org.opencv.highgui.Highgui;
 
 /**
  * A class with static methods with image operations needed for conversion of
@@ -75,7 +75,15 @@ public class ImageUtils {
 
     public static Mat convertToOpenCvImage(URL u) throws IOException {
         File tmpFile = ImageUtils.downloadImgFile(u);
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        try {
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        } catch (java.lang.UnsatisfiedLinkError error) {
+            try {
+                System.loadLibrary("opencv_java2410");
+            } catch (UnsatisfiedLinkError error2) {
+                throw error;
+            }
+        }
         Mat imageOpenCVImage = null;
         try {
             Class clazz = Class.forName("org.opencv.imgcodecs.Imgcodecs");
@@ -163,11 +171,27 @@ public class ImageUtils {
     }
 
     public static File saveAsFile(Mat m, String path) throws IOException {
-        if (Highgui.imwrite(path, m)) {
-            return new File(path);
-        } else {
-            throw new IOException("Could not write image to: " + path);
+        try {
+            Class clazz = Class.forName("org.opencv.imgcodecs.Imgcodecs");
+            Method method = clazz.getMethod("imwrite", String.class, Mat.class);
+            Boolean res = (Boolean) method.invoke(null, path, m);
+            if (res != null && res) {
+                return new File(path);
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            try {
+                System.out.println("expect OpenCV 2.* - use other static loader");
+                Class clazz = Class.forName("org.opencv.highgui.Highgui");
+                Method method = clazz.getMethod("imwrite", String.class, Mat.class);
+                Boolean res = (Boolean) method.invoke(null, path, m);
+                if (res != null && res) {
+                    return new File(path);
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex2) {
+                throw new RuntimeException("Could not write image to: " + path, ex);
+            }
         }
+        throw new RuntimeException("Could not write image to: " + path + ", return value of writer is null or false");
     }
 
     public static File saveAsFile(URL u, String path) throws IOException {
