@@ -1,0 +1,4 @@
+# this directory must contain libopencv_java
+OPENCV_LIB_PATH=/usr/local/share/OpenCV/java
+# the name of the fallback library when the lib of standard version (currently 3.1.0) is not found
+OPENCV2_FALLBACK_LIBNAME=opencv_java2410

@@ -5,12 +5,15 @@ import java.awt.image.DataBufferByte;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -72,18 +75,82 @@ public class ImageUtils {
         }
         return b;
     }
+    
+	public static void setLibraryPath(String path) throws Exception {
+		System.setProperty("java.library.path", path);
+
+		// set sys_paths to null so that java.library.path will be reevalueted next time it is needed
+		final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+		sysPathsField.setAccessible(true);
+		sysPathsField.set(null, null);
+	}
+    
+    public static void loadOpenCV() throws Exception {
+    	
+    	long t0 = System.currentTimeMillis();
+    	
+    	Properties p = new Properties();
+    	
+    	p.load(ImageUtils.class.getResourceAsStream("/config.properties"));
+    	
+    	String opencvlibname = Core.NATIVE_LIBRARY_NAME;
+    	
+    	String opencv2lib = "opencv_java2410";
+    	
+    	String libPath = p.getProperty("OPENCV_LIB_PATH");
+    	opencv2lib = p.getProperty("OPENCV2_FALLBACK_LIBNAME");
+    	
+    	setLibraryPath(libPath+":"+System.getProperty("java.library.path"));
+    	System.out.println("libpath = "+System.getProperty("java.library.path"));
+    	
+        try {
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            opencvlibname = Core.NATIVE_LIBRARY_NAME;
+        } catch (java.lang.UnsatisfiedLinkError error) {
+            try {
+            	System.out.println("Could not find "+Core.NATIVE_LIBRARY_NAME+" - trying to load fallback lib "+opencv2lib);
+            	
+                System.loadLibrary(opencv2lib);
+                opencvlibname = opencv2lib;
+            } catch (UnsatisfiedLinkError error2) {
+//                throw error;
+                throw new IOException("Could not find opencv libs "+Core.NATIVE_LIBRARY_NAME+" or "+opencv2lib);
+            }
+        }
+        
+        System.out.println("Successfully loaded opencv: "+opencvlibname);
+        System.out.println("t = "+(System.currentTimeMillis()-t0));
+    }
+    
+//    static {
+//    	try {
+//			loadOpenCV();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.exit(1);
+//		}
+//    }
 
     public static Mat convertToOpenCvImage(URL u) throws IOException {
         File tmpFile = ImageUtils.downloadImgFile(u);
+        
         try {
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        } catch (java.lang.UnsatisfiedLinkError error) {
-            try {
-                System.loadLibrary("opencv_java2410");
-            } catch (UnsatisfiedLinkError error2) {
-                throw error;
-            }
-        }
+			loadOpenCV();
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+        
+//        try {
+//            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//        } catch (java.lang.UnsatisfiedLinkError error) {
+//            try {
+//                System.loadLibrary("opencv_java2410");
+//            } catch (UnsatisfiedLinkError error2) {
+////                throw error;
+//                throw new IOException("Could not find opencv: "+Core.NATIVE_LIBRARY_NAME+"/"+"opencv_java2410");
+//            }
+//        }
+        
         Mat imageOpenCVImage = null;
         try {
             Class clazz = Class.forName("org.opencv.imgcodecs.Imgcodecs");
