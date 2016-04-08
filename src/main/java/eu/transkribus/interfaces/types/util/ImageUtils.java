@@ -93,20 +93,29 @@ public class ImageUtils {
     	
     	p.load(ImageUtils.class.getResourceAsStream("/config.properties"));
     	
-    	String opencvlibname = Core.NATIVE_LIBRARY_NAME;
-    	
+    	String opencvlibname="NA";
     	String opencv2lib = "opencv_java2410";
     	
     	String libPath = p.getProperty("OPENCV_LIB_PATH");
     	opencv2lib = p.getProperty("OPENCV2_FALLBACK_LIBNAME");
     	
+    	// TODO: in setLibraryPath, check if the path is already added
     	setLibraryPath(libPath+":"+System.getProperty("java.library.path"));
     	System.out.println("libpath = "+System.getProperty("java.library.path"));
     	
         try {
+        	// IMPORTANT NOTE: on MACOS the expected file ending for jni libs is .jnilib (instead of .so on linux)
+        	// for the System.loadLibrary call
+        	// however, if you manually compile and install opencv on mac it seems to produce
+        	// an libopencv_java***.so file instead of libopencv_java***.jnilib -> symlink of rename this file to be 
+        	// found by the System.loadLibrary call
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//            System.load("/usr/local/share/OpenCV/java/libopencv_java310.so");
+            
             opencvlibname = Core.NATIVE_LIBRARY_NAME;
         } catch (java.lang.UnsatisfiedLinkError error) {
+        	error.printStackTrace();
+        	
             try {
             	System.out.println("Could not find "+Core.NATIVE_LIBRARY_NAME+" - trying to load fallback lib "+opencv2lib);
             	

@@ -8,16 +8,16 @@
 
 package eu.transkribus.native_interfaces;
 
-public class Image {
+public class IModuleDescription {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
-  protected Image(long cPtr, boolean cMemoryOwn) {
+  protected IModuleDescription(long cPtr, boolean cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(Image obj) {
+  protected static long getCPtr(IModuleDescription obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -29,22 +29,26 @@ public class Image {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        transkribus_interfacesJNI.delete_Image(swigCPtr);
+        transkribus_interfacesJNI.delete_IModuleDescription(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  public Image(String url) {
-    this(transkribus_interfacesJNI.new_Image__SWIG_0(url), true);
+  public String usage() {
+    return transkribus_interfacesJNI.IModuleDescription_usage(swigCPtr, this);
   }
 
-  public void doSthWithException() {
-    transkribus_interfacesJNI.Image_doSthWithException(swigCPtr, this);
+  public String getToolName() {
+    return transkribus_interfacesJNI.IModuleDescription_getToolName(swigCPtr, this);
   }
 
-  public Image(org.opencv.core.Mat mat) {
-    this(transkribus_interfacesJNI.new_Image__SWIG_1(mat.getNativeObjAddr()), true);
+  public String getVersion() {
+    return transkribus_interfacesJNI.IModuleDescription_getVersion(swigCPtr, this);
+  }
+
+  public String getProvider() {
+    return transkribus_interfacesJNI.IModuleDescription_getProvider(swigCPtr, this);
   }
 
 }

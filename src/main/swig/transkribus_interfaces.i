@@ -20,5 +20,6 @@ namespace std {
 %}
 
 /* Let's just grab the original header file here */
+%include "../cpp/IModuleDescription.h"
 %include "../cpp/ILayoutAnalysis.h"
 %include "../cpp/test1/MyLayoutAnalysis.h"

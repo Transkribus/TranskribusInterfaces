@@ -10,15 +10,18 @@ INTERFACE  = transkribus_interfaces.i
 SWIG_OUTDIR = ../java/eu/transkribus/native_interfaces
 JAVA_PACKAGE = eu.transkribus.native_interfaces
 
+JAVA_INCLUDE = -I"." -I"$(JAVA_HOME)/include"
+
 SWIGOPT    = -outdir $(SWIG_OUTDIR) -package $(JAVA_PACKAGE)
 
 #SWIGOPT    = 
 JAVASRCS   = *.java
 RUNME	   = runme
 #CXXFLAGS   = -I./catti-plugin -g3 -fPIC # -std=c++11
-CXXFLAGS   = -g3 -fPIC # -std=c++11
+CXXFLAGS   = -g3 -fPIC -L.# -std=c++11
 
-LIBS = -lMyLayoutAnalysis
+LIBS = -lMyLayoutAnalysis -lopencv_core
+#LIBS = -lopencv_core
 
 #all:	plugin java
 all:	plugin
@@ -27,7 +30,7 @@ check:
 	$(MAKE) -f $(MAIN_MAKEFILE) SRCDIR='$(SRCDIR)' java_run
 
 plugin:
-	$(MAKE) -f $(MAIN_MAKEFILE) SRCDIR='$(SRCDIR)' CXXSRCS='$(CXXSRCS)' SWIG='$(SWIG)' \
+	$(MAKE) -f $(MAIN_MAKEFILE) JAVA_INCLUDE="$(JAVA_INCLUDE)" SRCDIR='$(SRCDIR)' CXXSRCS='$(CXXSRCS)' SWIG='$(SWIG)' \
 		SWIGOPT='$(SWIGOPT)' TARGET='$(TARGET)' INTERFACE='$(INTERFACE)' CXXFLAGS='$(CXXFLAGS)' LIBS='$(LIBS)' java_cpp
 
 java:
