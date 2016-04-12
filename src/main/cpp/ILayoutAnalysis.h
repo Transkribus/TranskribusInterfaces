@@ -3,19 +3,15 @@
 
 #include <iostream>
 #include "Image.h"
-#include "IModuleDescription.h"
+#include "IModule.h"
 
-namespace transkribus_interfaces {
+namespace transkribus {
 
-class ILayoutAnalysis : public IModuleDescription
+class ILayoutAnalysis : public IModule
 {
 public:
-	//ILayoutAnalysis() {}
 	virtual ~ILayoutAnalysis() {}
-
-    virtual bool processLayout(Image& image, const std::string& xmlFileIn, const std::string& xmlFileOut) = 0;
-
-    virtual bool process(Image& image, const std::string& xmlFileIn, const std::string& xmlFileOut, std::vector<std::string>& ids, std::vector<std::string>& props) = 0;
+    virtual void process(Image& image, const std::string& xmlInOut, const std::vector<std::string>& ids, const std::vector<std::string>& props) = 0;
 };
 
 }

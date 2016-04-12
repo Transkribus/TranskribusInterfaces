@@ -16,10 +16,10 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface ILayoutAnalysis extends IModuleDescription {
+public interface ILayoutAnalysis extends IModule {
 
-    public boolean processLayout(Image image, String xmlFileIn, String xmlFileOut);
+//    public boolean processLayout(Image image, String xmlFileIn, String xmlFileOut);
 
-    public boolean process(Image image, String xmlFileIn, String xmlFileOut, String[] ids, String[] props);
+    public void process(Image image, String xmlInOut, String[] ids, String[] props);
 
 }

@@ -16,10 +16,22 @@ namespace std {
 
 %{
 #include "../cpp/ILayoutAnalysis.h"
-#include "../cpp/test1/MyLayoutAnalysis.h"
+#include "../cpp/IHtr.h"
+#include "../cpp/ModuleFactory.h"
 %}
 
-/* Let's just grab the original header file here */
-%include "../cpp/IModuleDescription.h"
+%rename (Native_IModule) IModule;
+%rename (Native_ILayoutAnalysis) ILayoutAnalysis;
+%rename (Native_IHtr) IHtr;
+
+%rename (Native_ModuleFactory) ModuleFactory;
+
+//%ignore LayoutAnalysisFactory;
+//%ignore HtrFactory;
+
+/* Let's just grab the original header files here */
+%include "../cpp/IModule.h"
 %include "../cpp/ILayoutAnalysis.h"
-%include "../cpp/test1/MyLayoutAnalysis.h"
+%include "../cpp/IHtr.h"
+%include "../cpp/ModuleFactory.h"
+

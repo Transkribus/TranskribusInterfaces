@@ -27,5 +27,7 @@
 #include "../cpp/Image.h"
 %}
 
+%rename (Native_Image) Image;
+
 /* Let's just grab the original header file here */
 %include "../cpp/Image.h"

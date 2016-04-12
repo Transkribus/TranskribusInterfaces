@@ -4,12 +4,12 @@
 #include <iostream>
 #include "Image.h"
 
-namespace transkribus_interfaces {
+namespace transkribus {
 
-class IModuleDescription
+class IModule
 {
 public:
-	virtual ~IModuleDescription() {}
+	virtual ~IModule() {}
 
     /**
      * returns a String (\n) for linebreak to describe the module and its

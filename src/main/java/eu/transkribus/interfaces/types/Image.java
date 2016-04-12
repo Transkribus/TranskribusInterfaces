@@ -157,6 +157,12 @@ public class Image {
 		default:
 			throw new RuntimeException("unknown type '" + toType + "'");
 		}
+		
+		this.type = toType;
+	}
+	
+	public Type getType() {
+		return type;
 	}
 
 }

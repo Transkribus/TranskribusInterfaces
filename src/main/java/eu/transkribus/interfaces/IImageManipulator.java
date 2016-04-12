@@ -12,8 +12,10 @@ import eu.transkribus.interfaces.types.Image;
  * Binarization, SkewNormalization, SlantNormalization,...
  *
  * @author gundram
+ * 
+ * @deprecated not finalized yet
  */
-public interface IImageManipulator extends IModuleDescription{
+public interface IImageManipulator extends IModule{
 
     /**
      * process an image with maybe some properties

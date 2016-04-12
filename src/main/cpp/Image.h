@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include "opencv2/core/core.hpp"
 
-namespace transkribus_interfaces {
+namespace transkribus {
 
 class Image
 {
@@ -14,23 +14,10 @@ private:
 	cv::Mat mat;
 
 public:
-	Image(const std::string& url) : url(url) {
-		std::cout << "hello url " << url << std::endl;
-	}
+	Image(const std::string& url);
+	Image(cv::Mat& mat);
 
-	void doSthWithException() {
-		throw std::runtime_error("exception!!");
-	}
-
-	Image(cv::Mat& mat) : mat(mat) {
-		std::cout << "hello mat, w = " << mat.cols << " h = " << mat.rows << std::endl;
-	}
-
-	virtual ~Image() {
-
-
-	}
-
+	virtual ~Image() { }
 };
 
 }

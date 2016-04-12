@@ -14,10 +14,10 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface IBaseLine2Coords extends IModuleDescription{
+public interface IBaseLine2Coords extends IModule{
 
-    public boolean process(Image img, String pageXmlIn, String pageXmlOut);
+//    public boolean process(Image img, String pageXmlIn, String pageXmlOut);
 
-    public boolean process(Image img, String pageXmlIn, String pageXmlOut, String[] idxs, String[] props);
+    public void process(Image img, String xmlInOut, String[] idxs, String[] props);
 
 }

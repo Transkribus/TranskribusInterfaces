@@ -5,6 +5,8 @@
  */
 package eu.transkribus.interfaces;
 
+import java.io.File;
+
 import eu.transkribus.interfaces.types.Image;
 
 /**
@@ -13,7 +15,9 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface IHtr extends IModuleDescription{
+public interface IHtr extends IModule{
+	
+	public void createModel(String path, String[] pars);
 
     /**
      * in URO-CITlab this is done by an MDRNN (sprnn). Output in this case would
@@ -25,17 +29,16 @@ public interface IHtr extends IModuleDescription{
      * @param pageXmlOut
      * @param storageDir
      * @param props set of parameters for recognition (has to be documented)
-     * @param lines 
+     * @param lineIds 
      * @return
      */
-    public boolean process(
+    public void process(
         String pathToModels,
         Image image, 
-        String pageXmlIn, 
-        String pageXmlOut, 
+        String xmlInOut, 
         String storageDir, 
-        String[] props, 
-        String[] lines
+        String[] lineIds,
+        String[] props 
         );
     
 //    public static boolean process(String pathToModels, Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);

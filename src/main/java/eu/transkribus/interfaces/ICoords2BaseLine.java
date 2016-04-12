@@ -14,8 +14,9 @@ import eu.transkribus.interfaces.types.Image;
  * "reverse" interface from {@link eu.transkribus.interfaces.IBaseLine2Coords}.
  *
  * @author gundram
+ *  @deprecated not finalized yet
  */
-public interface ICoords2BaseLine extends IModuleDescription {
+public interface ICoords2BaseLine extends IModule {
 
     /**
      * needed??
@@ -25,8 +26,8 @@ public interface ICoords2BaseLine extends IModuleDescription {
      * @param pageXmlOut
      * @return
      */
-    public boolean process(Image img, String pageXmlIn, String pageXmlOut);
+//    public boolean process(Image img, String pageXmlIn, String pageXmlOut);
 
-    public boolean process(Image img, String pageXmlIn, String pageXmlOut, String[] idxs, String[] props);
+    public void process(Image img, String xmlInOut, String[] idxs, String[] props);
 
 }

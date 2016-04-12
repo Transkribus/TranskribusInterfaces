@@ -9,7 +9,7 @@ package eu.transkribus.interfaces;
  *
  * @author gundram, philip
  */
-public interface IModuleDescription {
+public interface IModule {
 
     /**
      * returns a String (\n) for linebreak to describe the module and its

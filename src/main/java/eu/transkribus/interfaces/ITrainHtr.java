@@ -1,6 +1,6 @@
 package eu.transkribus.interfaces;
 
-public interface ITrainHtr extends IModuleDescription {
+public interface ITrainHtr extends IModule {
 
     public void trainHtr(String pathToModelsIn, String pathToModelsOut, String[] props, String inputDir);
 
