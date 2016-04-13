@@ -1,8 +1,6 @@
 package eu.transkribus.interfaces.native_wrapper;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.Collection;
 
 import eu.transkribus.interfaces.native_wrapper.swig.Native_Image;
 import eu.transkribus.interfaces.native_wrapper.swig.StringVector;
@@ -22,19 +20,20 @@ public class NativeProxyUtils {
 		return s;
 	}
 	
+	
 	public static Native_Image toNativeImage(Image img) throws IOException {
 		if (img.hasType(Type.OPEN_CV)) {
+			return new Native_Image(img.getImageOpenCVImage());
+		}
+		else if (img.hasType(Type.JAVA)) {
+			img.createType(Type.OPEN_CV);
 			return new Native_Image(img.getImageOpenCVImage());
 		}
 		else if (img.hasType(Type.URL)) {
 			return new Native_Image(img.getImageUrl().toString());
 		}
-		else if (img.hasType(Type.JAVA)) {
-			img.convert(Type.OPEN_CV);
-			return new Native_Image(img.getImageOpenCVImage());
-		}
 		
-		throw new IOException("Cannot convert to native image type - invalid type of image: "+img.getType());
+		throw new IOException("Cannot convert to native image type - existing types are: "+img.getAvailableTypesString());
 	}
 
 }

@@ -8,6 +8,9 @@ package eu.transkribus.interfaces.types;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.opencv.core.Mat;
 
@@ -23,21 +26,12 @@ public class Image {
 	private BufferedImage imageBufferedImage;
 	private Mat imageOpenCVImage;
 
-	// private Polygon polygon;
-	// private String[] properties;
-	private Type type;
-	private Depth depth;
-
 	public enum Depth {
 		BYTE, BINARY
 	}
 
 	public enum Type {
 		URL, OPEN_CV, JAVA
-	}
-
-	public Depth getDepth() {
-		return this.depth;
 	}
 
 	/**
@@ -50,7 +44,6 @@ public class Image {
 	 */
 	public Image(Mat image) {
 		this.imageOpenCVImage = image;
-		type = Type.OPEN_CV;
 	}
 
 	/**
@@ -61,7 +54,6 @@ public class Image {
 	 */
 	public Image(URL url) {
 		this.imageUrl = url;
-		type = Type.URL;
 	}
 
 	/**
@@ -71,40 +63,64 @@ public class Image {
 	 */
 	public Image(BufferedImage imageBufferedImage) {
 		this.imageBufferedImage = imageBufferedImage;
-		type = Type.JAVA;
 	}
-
-	/**
-	 * as first workaround
-	 *
-	 * @return
-	 */
+	
+	public Object getImage(Type type, boolean createIfNecessary) {
+		Object o = getImageObject(type);
+		if (o == null && createIfNecessary) {
+			try {
+				createType(Type.OPEN_CV);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			
+			return getImageObject(type);
+		} else {
+			return o;
+		}
+	}
+	
 	public Mat getImageOpenCVImage() {
-		if (imageOpenCVImage == null) {
-			throw new RuntimeException(
-					"no convertion done from " + type.toString() + " to " + Type.OPEN_CV + " implemented.");
-		}
-		return imageOpenCVImage;
+		return getImageOpenCVImage(false);
 	}
-
-	/**
-	 * as first workaround
-	 *
-	 * @return
-	 */
+	
+	public Mat getImageOpenCVImage(boolean createIfNecessary) {
+		return (Mat) getImage(Type.OPEN_CV, createIfNecessary);
+	}
+	
 	public BufferedImage getImageBufferedImage() {
-		if (imageBufferedImage == null) {
-			throw new RuntimeException(
-					"no conversion done from " + type.toString() + " to " + Type.JAVA + " implemented.");
-		}
-		return imageBufferedImage;
+		return getImageBufferedImage(false);
 	}
 
+	public BufferedImage getImageBufferedImage(boolean createIfNecessary) {
+		return (BufferedImage) getImage(Type.JAVA, createIfNecessary);
+	}
+	
 	public URL getImageUrl() {
-		if (type != Type.URL) {
-			throw new RuntimeException("no url given, image was set with type " + type.toString() + ".");
+		return getImageUrl(false);
+	}
+
+	public URL getImageUrl(boolean createIfNecessary) {
+		return (URL) getImage(Type.URL, createIfNecessary);
+	}
+	
+	public Set<Type> getAvailableTypes() {
+		Set<Type> types = new HashSet<Type>();
+		
+		for (Type t : Type.values()) {
+			if (hasType(t))
+				types.add(t);
 		}
-		return imageUrl;
+		
+		return types;		
+	}
+	
+	public String getAvailableTypesString() {
+		String s="";
+		for (Type t : getAvailableTypes()) {
+			s += t.name()+" ";
+		}
+		return s.trim();
 	}
 
 	/**
@@ -132,7 +148,7 @@ public class Image {
 	 * @param toType
 	 * @throws IOException
 	 */
-	public void convert(Type toType) throws IOException {
+	public void createType(Type toType) throws IOException {
 		switch (toType) {
 		case JAVA:
 			if (this.hasType(Type.JAVA)) {
@@ -157,12 +173,19 @@ public class Image {
 		default:
 			throw new RuntimeException("unknown type '" + toType + "'");
 		}
-		
-		this.type = toType;
 	}
 	
-	public Type getType() {
-		return type;
+	private Object getImageObject(Type type) {
+		switch (type) {
+		case URL:
+			return imageUrl;
+		case OPEN_CV:
+			return imageOpenCVImage;
+		case JAVA:
+			return imageBufferedImage;
+		default:
+			throw new RuntimeException("unknown type '" + type + "'");
+		}
 	}
 
 }

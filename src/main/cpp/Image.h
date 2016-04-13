@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <stdexcept>
-#include "opencv2/core/core.hpp"
+#include <opencv2/opencv.hpp>
 
 namespace transkribus {
 

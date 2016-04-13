@@ -21,7 +21,7 @@ public class ImageTest {
 			try {
 //				urlImage.convert(Type.JAVA);
 				
-				urlImage.convert(Type.OPEN_CV);
+				urlImage.createType(Type.OPEN_CV);
 				
 //				ImageUtils.saveAsFile(urlImage.getImageBufferedImage(), "/tmp/test-" + i + "-java.jpg");
 //				ImageUtils.saveAsFile(urlImage.getImageOpenCVImage(), "/tmp/test-" + i + "-mat.jpg");
