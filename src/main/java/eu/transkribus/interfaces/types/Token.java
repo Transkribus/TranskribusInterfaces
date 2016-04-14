@@ -9,6 +9,7 @@ package eu.transkribus.interfaces.types;
  * Token of language model (for example word, but also puncutation)
  *
  * @author gundram
+ * @deprecated not finalized yet
  */
 public class Token {
 

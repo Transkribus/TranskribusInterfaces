@@ -4,6 +4,7 @@
 //#include <iostream>
 #include <string>
 #include <vector>
+#include "IBaseLine2Coords.h"
 #include "ILayoutAnalysis.h"
 #include "IHtr.h"
 
@@ -14,6 +15,8 @@ namespace transkribus {
 class ModuleFactory
 {
 public:
+	virtual ~ModuleFactory() {}
+
 	virtual IModule* create(const vector<string>& pars) { return NULL; }
 
 	static IModule* createModuleFromLib(const string& pathToLib, const std::vector<std::string>& pars);
@@ -26,6 +29,10 @@ public:
 
 	static IHtr* castToHtr(IModule* module) {
 		return (IHtr *) module;
+	}
+
+	static IBaseline2Coords* castToBaseline2Coords(IModule* module) {
+		return (IBaseline2Coords *) module;
 	}
 
 private:

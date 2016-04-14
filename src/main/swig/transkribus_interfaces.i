@@ -15,12 +15,14 @@ namespace std {
 %apply char **STRING_ARRAY { char **db }
 
 %{
+#include "../cpp/IBaseLine2Coords.h"
 #include "../cpp/ILayoutAnalysis.h"
 #include "../cpp/IHtr.h"
 #include "../cpp/ModuleFactory.h"
 %}
 
 %rename (Native_IModule) IModule;
+%rename (Native_IBaseline2Coords) IBaseline2Coords;
 %rename (Native_ILayoutAnalysis) ILayoutAnalysis;
 %rename (Native_IHtr) IHtr;
 
@@ -31,6 +33,7 @@ namespace std {
 
 /* Let's just grab the original header files here */
 %include "../cpp/IModule.h"
+%include "../cpp/IBaseLine2Coords.h"
 %include "../cpp/ILayoutAnalysis.h"
 %include "../cpp/IHtr.h"
 %include "../cpp/ModuleFactory.h"
