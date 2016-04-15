@@ -34,8 +34,8 @@ public:
 	int getWidth() const { return mat.cols; }
 	int getHeight() const { return mat.rows; }
 
-	std::string& getUrl() { return url; }
-	cv::Mat& getMat() { return mat; }
+//	std::string& getUrl() { return url; }
+//	cv::Mat& getMat() { return mat; }
 
 private:
 

@@ -24,7 +24,7 @@ public class TestNativeInterfaces {
 		ImageUtils.setLibraryPath(resourcesDir+":"+System.getProperty("java.library.path"));
 //		System.out.println("libpath = "+System.getProperty("java.library.path"));
 		
-		System.loadLibrary("TranskribusInterfaces");
+		System.loadLibrary("TranskribusInterfacesWrapper");
 //		System.load(System.getProperty("user.dir")+"/src/main/resources/libTranskribusInterfaces.so");
 		
 		String pluginPath = "./src/main/resources/libMyLayoutAnalysis.so";

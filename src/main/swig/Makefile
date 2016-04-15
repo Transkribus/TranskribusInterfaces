@@ -2,12 +2,11 @@
 
 MAIN_MAKEFILE = Makefile.Main
 SWIG       = swig
-CXXSRCS    = ../cpp/ModuleFactory.cpp ../cpp/Image.cpp
-TARGET     = TranskribusInterfaces
+#CXXSRCS    = ../cpp/ModuleFactory.cpp ../cpp/Image.cpp
+TARGET     = TranskribusInterfacesWrapper
 INTERFACE  = transkribus_interfaces.i
 
 SWIG_OUTDIR = ../java/eu/transkribus/interfaces/native_wrapper/swig
-#SWIG_OUTDIR = ../java/eu/transkribus/native_interfaces
 JAVA_PACKAGE = eu.transkribus.interfaces.native_wrapper.swig
 
 JAVA_INCLUDE = -I"." -I"$(JAVA_HOME)/include"
@@ -21,19 +20,26 @@ SWIGOPT    = -outdir $(SWIG_OUTDIR) -package $(JAVA_PACKAGE)
 
 #CXXFLAGS   = -I./catti-plugin -g3 -fPIC # -std=c++11
 #CXXFLAGS   = -Wall -g3 -fPIC -L. -std=c++11
-CXXFLAGS   = -Wall -fPIC -L. -std=c++11
+CXXFLAGS   = -Wall -fPIC -std=c++11 
 
 #LIBS = -lMyLayoutAnalysis -lopencv_core
 #LIBS = -lopencv_core
-LIBS = -ldl -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lcurl
+LDFLAGS = 
+#LIBS = -L. -L../cpp -ldl -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lcurl
+
+INTERFACES_LIB = TranskribusInterfaces
+LIBS = -L. -L../cpp -l$(INTERFACES_LIB)
 
 #all:	plugin java
 all:	plugin copy_to_resources
 
 # create java wrappers in SWIG_OUTDIR and a shared library that can be loaded in java to access the C++ interfaces
-plugin: $(CXXSRCS)
+plugin: $(CXXSRCS) ../cpp/libTranskribusInterfaces.so
 	$(MAKE) -f $(MAIN_MAKEFILE) JAVA_INCLUDE="$(JAVA_INCLUDE)" SRCDIR='$(SRCDIR)' CXXSRCS='$(CXXSRCS)' SWIG='$(SWIG)' \
 		SWIGOPT='$(SWIGOPT)' TARGET='$(TARGET)' INTERFACE='$(INTERFACE)' CXXFLAGS='$(CXXFLAGS)' LIBS='$(LIBS)' java_cpp
+		
+../cpp/lib$(INTERFACES_LIB).so:
+	cd ../cpp && make
 		
 # copies the generated lib to src/main/resources
 copy_to_resources: lib$(TARGET).so

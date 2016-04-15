@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <iostream>
-#include "Image.h"
 #include "IModule.h"
 
 namespace transkribus {
