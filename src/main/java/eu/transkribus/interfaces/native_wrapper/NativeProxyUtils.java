@@ -2,13 +2,14 @@ package eu.transkribus.interfaces.native_wrapper;
 
 import java.io.IOException;
 
+import eu.transkribus.interfaces.native_wrapper.swig.Native_IBaseline2Polygon;
 import eu.transkribus.interfaces.native_wrapper.swig.Native_Image;
 import eu.transkribus.interfaces.native_wrapper.swig.StringVector;
 import eu.transkribus.interfaces.types.Image;
 import eu.transkribus.interfaces.types.Image.Type;
 
 public class NativeProxyUtils {
-		
+			
 	public static StringVector toStringVector(String... strs) {
 		StringVector s = new StringVector();		
 		if (strs != null) {
