@@ -7,7 +7,7 @@
 
 namespace transkribus {
 
-class IBaseline2Coords : public IModule
+class IBaseline2Polygon : public IModule
 {
 public:
 	virtual ~IBaseline2Coords() {}

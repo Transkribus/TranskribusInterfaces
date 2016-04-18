@@ -11,12 +11,12 @@ import eu.transkribus.interfaces.types.Image;
  * Interface to calculate to given surrounding polygons the corresponding
  * baseline. The number (and order) of returned regions have to match the number
  * of surrounding polygons. Maybe this interface is not needed - it is the
- * "reverse" interface from {@link eu.transkribus.interfaces.IBaseLine2Coords}.
+ * "reverse" interface from {@link eu.transkribus.interfaces.IBaseline2Polygon}.
  *
  * @author gundram
  *  @deprecated not finalized yet
  */
-public interface ICoords2BaseLine extends IModule {
+public interface IPolygon2Baseline extends IModule {
 
     /**
      * needed??

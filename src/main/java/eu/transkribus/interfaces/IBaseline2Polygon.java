@@ -14,7 +14,7 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface IBaseLine2Coords extends IModule{
+public interface IBaseline2Polygon extends IModule{
 
 //    public boolean process(Image img, String pageXmlIn, String pageXmlOut);
 
