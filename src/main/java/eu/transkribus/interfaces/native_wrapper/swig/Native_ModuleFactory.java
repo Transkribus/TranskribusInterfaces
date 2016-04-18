@@ -45,19 +45,24 @@ public class Native_ModuleFactory {
     return (cPtr == 0) ? null : new Native_IModule(cPtr, false);
   }
 
-  public static Native_ILayoutAnalysis castToLayoutAnalysis(Native_IModule module) {
-    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castToLayoutAnalysis(Native_IModule.getCPtr(module), module);
+  public static Native_ILayoutAnalysis castILayoutAnalysis(Native_IModule module) {
+    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castILayoutAnalysis(Native_IModule.getCPtr(module), module);
     return (cPtr == 0) ? null : new Native_ILayoutAnalysis(cPtr, false);
   }
 
-  public static Native_IHtr castToHtr(Native_IModule module) {
-    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castToHtr(Native_IModule.getCPtr(module), module);
+  public static Native_IHtr castIHtr(Native_IModule module) {
+    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castIHtr(Native_IModule.getCPtr(module), module);
     return (cPtr == 0) ? null : new Native_IHtr(cPtr, false);
   }
 
-  public static Native_IBaseline2Coords castToBaseline2Coords(Native_IModule module) {
-    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castToBaseline2Coords(Native_IModule.getCPtr(module), module);
-    return (cPtr == 0) ? null : new Native_IBaseline2Coords(cPtr, false);
+  public static Native_IBaseline2Polygon castIBaseline2Coords(Native_IModule module) {
+    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castIBaseline2Coords(Native_IModule.getCPtr(module), module);
+    return (cPtr == 0) ? null : new Native_IBaseline2Polygon(cPtr, false);
+  }
+
+  public static Native_ITrainHtr castITrainHtr(Native_IModule module) {
+    long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_castITrainHtr(Native_IModule.getCPtr(module), module);
+    return (cPtr == 0) ? null : new Native_ITrainHtr(cPtr, false);
   }
 
   public Native_ModuleFactory() {

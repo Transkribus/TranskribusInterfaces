@@ -35,22 +35,6 @@ public class Native_Image {
     }
   }
 
-  public void setUrl(String value) {
-    transkribus_interfacesJNI.Native_Image_url_set(swigCPtr, this, value);
-  }
-
-  public String getUrl() {
-    return transkribus_interfacesJNI.Native_Image_url_get(swigCPtr, this);
-  }
-
-  public void setMat(SWIGTYPE_p_cv__Mat value) {
-    transkribus_interfacesJNI.Native_Image_mat_set(swigCPtr, this, SWIGTYPE_p_cv__Mat.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_cv__Mat getMat() {
-    return new SWIGTYPE_p_cv__Mat(transkribus_interfacesJNI.Native_Image_mat_get(swigCPtr, this), true);
-  }
-
   public Native_Image(Native_Image image) {
     this(transkribus_interfacesJNI.new_Native_Image__SWIG_0(Native_Image.getCPtr(image), image), true);
   }

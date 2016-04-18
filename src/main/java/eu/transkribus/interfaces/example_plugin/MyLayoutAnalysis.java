@@ -1,4 +1,4 @@
-package eu.transkribus.interfaces.example_module;
+package eu.transkribus.interfaces.example_plugin;
 
 import eu.transkribus.interfaces.ILayoutAnalysis;
 import eu.transkribus.interfaces.types.Image;

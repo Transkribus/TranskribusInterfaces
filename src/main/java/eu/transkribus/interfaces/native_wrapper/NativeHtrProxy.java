@@ -13,7 +13,7 @@ public class NativeHtrProxy extends NativeModuleProxy implements IHtr {
 	
 	public NativeHtrProxy(String pathToPluginLib, String[] pars) {
 		super(pathToPluginLib, pars);
-		htr = Native_ModuleFactory.castToHtr(module);
+		htr = Native_ModuleFactory.castIHtr(module);
 	}
 
 	@Override public void createModel(String path, String[] pars) {

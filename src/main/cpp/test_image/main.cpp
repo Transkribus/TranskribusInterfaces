@@ -22,8 +22,8 @@ int main(int argc, char** argv)
 //	string url = "http://www.austriatraveldirect.com/files/INNNORD01041.jp"; // return 404
 //	string url = "http://www.austriatraveldirect.com/files/INNNORD01041.jpg"; // ok
 //	string url = "https://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"; // ok
-//	string url = "/tmp/test.jpg"; // ok
-	string url = "/tmp/asdfadsf.pg"; // not found
+	string url = "/tmp/test.jpg"; // ok
+	//string url = "/tmp/asdfadsf.pg"; // not found
 
 	if (argc > 1) {
 		url = argv[1];

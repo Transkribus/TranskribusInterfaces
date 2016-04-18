@@ -23,13 +23,13 @@ public:
 
     void process(Image& image, const std::string& xmlInOut, const std::vector<std::string>& ids, const std::vector<std::string>& props);
 
-    std::string usage();
+    const std::string usage() const;
 
-    std::string getToolName();
+    const std::string getToolName() const;
 
-    std::string getVersion();
+    const std::string getVersion() const;
 
-    std::string getProvider();
+    const std::string getProvider() const;
 };
 
 // 2nd step: for every module, you have to implement a ModuleFactory, which creates an instance of your module with some parameters

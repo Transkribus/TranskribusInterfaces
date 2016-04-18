@@ -7,22 +7,23 @@ namespace transkribus {
 MyLayoutAnalysis::MyLayoutAnalysis() {}
 
 void MyLayoutAnalysis::process(Image& image, const std::string& xmlInOut, const std::vector<std::string>& ids, const std::vector<std::string>& props) {
-	std::cout << "MyLayoutAnalysis 1, process, xmlInOut =  " << xmlInOut << std::endl;
+	std::cout << "MyLayoutAnalysis, process, xmlInOut =  " << xmlInOut << std::endl;
+	std::cout << image << endl;
 }
 
-std::string MyLayoutAnalysis::usage() {
+const std::string MyLayoutAnalysis::usage() const {
 	return std::string("MyUsage");
 }
 
-std::string MyLayoutAnalysis::getToolName() {
+const std::string MyLayoutAnalysis::getToolName() const {
 	return std::string("MyToolName");
 }
 
-std::string MyLayoutAnalysis::getVersion() {
+const std::string MyLayoutAnalysis::getVersion() const {
 	return std::string("MyVersion");
 }
 
-std::string MyLayoutAnalysis::getProvider() {
+const std::string MyLayoutAnalysis::getProvider() const {
 	return std::string("MyProvider");
 }
 

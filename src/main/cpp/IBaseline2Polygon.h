@@ -10,7 +10,7 @@ namespace transkribus {
 class IBaseline2Polygon : public IModule
 {
 public:
-	virtual ~IBaseline2Coords() {}
+	virtual ~IBaseline2Polygon() {}
 
 	virtual void process(Image& image, const std::string& xmlInOut, const std::vector<std::string>& ids, const std::vector<std::string>& props) = 0;
 };

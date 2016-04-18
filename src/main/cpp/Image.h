@@ -7,12 +7,14 @@
 #include <stdexcept>
 #include <opencv2/opencv.hpp>
 
+using namespace std;
+
 namespace transkribus {
 
 class Image
 {
 public:
-	std::string url;
+	string url;
 	cv::Mat mat;
 
 	/// copy constructor
@@ -21,7 +23,7 @@ public:
 	Image(Image&& image);
 
 	/// inits image using a url
-	Image(const std::string& url);
+	Image(const string& url);
 
 	/// inits image using cv::Mat reference
 	Image(cv::Mat& mat);
@@ -33,14 +35,15 @@ public:
 
 	int getWidth() const { return mat.cols; }
 	int getHeight() const { return mat.rows; }
-
-//	std::string& getUrl() { return url; }
-//	cv::Mat& getMat() { return mat; }
+	
+	const string toString() const {
+		return "Image, w = " + to_string(getWidth()) + " h = " + to_string(getHeight()) + " url = " + url;
+	}
 
 private:
 
 };
 
-std::ostream& operator<<(std::ostream& os, const Image& image);
+ostream& operator<<(ostream& os, const Image& image);
 
 } // end of namespace transkribus

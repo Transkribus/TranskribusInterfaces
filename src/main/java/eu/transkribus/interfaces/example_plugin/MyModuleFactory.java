@@ -1,4 +1,4 @@
-package eu.transkribus.interfaces.example_module;
+package eu.transkribus.interfaces.example_plugin;
 
 import eu.transkribus.interfaces.IModule;
 import eu.transkribus.interfaces.ModuleFactory;

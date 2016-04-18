@@ -35,7 +35,8 @@ void Image::display() const {
 }
 
 ostream& operator<<(ostream& os, const Image& image) {
-	return os << "Image, w = " << image.getWidth() << " h = " << image.getHeight() << " url = " << image.url;
+	return os << image.toString();
+	//return os << "Image, w = " << image.getWidth() << " h = " << image.getHeight() << " url = " << image.url;
 }
 
 } // end of namespace transkribus

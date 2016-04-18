@@ -23,6 +23,17 @@
   }
 }
 
+%ignore transkribus::Image::mat;
+%ignore transkribus::Image::url;
+
+%ignore transkribus::operator<<(std::ostream& os, const Image& image);
+
+%extend transkribus::Image {
+public:
+	const std::string& transkribus::getUrl() { return url; }
+	const cv::Mat& transkribus::getMat() { return mat; }
+};
+
 %{
 #include "../cpp/Image.h"
 %}

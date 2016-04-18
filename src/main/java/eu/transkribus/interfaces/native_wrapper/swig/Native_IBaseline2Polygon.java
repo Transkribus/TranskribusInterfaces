@@ -8,15 +8,15 @@
 
 package eu.transkribus.interfaces.native_wrapper.swig;
 
-public class Native_IBaseline2Coords extends Native_IModule {
+public class Native_IBaseline2Polygon extends Native_IModule {
   private long swigCPtr;
 
-  protected Native_IBaseline2Coords(long cPtr, boolean cMemoryOwn) {
-    super(transkribus_interfacesJNI.Native_IBaseline2Coords_SWIGUpcast(cPtr), cMemoryOwn);
+  protected Native_IBaseline2Polygon(long cPtr, boolean cMemoryOwn) {
+    super(transkribus_interfacesJNI.Native_IBaseline2Polygon_SWIGUpcast(cPtr), cMemoryOwn);
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(Native_IBaseline2Coords obj) {
+  protected static long getCPtr(Native_IBaseline2Polygon obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -28,7 +28,7 @@ public class Native_IBaseline2Coords extends Native_IModule {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        transkribus_interfacesJNI.delete_Native_IBaseline2Coords(swigCPtr);
+        transkribus_interfacesJNI.delete_Native_IBaseline2Polygon(swigCPtr);
       }
       swigCPtr = 0;
     }
@@ -36,7 +36,7 @@ public class Native_IBaseline2Coords extends Native_IModule {
   }
 
   public void process(Native_Image image, String xmlInOut, StringVector ids, StringVector props) {
-    transkribus_interfacesJNI.Native_IBaseline2Coords_process(swigCPtr, this, Native_Image.getCPtr(image), image, xmlInOut, StringVector.getCPtr(ids), ids, StringVector.getCPtr(props), props);
+    transkribus_interfacesJNI.Native_IBaseline2Polygon_process(swigCPtr, this, Native_Image.getCPtr(image), image, xmlInOut, StringVector.getCPtr(ids), ids, StringVector.getCPtr(props), props);
   }
 
 }

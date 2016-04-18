@@ -19,28 +19,28 @@ public:
      *
      * @return
      */
-    virtual std::string usage() = 0;
+    virtual const std::string usage() const = 0;
 
     /**
      * unique tool name, describing the main domain
      *
      * @return
      */
-    virtual std::string getToolName() = 0;
+    virtual const std::string getToolName() const = 0;
 
     /**
      * version, matching [0-9]+\.[0-9]+\.[0-9]+
      *
      * @return
      */
-    virtual std::string getVersion() = 0;
+    virtual const std::string getVersion() const = 0;
 
     /**
      * your organization
      *
      * @return
      */
-    virtual std::string getProvider() = 0;
+    virtual const std::string getProvider() const = 0;
 };
 
 }

@@ -3,23 +3,24 @@ SRCS = MyLayoutAnalysis.cpp
 HDRS = MyLayoutAnalysis.h
 
 LIB = libMyLayoutAnalysis.so
-LD_FLAGS = -L../libs -ldl -lopencv_core -lTranskribusTypes
+CC_FLAGS = -Wall -std=gnu++11 -fPIC
+LD_FLAGS = -L../../resources -ldl -lTranskribusInterfaces -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lcurl
 
-TESTAPP = testApp
-
-all: $(LIB) copy_to_resources
+#all: $(LIB) copy_to_resources
+#all: $(LIB) copy_to_resources
 
 $(LIB): $(SRCS) $(HDRS)
-	g++ -Wall -fPIC -shared $(SRCS) -o $(LIB)
+	g++ $(CC_FLAGS) -shared $(SRCS) -o $(LIB)
 	
-$(TESTAPP): $(TESTAPP).cpp
-	g++ -Wall $(TESTAPP).cpp -o $(TESTAPP) $(LD_FLAGS)
+testApp: testApp.cpp $(LIB)
+	g++ $(CC_FLAGS) testApp.cpp -o testApp -lMyLayoutAnalysis $(LD_FLAGS)
 	
-test: $(TESTAPP)
-	./$(TESTAPP)
+test: ./testApp
+	cp ../../resources/libTranskribusInterfaces.so .
+	./testApp
 	
-copy_to_resources: $(LIB)
-	cp $(LIB) ../../resources/.
+#copy_to_resources: $(LIB)
+#	cp $(LIB) ../../resources/.
 	
 clean:
-	rm -f $(LIB) $(TESTAPP)
+	rm -f $(LIB) ./testApp

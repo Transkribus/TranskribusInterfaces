@@ -4,9 +4,10 @@
 //#include <iostream>
 #include <string>
 #include <vector>
-#include "IBaseLine2Coords.h"
+#include "IBaseline2Polygon.h"
 #include "ILayoutAnalysis.h"
 #include "IHtr.h"
+#include "ITrainHtr.h"
 
 using namespace std;
 
@@ -15,28 +16,33 @@ namespace transkribus {
 class ModuleFactory
 {
 public:
+	static const string FACTORY_VARIABLE_NAME;
+
 	virtual ~ModuleFactory() {}
 
 	virtual IModule* create(const vector<string>& pars) { return NULL; }
 
 	static IModule* createModuleFromLib(const string& pathToLib, const std::vector<std::string>& pars);
 
-	// casting methods, needed for the java wrapper:
+	// casting methods, needed for the swig java wrapper:
 
-	static ILayoutAnalysis* castToLayoutAnalysis(IModule* module) {
+	static ILayoutAnalysis* castILayoutAnalysis(IModule* module) {
 		return (ILayoutAnalysis *) module;
 	}
 
-	static IHtr* castToHtr(IModule* module) {
+	static IHtr* castIHtr(IModule* module) {
 		return (IHtr *) module;
 	}
 
-	static IBaseline2Coords* castToBaseline2Coords(IModule* module) {
-		return (IBaseline2Coords *) module;
+	static IBaseline2Polygon* castIBaseline2Coords(IModule* module) {
+		return (IBaseline2Polygon *) module;
+	}
+
+	static ITrainHtr* castITrainHtr(IModule* module) {
+		return (ITrainHtr *) module;
 	}
 
 private:
-	static const string FACTORY_VARIABLE_NAME;
 	static void* loadLibrary(const string& pathToLib);
 
 };
