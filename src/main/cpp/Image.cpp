@@ -31,7 +31,7 @@ void Image::display() const {
 	cv::imshow(title, mat); //display image
 
 	cvWaitKey(0); // press any key to exit
-	cv::destroyWindow("Image output");
+	cv::destroyWindow(title);
 }
 
 ostream& operator<<(ostream& os, const Image& image) {
