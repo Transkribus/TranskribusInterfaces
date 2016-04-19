@@ -59,4 +59,8 @@ public class Native_Image {
     return transkribus_interfacesJNI.Native_Image_getHeight(swigCPtr, this);
   }
 
+  public String toString() {
+    return transkribus_interfacesJNI.Native_Image_toString(swigCPtr, this);
+  }
+
 }

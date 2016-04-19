@@ -35,6 +35,10 @@ public class Native_ModuleFactory {
     }
   }
 
+  public static String getFACTORY_VARIABLE_NAME() {
+    return transkribus_interfacesJNI.Native_ModuleFactory_FACTORY_VARIABLE_NAME_get();
+  }
+
   public Native_IModule create(StringVector pars) {
     long cPtr = transkribus_interfacesJNI.Native_ModuleFactory_create(swigCPtr, this, StringVector.getCPtr(pars), pars);
     return (cPtr == 0) ? null : new Native_IModule(cPtr, false);

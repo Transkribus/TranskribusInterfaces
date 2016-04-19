@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IModule.h"
-#include "IBaseline2Polygon.h"
 
 using namespace std;
 
@@ -13,7 +12,7 @@ public:
 	virtual ~ITrainHtr() {};
 
 	virtual void trainHtr(const string& pathToModelsIn, const string& pathToModelsOut, const vector<string>& props, const string& inputDir) = 0;
-	virtual void createTrainData(const vector<string>& pageXmls, const string& outputDir, IBaseline2Polygon& mapper) = 0;
+	virtual void createTrainData(const vector<string>& pageXmls, const string& outputDir, const vector<string>& props) = 0;
 
 };
 

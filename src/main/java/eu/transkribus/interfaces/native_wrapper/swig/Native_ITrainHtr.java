@@ -39,8 +39,8 @@ public class Native_ITrainHtr extends Native_IModule {
     transkribus_interfacesJNI.Native_ITrainHtr_trainHtr(swigCPtr, this, pathToModelsIn, pathToModelsOut, StringVector.getCPtr(props), props, inputDir);
   }
 
-  public void createTrainData(StringVector pageXmls, String outputDir, Native_IBaseline2Polygon mapper) {
-    transkribus_interfacesJNI.Native_ITrainHtr_createTrainData(swigCPtr, this, StringVector.getCPtr(pageXmls), pageXmls, outputDir, Native_IBaseline2Polygon.getCPtr(mapper), mapper);
+  public void createTrainData(StringVector pageXmls, String outputDir, StringVector props) {
+    transkribus_interfacesJNI.Native_ITrainHtr_createTrainData(swigCPtr, this, StringVector.getCPtr(pageXmls), pageXmls, outputDir, StringVector.getCPtr(props), props);
   }
 
 }

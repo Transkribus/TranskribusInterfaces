@@ -16,6 +16,7 @@ public class transkribus_interfacesJNI {
   public final static native void Native_Image_display(long jarg1, Native_Image jarg1_);
   public final static native int Native_Image_getWidth(long jarg1, Native_Image jarg1_);
   public final static native int Native_Image_getHeight(long jarg1, Native_Image jarg1_);
+  public final static native String Native_Image_toString(long jarg1, Native_Image jarg1_);
   public final static native long new_StringVector__SWIG_0();
   public final static native long new_StringVector__SWIG_1(long jarg1);
   public final static native long StringVector_size(long jarg1, StringVector jarg1_);
@@ -41,7 +42,8 @@ public class transkribus_interfacesJNI {
   public final static native void Native_IHtr_process(long jarg1, Native_IHtr jarg1_, String jarg2, long jarg3, Native_Image jarg3_, String jarg4, String jarg5, long jarg6, StringVector jarg6_, long jarg7, StringVector jarg7_);
   public final static native void delete_Native_ITrainHtr(long jarg1);
   public final static native void Native_ITrainHtr_trainHtr(long jarg1, Native_ITrainHtr jarg1_, String jarg2, String jarg3, long jarg4, StringVector jarg4_, String jarg5);
-  public final static native void Native_ITrainHtr_createTrainData(long jarg1, Native_ITrainHtr jarg1_, long jarg2, StringVector jarg2_, String jarg3, long jarg4, Native_IBaseline2Polygon jarg4_);
+  public final static native void Native_ITrainHtr_createTrainData(long jarg1, Native_ITrainHtr jarg1_, long jarg2, StringVector jarg2_, String jarg3, long jarg4, StringVector jarg4_);
+  public final static native String Native_ModuleFactory_FACTORY_VARIABLE_NAME_get();
   public final static native void delete_Native_ModuleFactory(long jarg1);
   public final static native long Native_ModuleFactory_create(long jarg1, Native_ModuleFactory jarg1_, long jarg2, StringVector jarg2_);
   public final static native long Native_ModuleFactory_createModuleFromLib(String jarg1, long jarg2, StringVector jarg2_);
