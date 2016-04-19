@@ -75,16 +75,7 @@ public class ImageUtils {
         }
         return b;
     }
-    
-	public static void setLibraryPath(String path) throws Exception {
-		System.setProperty("java.library.path", path);
 
-		// set sys_paths to null so that java.library.path will be reevalueted next time it is needed
-		final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
-		sysPathsField.setAccessible(true);
-		sysPathsField.set(null, null);
-	}
-    
     public static void loadOpenCV() throws Exception {
     	
     	long t0 = System.currentTimeMillis();
@@ -99,12 +90,11 @@ public class ImageUtils {
     	String libPath = p.getProperty("OPENCV_LIB_PATH");
     	opencv2lib = p.getProperty("OPENCV2_FALLBACK_LIBNAME");
     	
-    	// TODO: in setLibraryPath, check if the path is already added
-    	setLibraryPath(libPath+":"+System.getProperty("java.library.path"));
-    	System.out.println("libpath = "+System.getProperty("java.library.path"));
+    	SysPathUtils.addDirToPath(libPath);
+//    	System.out.println("PATH = "+SysPathUtils.getPath());
     	
         try {
-        	// IMPORTANT NOTE: on MACOS the expected file ending for jni libs is .jnilib (instead of .so on linux)
+        	// NOTE: on MACOS the expected file ending for jni libs is .jnilib (instead of .so on linux)
         	// for the System.loadLibrary call
         	// however, if you manually compile and install opencv on mac it seems to produce
         	// an libopencv_java***.so file instead of libopencv_java***.jnilib -> symlink of rename this file to be 

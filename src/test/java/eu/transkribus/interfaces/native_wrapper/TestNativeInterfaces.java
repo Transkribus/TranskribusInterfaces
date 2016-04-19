@@ -6,6 +6,7 @@ import java.net.URL;
 import eu.transkribus.interfaces.ILayoutAnalysis;
 import eu.transkribus.interfaces.types.Image;
 import eu.transkribus.interfaces.types.util.ImageUtils;
+import eu.transkribus.interfaces.types.util.SysPathUtils;
 
 public class TestNativeInterfaces {
 	
@@ -21,8 +22,8 @@ public class TestNativeInterfaces {
 	
 	public static void main(String[] args) throws Exception {
 		String resourcesDir = System.getProperty("user.dir")+"/src/main/resources/";
-		ImageUtils.setLibraryPath(resourcesDir+":"+System.getProperty("java.library.path"));
-//		System.out.println("libpath = "+System.getProperty("java.library.path"));
+		SysPathUtils.addDirToPath(resourcesDir);
+		System.out.println("libpath = "+SysPathUtils.getPath());
 		
 		System.loadLibrary("TranskribusInterfacesWrapper");
 //		System.load(System.getProperty("user.dir")+"/src/main/resources/libTranskribusInterfaces.so");
