@@ -10,7 +10,7 @@ public class ModuleFactoryTest {
 		URL jarUrl = null; // if null, default classloader is used
 		String[] pars = null;
 		
-		IModule module = ModuleFactory.createFromJar(null, "eu.transkribus.interfaces.example_module.MyModuleFactory", null);
+		IModule module = ModuleFactory.createFromJar(null, "eu.transkribus.interfaces.example_plugin.MyModuleFactory", null);
 		System.out.println("module provider = "+module.getProvider());
 		
 		Assert.assertSame("expected module provider does match!", "myProvider", module.getProvider());
