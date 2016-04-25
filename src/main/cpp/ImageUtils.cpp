@@ -1,13 +1,23 @@
 #include "ImageUtils.h"
 
 #include <stdio.h>
-#include <curl/curl.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
 #include <vector>
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp> // diem: do not include all opencv modules
+
+#include <opencv2/core.hpp>
+
+#ifndef WITHOUT_HIGHGUI
+#include <opencv2/highgui.hpp>
+#endif
+
+// TODO: diem
+#ifndef WIN32
+#include <curl/curl.h>
+#endif
 
 using namespace std;
 
@@ -25,6 +35,8 @@ size_t ImageUtils::write_data(char *ptr, size_t size, size_t nmemb, void *userda
     return count;
 }
 
+// TODO: diem
+#ifndef WIN32
 std::vector<char> ImageUtils::readFromUrl(const std::string& url, int expectedReturnCode, bool useSSL, bool followRedirect) {
 	CURL *curl;
 	CURLcode curl_code;
@@ -66,25 +78,51 @@ std::vector<char> ImageUtils::readFromUrl(const std::string& url, int expectedRe
 
 	return data;
 }
+#else
+std::vector<char> ImageUtils::readFromUrl(const std::string& url, int expectedReturnCode, bool useSSL, bool followRedirect) { return std::vector<char>(); }
+#endif 
 
-cv::Mat ImageUtils::loadCvMatFromUrl(const std::string& url)
+cv::Mat ImageUtils::loadCvMatFromUrl(const std::string& url) 
 {
+
+	return loadCvMatFromUrl(url, &cvRead);
+}
+
+
+cv::Mat ImageUtils::cvRead(const std::string& url) {
+
+#ifndef WITHOUT_HIGHGUI
+	return cv::imread(url);
+#else
+	std::cerr << "cannot read " << url << "since cv::imread is called, but highgui is not available";
+	return cv::Mat();
+#endif
+}
+
+cv::Mat ImageUtils::loadCvMatFromUrl(const std::string& url, cv::Mat (*readingFunction)(const std::string& url))
+{
+
 	if (ImageUtils::file_exists(url)) {
-		cv::Mat image = cv::imread(url);
+		cv::Mat image = readingFunction(url);
 		return image;
 	}
 	else {
+
+#ifndef WITHOUT_HIGHGUI
 		std::vector<char> data = readFromUrl(url);
 		cout << "read data, size = " << data.size() << endl;
 
 		cv::Mat data_mat = cv::Mat(data); // create the cv::Mat datatype from the vector
-		cv::Mat image = cv::imdecode(data_mat,1); //read an image from memory buffer
+		cv::Mat image = cv::imdecode(data_mat, 1); //read an image from memory buffer
 
 		cout << "read image w = " << image.cols << " h = " << image.rows << endl;
 		return image;
+#else
+		std::cerr << "cannot read " << url << "since cv::imdecode is called, but highgui is not available";
+#endif // WITHOUT_HIGHGUI
 	}
 
-
+	return cv::Mat();
 }
 
 } // end of namespace transkribus

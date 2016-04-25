@@ -30,8 +30,7 @@ add_definitions(-DTI_VERSION="${TI_VERSION}")
 
 set(BINARY_NAME ${CMAKE_PROJECT_NAME})
 
-# include macros needed
-# include("cmake/Utils.cmake")
+option(WITH_HIGHGUI "WITH HIGHGUI" OFF)
 
 # load paths from the user file if exists 
 if(EXISTS ${CMAKE_SOURCE_DIR}/CMakeUser.cmake)

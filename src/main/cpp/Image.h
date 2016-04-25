@@ -5,13 +5,24 @@
 #include <ostream>
 #include <string>
 #include <stdexcept>
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp> // diem: this file includes all modules of opencv (which is bad for an interface)
+#include <opencv2/core.hpp>
 
 using namespace std;
 
+// define the export
+#ifndef TiExport
+
+#ifdef TI_DLL_EXPORT
+#define TiExport __declspec(dllexport)
+#else
+#define TiExport	// remove
+#endif
+#endif
+
 namespace transkribus {
 
-class Image
+class TiExport Image
 {
 public:
 	string url;

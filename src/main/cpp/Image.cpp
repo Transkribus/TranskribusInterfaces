@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+#ifndef WITHOUT_HIGHGUI
+#include <opencv2/highgui.hpp>
+#endif
+
 using namespace std;
 
 namespace transkribus {
@@ -24,7 +28,12 @@ Image::Image(const std::string& url) : url(url) {
 Image::Image(cv::Mat& mat) : mat(mat) {
 }
 
+// diem: I would suggest to remove this function completely 
+// every group should have their (debug) visualization in place anyhow
 void Image::display() const {
+
+#ifndef WITHOUT_HIGHGUI
+	// diem: this creates a (heavy) dependency to highgui which should not be included in an interface
 	std::string title = url.empty() ? "Image" : url;
 
 	cv::namedWindow( title, CV_WINDOW_AUTOSIZE );
@@ -32,6 +41,7 @@ void Image::display() const {
 
 	cvWaitKey(0); // press any key to exit
 	cv::destroyWindow(title);
+#endif
 }
 
 ostream& operator<<(ostream& os, const Image& image) {
