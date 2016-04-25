@@ -1,6 +1,6 @@
 
 # check cmake requirements
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 2.8)
 
 ######################## begin of project
 project(TranskribusInterfaces)
