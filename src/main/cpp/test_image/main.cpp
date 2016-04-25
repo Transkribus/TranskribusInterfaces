@@ -1,7 +1,12 @@
 
 #include <iostream>
-#include <opencv2/opencv.hpp>
+#include <string>
+//#include <opencv2/opencv.hpp>
 #include "../Image.h"
+
+#ifdef _MSC_BUILD // define subsystem for MSVC
+#pragma comment (linker, "/SUBSYSTEM:CONSOLE")
+#endif
 
 using namespace std;
 using namespace cv;
@@ -25,6 +30,10 @@ int main(int argc, char** argv)
 	string url = "/tmp/test.jpg"; // ok
 	//string url = "/tmp/asdfadsf.pg"; // not found
 
+#ifdef WIN32
+	url = "C:/temp/test.jpg"; // ok
+#endif
+
 	if (argc > 1) {
 		url = argv[1];
 	}
@@ -32,7 +41,6 @@ int main(int argc, char** argv)
 
 	try {
 		Image img = testImage(url);
-
 		Image img2 = std::move(img);
 
 		cout << "moved = " << img2 << endl; // test printing

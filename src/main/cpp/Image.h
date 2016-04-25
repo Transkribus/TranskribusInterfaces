@@ -55,6 +55,6 @@ private:
 
 };
 
-ostream& operator<<(ostream& os, const Image& image);
+TiExport ostream& operator<<(ostream& os, const Image& image);
 
 } // end of namespace transkribus

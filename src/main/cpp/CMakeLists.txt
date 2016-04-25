@@ -102,5 +102,6 @@ include_directories (
 
 TI_CREATE_TARGETS()
 
-
-
+if (MSVC)
+	TI_COPY_DLLS()
+endif()
