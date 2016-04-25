@@ -1,0 +1,107 @@
+
+# check cmake requirements
+cmake_minimum_required(VERSION 3.4)
+# if(COMMAND cmake_policy)
+	# cmake_policy(SET CMP0003 NEW)
+	
+	# IF(CMAKE_VERSION VERSION_GREATER 2.8.10)
+		# cmake_policy(SET CMP0020 NEW)	# qt warnings
+	# ENDIF()
+	# IF(CMAKE_VERSION VERSION_GREATER 2.8.12.9)
+		# cmake_policy(SET CMP0043 NEW)	# COMPILE_DEFINITIONS_<CONFIG> warnings
+	# ENDIF()
+# endif(COMMAND cmake_policy)
+
+######################## begin of project
+project(TranskribusInterfaces)
+
+if(CMAKE_CL_64)
+	SET(TI_ARCHITECTURE "x64")
+else()
+	SET(TI_ARCHITECTURE "x86")
+endif()
+
+set(TI_VERSION_MAJOR 0)
+set(TI_VERSION_MINOR 1)
+# set(TI_VERSION_PATCH 0)
+set(TI_VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR})
+
+add_definitions(-DTI_VERSION="${TI_VERSION}")
+
+set(BINARY_NAME ${CMAKE_PROJECT_NAME})
+
+# include macros needed
+# include("cmake/Utils.cmake")
+
+# load paths from the user file if exists 
+if(EXISTS ${CMAKE_SOURCE_DIR}/CMakeUser.cmake)
+	include(${CMAKE_SOURCE_DIR}/CMakeUser.cmake)
+endif()
+
+# check compiler
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+
+if(COMPILER_SUPPORTS_CXX11)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+elseif(NOT MSVC)
+	message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/Utils.cmake)
+
+# if(MSVC)
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Win.cmake)
+# elseif(APPLE)
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mac.cmake)
+# elseif(UNIX)
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Unix.cmake)
+# else()
+	# message(STATUS "build system unkown ... fallback to unix")
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Unix.cmake)
+# endif()
+TI_FIND_OPENCV()
+
+file(GLOB TI_TEST_SOURCES "test_image/*.cpp")
+file(GLOB TI_TEST_HEADERS "test_image/*.h")
+
+# example plugin
+file(GLOB TI_EXAMPLE_SOURCES "example_plugin/*.cpp")
+file(GLOB TI_EXAMPLE_HEADERS "example_plugin/*.h")
+
+# interface
+file(GLOB TI_INTERFACE_SOURCES "*.cpp")
+file(GLOB TI_INTERFACE_HEADERS "*.h")
+
+# gather information for building
+include_directories (
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/test_image
+	${CMAKE_CURRENT_SOURCE_DIR}/example_plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/src/DkGui
+)
+
+# if(MSVC)
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/WinBuildTarget.cmake)
+# elseif(APPLE)
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/MacBuildTarget.cmake)
+# elseif(UNIX)
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/UnixBuildTarget.cmake)
+# else()
+	# message(STATUS "build system unkown ... fallback to unix")
+	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/UnixBuildTarget.cmake)
+# endif()
+
+#debug for printing out all variables 
+# get_cmake_property(_variableNames VARIABLES)
+# foreach (_variableName ${_variableNames})
+#     message(STATUS "${_variableName}=${${_variableName}}")
+# endforeach()
+
+TI_CREATE_TARGETS()
+
+
+
