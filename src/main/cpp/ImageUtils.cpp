@@ -14,8 +14,7 @@
 #include <opencv2/highgui.hpp>
 #endif
 
-// TODO: diem
-#ifndef WIN32
+#ifndef WITHOUT_CURL
 #include <curl/curl.h>
 #endif
 
@@ -35,8 +34,7 @@ size_t ImageUtils::write_data(char *ptr, size_t size, size_t nmemb, void *userda
     return count;
 }
 
-// TODO: diem
-#ifndef WIN32
+#ifndef WITHOUT_CURL
 std::vector<char> ImageUtils::readFromUrl(const std::string& url, int expectedReturnCode, bool useSSL, bool followRedirect) {
 	CURL *curl;
 	CURLcode curl_code;

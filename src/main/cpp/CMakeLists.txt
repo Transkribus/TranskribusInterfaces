@@ -31,6 +31,7 @@ add_definitions(-DTI_VERSION="${TI_VERSION}")
 set(BINARY_NAME ${CMAKE_PROJECT_NAME})
 
 option(WITH_HIGHGUI "WITH HIGHGUI" OFF)
+option(WITH_CURL "WITH CURL" OFF)
 
 # load paths from the user file if exists 
 if(EXISTS ${CMAKE_SOURCE_DIR}/CMakeUser.cmake)
@@ -63,6 +64,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/Utils.cmake)
 	# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Unix.cmake)
 # endif()
 TI_FIND_OPENCV()
+TI_FIND_CURL()
 
 file(GLOB TI_TEST_SOURCES "test_image/*.cpp")
 file(GLOB TI_TEST_HEADERS "test_image/*.h")

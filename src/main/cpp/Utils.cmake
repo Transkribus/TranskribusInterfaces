@@ -16,7 +16,7 @@ set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBIN
 
 # add interface
 add_library(${TI_INTERFACE_NAME} SHARED ${TI_INTERFACE_SOURCES} ${TI_INTERFACE_HEADERS})
-target_link_libraries(${TI_INTERFACE_NAME} ${OpenCV_LIBS})
+target_link_libraries(${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY})
  
 # interface flags
 set_target_properties(${TI_INTERFACE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs)
@@ -34,18 +34,18 @@ set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
 
 # add test
 add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
-target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS}) 
+target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY}) 
 
 # add example plugin
 add_executable(${TI_EXAMPLE_NAME} WIN32  MACOSX_BUNDLE ${TI_EXAMPLE_SOURCES} ${TI_EXAMPLE_HEADERS})
-target_link_libraries(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS}) 
+target_link_libraries(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY}) 
 
 add_dependencies(${TI_TEST_NAME} ${TI_INTERFACE_NAME})
 add_dependencies(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME})
 
-target_include_directories(${TI_INTERFACE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
-target_include_directories(${TI_TEST_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS})
-target_include_directories(${TI_EXAMPLE_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_include_directories(${TI_INTERFACE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
+target_include_directories(${TI_TEST_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
+target_include_directories(${TI_EXAMPLE_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 
 endmacro(TI_CREATE_TARGETS)
 
@@ -76,6 +76,7 @@ ELSE()
 	ELSE()
 		add_definitions(-DWITH_OPENCV -DWITHOUT_HIGHGUI)
 		set(OpenCV_LIBS opencv_core)
+		message(STATUS "building without highgui")
 	ENDIF()
 
 	message(STATUS "OpenCV Modules ${OpenCV_LIBS} added...")
@@ -83,6 +84,43 @@ ENDIF()
 # OpenCV end
 
 endmacro(TI_FIND_OPENCV)
+
+macro(TI_FIND_CURL)
+	 
+if (WITH_CURL)
+
+	# add user prefix paths
+	if (IS_DIRECTORY ${CURL_INCLUDE})
+		SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CURL_INCLUDE})
+		message(STATUS "${CURL_INCLUDE} set as cUrl include path")
+	endif()
+
+	if (IS_DIRECTORY ${CURL_BUILD_DIR})
+		SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CURL_BUILD_DIR}/lib/Release)
+		SET(CURL_INCLUDE ${CURL_INCLUDE} ${CURL_BUILD_DIR}/include/curl)
+		message(STATUS "${CURL_BUILD_DIR} set as cUrl build path")
+	endif()
+	
+	find_package(curl REQUIRED)
+	
+	if (NOT CURL_FOUND)
+	
+		# let the user set the cURL include path
+		SET(CURL_INCLUDE "cURL include path" CACHE PATH "choose your cUrl path")
+		
+		# let the user set the cURL library path
+		SET(CURL_BUILD_DIR "cURL build path" CACHE PATH "choose your cUrl build path")
+		
+		message(WARNING "could not find cURL although it is requested - fix the paths or uncheck WITH_CURL")
+		
+	endif()
+
+else()
+	add_definitions(-DWITHOUT_CURL)
+	message(STATUS "building without cURL")
+endif() # WITH_CURL
+	
+endmacro(TI_FIND_CURL)
 
 macro(TI_COPY_DLLS)
 
@@ -92,7 +130,7 @@ ELSE ()
 	set(ti_all_cv_libs ${OpenCV_LIBS})
 ENDIF()
 
-# copy required dlls to the directories
+# copy required opencv dlls to the directories
 foreach(opencvlib ${ti_all_cv_libs})
 	file(GLOB dllpath ${OpenCV_DIR}/bin/Release/${opencvlib}*.dll)
 	file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
@@ -102,5 +140,18 @@ foreach(opencvlib ${ti_all_cv_libs})
 	file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
 	message(STATUS "${dllpath} copied...")
 endforeach(opencvlib)
+
+IF (WITH_CURL)
+
+	# copy required cURL dll(s) to the directories
+	file(GLOB dllpath ${CURL_BUILD_DIR}/lib/Release/*.dll)
+	file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
+	file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo)
+
+	file(GLOB dllpath ${CURL_BUILD_DIR}/lib/Debug/*.dll)
+	file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+	message(STATUS "${dllpath} copied...")
+ENDIF()
+
 
 endmacro(TI_COPY_DLLS)

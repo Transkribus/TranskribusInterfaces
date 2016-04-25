@@ -24,15 +24,17 @@ Image testImage(string& url) {
 
 int main(int argc, char** argv)
 {
-//	string url = "http://www.austriatraveldirect.com/files/INNNORD01041.jp"; // return 404
-//	string url = "http://www.austriatraveldirect.com/files/INNNORD01041.jpg"; // ok
-//	string url = "https://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"; // ok
+
 	string url = "/tmp/test.jpg"; // ok
 	//string url = "/tmp/asdfadsf.pg"; // not found
 
 #ifdef WIN32
 	url = "C:/temp/test.jpg"; // ok
 #endif
+
+	// url = "http://www.austriatraveldirect.com/files/INNNORD01041.jp"; // return 404
+	//url = "http://www.austriatraveldirect.com/files/INNNORD01041.jpg"; // ok
+	//url = "https://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"; // ok
 
 	if (argc > 1) {
 		url = argv[1];
