@@ -1,12 +1,9 @@
 macro(TI_CREATE_TARGETS)
 
 # create the targets
-set(TI_TEST_NAME 		${PROJECT_NAME}Test)
-set(TI_EXAMPLE_NAME 	${PROJECT_NAME}Example)
+set(TI_TEST_NAME 		Test${PROJECT_NAME})
 set(TI_INTERFACE_NAME 	${PROJECT_NAME})
 
-# set(LIB_TEST_NAME 		optimized ${DLL_TEST_NAME}.lib 		debug ${DLL_TEST_NAME}d.lib)
-# set(LIB_EXAMPLE_NAME 	optimized ${DLL_EXAMPLE_NAME}.lib 	debug ${DLL_EXAMPLE_NAME}d.lib)
 set(LIB_INTERFACE_NAME	optimized ${TI_INTERFACE_NAME}.lib debug ${TI_INTERFACE_NAME}d.lib)
 
 set(LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/libs ${CMAKE_CURRENT_BINARY_DIR}) #add libs directory to library dirs
@@ -38,16 +35,8 @@ set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
 add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
 target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY}) 
 
-# add example plugin
-add_executable(${TI_EXAMPLE_NAME} WIN32  MACOSX_BUNDLE ${TI_EXAMPLE_SOURCES} ${TI_EXAMPLE_HEADERS})
-target_link_libraries(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY}) 
-
-add_dependencies(${TI_TEST_NAME} ${TI_INTERFACE_NAME})
-add_dependencies(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME})
-
 target_include_directories(${TI_INTERFACE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 target_include_directories(${TI_TEST_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
-target_include_directories(${TI_EXAMPLE_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 
 endmacro(TI_CREATE_TARGETS)
 
@@ -103,7 +92,11 @@ if (WITH_CURL)
 		message(STATUS "${CURL_BUILD_DIR} set as cUrl build path")
 	endif()
 	
-	find_package(CURL REQUIRED)
+	if (MSVC)
+		find_package(curl REQUIRED)
+	else()
+		find_package(CURL REQUIRED)
+	endif()
 	
 	if (NOT CURL_FOUND)
 	
@@ -113,7 +106,7 @@ if (WITH_CURL)
 		# let the user set the cURL library path
 		SET(CURL_BUILD_DIR "cURL build path" CACHE PATH "choose your cUrl build path")
 		
-		message(WARNING "could not find cURL although it is requested - fix the paths or uncheck WITH_CURL")
+		message(FATAL_ERROR "could not find cURL although it is requested - fix the paths or uncheck WITH_CURL")
 		
 	endif()
 

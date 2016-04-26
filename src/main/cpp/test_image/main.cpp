@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	url = "C:/temp/test.jpg"; // ok
 #endif
 
-	// url = "http://www.austriatraveldirect.com/files/INNNORD01041.jp"; // return 404
+	//url = "http://www.austriatraveldirect.com/files/INNNORD01041.jp"; // return 404
 	//url = "http://www.austriatraveldirect.com/files/INNNORD01041.jpg"; // ok
 	//url = "https://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"; // ok
 

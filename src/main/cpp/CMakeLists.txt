@@ -49,10 +49,6 @@ TI_FIND_CURL()
 file(GLOB TI_TEST_SOURCES "test_image/*.cpp")
 file(GLOB TI_TEST_HEADERS "test_image/*.h")
 
-# example plugin
-file(GLOB TI_EXAMPLE_SOURCES "example_plugin/*.cpp")
-file(GLOB TI_EXAMPLE_HEADERS "example_plugin/*.h")
-
 # interface
 file(GLOB TI_INTERFACE_SOURCES "*.cpp")
 file(GLOB TI_INTERFACE_HEADERS "*.h")
@@ -61,18 +57,23 @@ file(GLOB TI_INTERFACE_HEADERS "*.h")
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/test_image
-	${CMAKE_CURRENT_SOURCE_DIR}/example_plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/src/DkGui
 )
+
+TI_CREATE_TARGETS()
+
+# add test plugin
+option(WITH_TEST_PLUGIN "WITH TEST PLUGIN" OFF)
+
+if (WITH_TEST_PLUGIN)
+	add_subdirectory(example_plugin)
+endif()
+
+if (MSVC)
+	TI_COPY_DLLS()
+endif()
 
 #debug for printing out all variables 
 # get_cmake_property(_variableNames VARIABLES)
 # foreach (_variableName ${_variableNames})
 #     message(STATUS "${_variableName}=${${_variableName}}")
 # endforeach()
-
-TI_CREATE_TARGETS()
-
-if (MSVC)
-	TI_COPY_DLLS()
-endif()

@@ -92,7 +92,7 @@ cv::Mat ImageUtils::cvRead(const std::string& url) {
 #ifndef WITHOUT_HIGHGUI
 	return cv::imread(url);
 #else
-	std::cerr << "cannot read " << url << "since cv::imread is called, but highgui is not available";
+	std::cerr << "cannot read " << url << "since cv::imread is called, but highgui is not available" << std::endl;
 	return cv::Mat();
 #endif
 }
@@ -116,7 +116,7 @@ cv::Mat ImageUtils::loadCvMatFromUrl(const std::string& url, cv::Mat (*readingFu
 		cout << "read image w = " << image.cols << " h = " << image.rows << endl;
 		return image;
 #else
-		std::cerr << "cannot read " << url << "since cv::imdecode is called, but highgui is not available";
+		std::cerr << "cannot read " << url << "since cv::imdecode is called, but highgui is not available" << std::endl;
 #endif // WITHOUT_HIGHGUI
 	}
 

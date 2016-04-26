@@ -1,10 +1,8 @@
 
-
-
 #pragma once
 
 #include <iostream>
-#include "../ILayoutAnalysis.h"
+#include "../ILayoutAnalysis.h"		// diem: the include directory should be added to the project rather than using relative includes
 #include "../ModuleFactory.h"
 
 using namespace std;
@@ -33,19 +31,20 @@ public:
 };
 
 // 2nd step: for every module, you have to implement a ModuleFactory, which creates an instance of your module with some parameters
-class MyLayoutAnalysisModuleFactory : public ModuleFactory
+class TiExport MyLayoutAnalysisModuleFactory : public ModuleFactory
 {
 public:
 	IModule* create(const vector<string>& pars) {
 		std::cout << "creating MyLayoutAnalysis" << std::endl;
 		return new MyLayoutAnalysis;
 	}
+
 };
 
 }
 
 // 3rd step, IMPORTANT: you have to declare an instance of your factory with the name 'ModuleFactoryInstance' outside of any namespace!
 // This enables us to load the shared lib with dlopen and access the factory instance without and mangled name issues
-transkribus::MyLayoutAnalysisModuleFactory ModuleFactoryInstance;
-
-
+extern "C" {
+	TiExport transkribus::MyLayoutAnalysisModuleFactory ModuleFactoryInstance;
+}
