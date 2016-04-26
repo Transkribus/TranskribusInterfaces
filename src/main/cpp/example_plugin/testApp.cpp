@@ -27,26 +27,26 @@ void* loadLibrary(std::string& libName) {
 	void* library_handle = dlopen(libName.c_str(), RTLD_NOW | RTLD_GLOBAL);
 
 	if (!library_handle) {
-		throw runtime_error("cannot load library "+libName+" error: "+dlerror());
+		throw std::runtime_error("cannot load library "+libName+" error: "+dlerror());
 	}
 
 	return library_handle;
 }
 
 void test() {
-	ILayoutAnalysis* la;
+	transkribus::ILayoutAnalysis* la;
 
 	std::string libName("./libMyLayoutAnalysis.so");
-	cout << "opening lib: " << libName << endl;
+	std::cout << "opening lib: " << libName << std::endl;
 
-	Image image("/tmp/test.jpg");
+	transkribus::Image image("/tmp/test.jpg");
 
-	vector<string> constructorPars;
-	IModule* module = ModuleFactory::createModuleFromLib(libName, constructorPars);
-	la = ModuleFactory::castILayoutAnalysis(module);
+	std::vector<std::string> constructorPars;
+	transkribus::IModule* module = transkribus::ModuleFactory::createModuleFromLib(libName, constructorPars);
+	la = transkribus::ModuleFactory::castILayoutAnalysis(module);
 
-	vector<string> ids;
-	vector<string> props;
+	std::vector<std::string> ids;
+	std::vector<std::string> props;
 	la->process(image, "pageXmlFileUrl", ids, props);
 
 }
