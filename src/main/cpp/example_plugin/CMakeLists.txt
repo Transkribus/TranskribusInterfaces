@@ -29,7 +29,12 @@ target_link_libraries(${TI_PLUGIN_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS})
 add_dependencies(${TI_PLUGIN_NAME} ${TI_INTERFACE_NAME})
 
 if(MSVC) # linux does not need this
-  set_target_properties(${TI_PLUGIN_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+    set_target_properties(${TI_PLUGIN_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+endif()
+
+if(NOT MSVC) # enable soname
+    set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR}.${TI_VERSION_PATCH})
+    set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
 endif()
 
 message(STATUS "${TI_PLUGIN_NAME} added...")

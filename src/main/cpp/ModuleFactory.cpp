@@ -22,7 +22,7 @@ void* ModuleFactory::loadLibrary(const std::string& libName) {
 	library_handle = dlopen(libName.c_str(), RTLD_NOW | RTLD_GLOBAL);
 
 	if (!library_handle) {
-		throw runtime_error("cannot load library "+libName+" error: "+dlerror());
+		throw std::runtime_error("cannot load library "+libName+" error: "+dlerror());
 	}
 
 #else
@@ -42,7 +42,7 @@ IModule* ModuleFactory::createModuleFromLib(const std::string& pathToLib, const 
 {
 	ModuleFactory* factory;
 
-	cout << "opening lib: " << pathToLib << endl;
+	std::cout << "opening lib: " << pathToLib << std::endl;
 
 	// diem: see http://man7.org/linux/man-pages/man3/dlopen.3.html
 	// "...so a dynamically loaded shared object is
@@ -55,7 +55,7 @@ IModule* ModuleFactory::createModuleFromLib(const std::string& pathToLib, const 
 	factory = (ModuleFactory*) dlsym(library_handle, FACTORY_VARIABLE_NAME.c_str());
 	if (factory == NULL) {
 		// diem: this runtime exception is crucial since nobody frees the library (hence memory is lost here)
-		throw runtime_error("error extracting factory instance '" + FACTORY_VARIABLE_NAME + "' from lib " + pathToLib + " - error: " + dlerror());
+		throw std::runtime_error("error extracting factory instance '" + FACTORY_VARIABLE_NAME + "' from lib " + pathToLib + " - error: " + dlerror());
 	}
 
 	return factory->create(pars);
