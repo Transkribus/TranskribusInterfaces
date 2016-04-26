@@ -27,8 +27,6 @@ namespace transkribus {
 class TiExport Image
 {
 public:
-	std::string url;
-	cv::Mat mat;
 
 	/// copy constructor
 	Image(const Image& image);
@@ -38,22 +36,37 @@ public:
 	/// inits image using a url
 	Image(const std::string& url);
 
+	// diem: empty contructor added - this is needed to use Image as a member in other classes
 	/// inits image using cv::Mat reference
-	Image(cv::Mat& mat);
+	Image(const cv::Mat& mat = cv::Mat());	
 
-	virtual ~Image() { }
+	virtual ~Image() { };
+
+	bool empty() const;
 
 	/// display the image using highgui
 	void display() const;
 
-	int getWidth() const { return mat.cols; }
-	int getHeight() const { return mat.rows; }
+	int getWidth() const { return mMat.cols; }
+	int getHeight() const { return mMat.rows; }
 	
-	const std::string toString() const {
-		return "Image, w = " + std::to_string(getWidth()) + " h = " + std::to_string(getHeight()) + " url = " + url;
-	}
+	std::string toString() const;
+
+	void setMat(const cv::Mat& mat);
+	cv::Mat mat() const;
+
+	void setUrl(const std::string& url);
+	std::string url() const;
 
 private:
+
+	// diem: these things should be private
+	// here is a usecase why:
+	// imagine cv::Mat is changed (in e.g. 2 years) with something else
+	// then we can create a 'wrapper' here for compatibility without
+	// the need of changing all plugins
+	std::string mUrl;
+	cv::Mat mMat;
 
 };
 
