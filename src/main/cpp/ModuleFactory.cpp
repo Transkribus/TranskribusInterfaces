@@ -44,6 +44,13 @@ IModule* ModuleFactory::createModuleFromLib(const std::string& pathToLib, const 
 
 	cout << "opening lib: " << pathToLib << endl;
 
+	// diem: see http://man7.org/linux/man-pages/man3/dlopen.3.html
+	// "...so a dynamically loaded shared object is
+	// not deallocated until dlclose() has been called on it as many times
+	// as dlopen() has succeeded on it"
+	// - I think we need to make void* library_handle a member variable (that is closed on destruction)
+	// - this function should therefore not be static
+
 	void* library_handle = loadLibrary(pathToLib);
 	factory = (ModuleFactory*) dlsym(library_handle, FACTORY_VARIABLE_NAME.c_str());
 	if (factory == NULL) {

@@ -69,6 +69,8 @@ void test() {
 		std::vector<std::string> ids;
 		std::vector<std::string> props;
 		la->process(image, "pageXmlFileUrl", ids, props);
+
+		delete module;	// diem: the module has to be deleted after use!
 	}
 	catch (std::exception e) {
 		std::cout << "test failed: " << e.what() << std::endl;
