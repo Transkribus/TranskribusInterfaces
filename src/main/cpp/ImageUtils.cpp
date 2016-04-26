@@ -18,12 +18,10 @@
 #include <curl/curl.h>
 #endif
 
-using namespace std;
-
 namespace transkribus {
 
-bool ImageUtils::file_exists(const string& url) {
-	ifstream my_file(url);
+bool ImageUtils::file_exists(const std::string& url) {
+	std::ifstream my_file(url);
 	return my_file.good();
 }
 
@@ -46,12 +44,12 @@ std::vector<char> ImageUtils::readFromUrl(const std::string& url, int expectedRe
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); //the img url
 
 	if (useSSL) {
-		cout << "using ssl" << endl;
+		std::cout << "using ssl" << std::endl;
 		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	}
 
 	if (followRedirect) {
-		cout << "following redirect location" << endl;
+		std::cout << "following redirect location" << std::endl;
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 	}
 
@@ -65,7 +63,7 @@ std::vector<char> ImageUtils::readFromUrl(const std::string& url, int expectedRe
 		throw std::runtime_error("Could not load image from "+url+" - http response code was: "+std::to_string(http_code));
 	}
 
-	cout << "curl res code = " << curl_code << endl;
+	std::cout << "curl res code = " << curl_code << std::endl;
 	if (curl_code != 0) {
 		throw std::runtime_error("Could not load image from "+url+" - curl error: "+curl_easy_strerror(curl_code));
 	}
@@ -108,12 +106,12 @@ cv::Mat ImageUtils::loadCvMatFromUrl(const std::string& url, cv::Mat (*readingFu
 
 #ifndef WITHOUT_HIGHGUI
 		std::vector<char> data = readFromUrl(url);
-		cout << "read data, size = " << data.size() << endl;
+		std::cout << "read data, size = " << data.size() << std::endl;
 
 		cv::Mat data_mat = cv::Mat(data); // create the cv::Mat datatype from the vector
 		cv::Mat image = cv::imdecode(data_mat, 1); //read an image from memory buffer
 
-		cout << "read image w = " << image.cols << " h = " << image.rows << endl;
+		std::cout << "read image w = " << image.cols << " h = " << image.rows << std::endl;
 		return image;
 #else
 		std::cerr << "cannot read " << url << "since cv::imdecode is called, but highgui is not available" << std::endl;

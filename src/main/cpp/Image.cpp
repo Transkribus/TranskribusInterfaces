@@ -7,18 +7,16 @@
 #include <opencv2/highgui.hpp>
 #endif
 
-using namespace std;
-
 namespace transkribus {
 
 Image::Image(const Image& image) : url(image.url) {
 	mat = image.mat.clone();
 
-	cout << "copied image" << endl;
+	std::cout << "copied image" << std::endl;
 }
 
 Image::Image(Image&& image) :url(std::move(image.url)), mat(std::move(image.mat)) {
-	cout << "moved image" << endl;
+	std::cout << "moved image" << std::endl;
 }
 
 Image::Image(const std::string& url) : url(url) {
@@ -44,7 +42,7 @@ void Image::display() const {
 #endif
 }
 
-ostream& operator<<(ostream& os, const Image& image) {
+std::ostream& operator<<(std::ostream& os, const Image& image) {
 	return os << image.toString();
 	//return os << "Image, w = " << image.getWidth() << " h = " << image.getHeight() << " url = " << image.url;
 }

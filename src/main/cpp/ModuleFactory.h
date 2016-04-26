@@ -19,20 +19,18 @@
 #endif
 #endif
 
-using namespace std;
-
 namespace transkribus {
 
 class TiExport ModuleFactory
 {
 public:
-	static const string FACTORY_VARIABLE_NAME;
+	static const std::string FACTORY_VARIABLE_NAME;
 
 	virtual ~ModuleFactory() {}
 
-	virtual IModule* create(const vector<string>& pars) = 0; // diem: this class should be abstract - old: { return NULL; }
+	virtual IModule* create(const std::vector<std::string>& pars) = 0; // diem: this class should be abstract - old: { return NULL; }
 
-	static IModule* createModuleFromLib(const string& pathToLib, const std::vector<std::string>& pars);
+	static IModule* createModuleFromLib(const std::string& pathToLib, const std::vector<std::string>& pars);
 
 	// casting methods, needed for the swig java wrapper:
 
@@ -53,7 +51,7 @@ public:
 	}
 
 private:
-	static void* loadLibrary(const string& pathToLib);
+	static void* loadLibrary(const std::string& pathToLib);
 
 };
 

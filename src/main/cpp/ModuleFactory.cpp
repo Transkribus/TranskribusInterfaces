@@ -29,7 +29,7 @@ void* ModuleFactory::loadLibrary(const std::string& libName) {
 	library_handle = LoadLibrary(libName.c_str());
 
 	if (!library_handle) {
-		throw runtime_error("cannot load library " + libName);
+		throw std::runtime_error("cannot load library " + libName);
 	}
 #endif
 
@@ -72,8 +72,8 @@ IModule* ModuleFactory::createModuleFromLib(const std::string& pathToLib, const 
 
 	if (factory == NULL) {
 		FreeLibrary(library_handle);
-		std::cerr << "cannot load factory instance - google this error: " << GetLastError();
-		throw runtime_error("error extracting factory instance '" + FACTORY_VARIABLE_NAME + "' from lib " + pathToLib);
+		std::cerr << "cannot load factory instance - google this: GetProcAddress " << GetLastError();
+		throw std::runtime_error("error extracting factory instance '" + FACTORY_VARIABLE_NAME + "' from lib " + pathToLib);
 	}
 
 	return factory->create(pars);

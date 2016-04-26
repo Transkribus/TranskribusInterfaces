@@ -5,8 +5,6 @@
 #include "../ILayoutAnalysis.h"		// diem: the include directory should be added to the project rather than using relative includes
 #include "../ModuleFactory.h"
 
-using namespace std;
-
 namespace transkribus {
 
 // 1st step: Create and implementation of your module, inherited from the corresponding interface class
@@ -16,7 +14,7 @@ public:
 	MyLayoutAnalysis();
 
 	virtual ~MyLayoutAnalysis() {
-		cout << "MyLayoutAnalysis is deleted!" << endl;
+		std::cout << "MyLayoutAnalysis is deleted!" << std::endl;
 	}
 
     void process(Image& image, const std::string& xmlInOut, const std::vector<std::string>& ids, const std::vector<std::string>& props);
@@ -34,7 +32,7 @@ public:
 class TiExport MyLayoutAnalysisModuleFactory : public ModuleFactory
 {
 public:
-	IModule* create(const vector<string>& pars) {
+	IModule* create(const std::vector<std::string>& pars) {
 		std::cout << "creating MyLayoutAnalysis" << std::endl;
 		return new MyLayoutAnalysis;
 	}

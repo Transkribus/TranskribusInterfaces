@@ -11,9 +11,6 @@
 #pragma comment (linker, "/SUBSYSTEM:CONSOLE")
 #endif
 
-using namespace transkribus;
-using namespace std;
-
 // declare local functions
 void* loadLibrary(std::string& libName);
 void test();
@@ -58,19 +55,19 @@ void test() {
 
 void test() {
 
-	ILayoutAnalysis* la;
+	transkribus::ILayoutAnalysis* la;
 
 	std::string libName("MyLayoutAnalysis.dll");
 
-	Image image("C:/temp/test.jpg");
+	transkribus::Image image("C:/temp/test.jpg");
 
-	vector<string> constructorPars;
+	std::vector<std::string> constructorPars;
 	try {
-		IModule* module = ModuleFactory::createModuleFromLib(libName, constructorPars);
-		la = ModuleFactory::castILayoutAnalysis(module);
+		transkribus::IModule* module = transkribus::ModuleFactory::createModuleFromLib(libName, constructorPars);
+		la = transkribus::ModuleFactory::castILayoutAnalysis(module);
 
-		vector<string> ids;
-		vector<string> props;
+		std::vector<std::string> ids;
+		std::vector<std::string> props;
 		la->process(image, "pageXmlFileUrl", ids, props);
 	}
 	catch (std::exception e) {
