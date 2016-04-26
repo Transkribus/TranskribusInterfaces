@@ -69,6 +69,7 @@ void test() {
 		std::vector<std::string> ids;
 		std::vector<std::string> props;
 		la->process(image, "pageXmlFileUrl", ids, props);
+		image.display();
 
 		delete module;	// diem: the module has to be deleted after use!
 	}

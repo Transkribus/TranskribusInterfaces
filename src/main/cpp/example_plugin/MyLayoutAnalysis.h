@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <iostream>
 #include "../ILayoutAnalysis.h"		// diem: the include directory should be added to the project rather than using relative includes
 #include "../ModuleFactory.h"
 
@@ -13,9 +12,7 @@ class MyLayoutAnalysis : public ILayoutAnalysis
 public:
 	MyLayoutAnalysis();
 
-	virtual ~MyLayoutAnalysis() {
-		std::cout << "MyLayoutAnalysis is deleted!" << std::endl;
-	}
+	virtual ~MyLayoutAnalysis();
 
     void process(Image& image, const std::string& xmlInOut, const std::vector<std::string>& ids, const std::vector<std::string>& props);
 
@@ -32,10 +29,7 @@ public:
 class TiExport MyLayoutAnalysisModuleFactory : public ModuleFactory
 {
 public:
-	IModule* create(const std::vector<std::string>& pars) {
-		std::cout << "creating MyLayoutAnalysis" << std::endl;
-		return new MyLayoutAnalysis;
-	}
+	IModule* create(const std::vector<std::string>& pars);	// diem: implementations should be in the cpp
 
 };
 

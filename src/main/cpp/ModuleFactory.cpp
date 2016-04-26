@@ -68,7 +68,7 @@ IModule* ModuleFactory::createModuleFromLib(const std::string& pathToLib, const 
 	ModuleFactory* factory;
 	std::cout << "opening lib: " << pathToLib << std::endl;
 
-	HINSTANCE library_handle = LoadLibrary(pathToLib.c_str());
+	HINSTANCE library_handle = (HINSTANCE)loadLibrary(pathToLib.c_str());
 
 	if (!library_handle) {
 		std::cout << "could not load" << pathToLib << std::endl;
