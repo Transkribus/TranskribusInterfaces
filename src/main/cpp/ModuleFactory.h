@@ -1,17 +1,19 @@
 
 #pragma once
 
-//#include <iostream>
 #include <string>
 #include <vector>
-#include "IBaseline2Polygon.h"
-#include "ILayoutAnalysis.h"
-#include "IHtr.h"
-#include "ITrainHtr.h"
+
+//// diem: remove 
+//#include "IBaseline2Polygon.h"
+//#include "ILayoutAnalysis.h"
+//#include "IHtr.h"
+//#include "ITrainHtr.h"
 
 // define the export
 #ifndef TiExport
 
+//  exports for windows
 #ifdef TI_DLL_EXPORT
 #define TiExport __declspec(dllexport)
 #else
@@ -19,7 +21,15 @@
 #endif
 #endif
 
+
 namespace transkribus {
+
+// forward declarations
+class IModule; 
+class ILayoutAnalysis;
+class IHtr;
+class IBaseline2Polygon;
+class ITrainHtr;
 
 class TiExport ModuleFactory
 {
@@ -34,21 +44,13 @@ public:
 
 	// casting methods, needed for the swig java wrapper:
 
-	static ILayoutAnalysis* castILayoutAnalysis(IModule* module) {
-		return (ILayoutAnalysis *) module;
-	}
+	static ILayoutAnalysis* castILayoutAnalysis(IModule* module);
 
-	static IHtr* castIHtr(IModule* module) {
-		return (IHtr *) module;
-	}
+	static IHtr* castIHtr(IModule* module);
 
-	static IBaseline2Polygon* castIBaseline2Coords(IModule* module) {
-		return (IBaseline2Polygon *) module;
-	}
+	static IBaseline2Polygon* castIBaseline2Coords(IModule* module);
 
-	static ITrainHtr* castITrainHtr(IModule* module) {
-		return (ITrainHtr *) module;
-	}
+	static ITrainHtr* castITrainHtr(IModule* module);
 
 private:
 	static void* loadLibrary(const std::string& pathToLib);

@@ -1,11 +1,8 @@
 
 #pragma once
 
-//#include <iostream>
-#include <ostream>
 #include <string>
-#include <stdexcept>
-//#include <opencv2/opencv.hpp> // diem: this file includes all modules of opencv (which is bad for an interface)
+////#include <opencv2/opencv.hpp> // diem: this file includes all modules of opencv (which is bad for an interface)
 #include <opencv2/core.hpp>
 
 //using namespace std;	// diem: using namespace is not good here - since all modules are using this namespace too

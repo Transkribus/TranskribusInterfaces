@@ -1,5 +1,8 @@
 
 #include "MyLayoutAnalysis.h"
+#include "../Image.h"
+
+#include <iostream>
 
 namespace transkribus {
 

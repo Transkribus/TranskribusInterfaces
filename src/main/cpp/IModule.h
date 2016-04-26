@@ -1,10 +1,7 @@
 
 #pragma once
 
-#include "Image.h"
-
 #include <string>
-#include <vector>
 
 namespace transkribus {
 

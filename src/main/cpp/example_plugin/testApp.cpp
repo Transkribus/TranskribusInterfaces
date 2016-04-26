@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "../ILayoutAnalysis.h"
 #include "../ModuleFactory.h"
+#include "../Image.h"
 
 #ifndef WIN32
 #include <dlfcn.h>

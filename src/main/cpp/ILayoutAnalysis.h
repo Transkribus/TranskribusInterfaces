@@ -1,9 +1,13 @@
 
 #pragma once
 
+#include <vector>
+
 #include "IModule.h"
 
 namespace transkribus {
+
+class Image;
 
 class ILayoutAnalysis : public IModule
 {

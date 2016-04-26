@@ -1,8 +1,15 @@
 
 #include "ModuleFactory.h"
 
+#include "IBaseline2Polygon.h"
+#include "ILayoutAnalysis.h"
+#include "IHtr.h"
+#include "ITrainHtr.h"
+
+
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -87,6 +94,26 @@ IModule* ModuleFactory::createModuleFromLib(const std::string& pathToLib, const 
 }
 
 #endif
+
+ILayoutAnalysis * ModuleFactory::castILayoutAnalysis(IModule * module)
+{
+	return (ILayoutAnalysis *) module;
+}
+
+IHtr * ModuleFactory::castIHtr(IModule * module)
+{
+	return (IHtr *) module;
+}
+
+IBaseline2Polygon * ModuleFactory::castIBaseline2Coords(IModule * module)
+{
+	return (IBaseline2Polygon *) module;
+}
+
+ITrainHtr * ModuleFactory::castITrainHtr(IModule * module)
+{
+	return (ITrainHtr *) module;
+}
 
 //ILayoutAnalysis* PluginFactory::createLayoutAnalysis(const std::string& pathToLib)
 //{

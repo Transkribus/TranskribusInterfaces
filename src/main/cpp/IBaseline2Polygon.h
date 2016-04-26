@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include <iostream>
-#include "Image.h"
 #include "IModule.h"
 
 namespace transkribus {
+
+class Image;
 
 class IBaseline2Polygon : public IModule
 {
