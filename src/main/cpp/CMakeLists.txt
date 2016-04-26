@@ -13,7 +13,7 @@ endif()
 
 set(TI_VERSION_MAJOR 0)
 set(TI_VERSION_MINOR 1)
-# set(TI_VERSION_PATCH 0)
+set(TI_VERSION_PATCH 0)
 set(TI_VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR})
 
 add_definitions(-DTI_VERSION="${TI_VERSION}")
@@ -39,6 +39,17 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 elseif(NOT MSVC)
 	message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+# set output path (also for all subdirectories), so that we do not have to copy the libraries afterwards
+if(MSVC)
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+else()
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/)
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/)	
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/Utils.cmake)
