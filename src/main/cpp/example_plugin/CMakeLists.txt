@@ -36,7 +36,7 @@ message(STATUS "${TI_PLUGIN_NAME} added...")
 
 # add testing exe
 SET(TI_EXAMPLE_NAME Test${TI_PLUGIN_NAME})
-file(GLOB TI_EXAMPLE_SOURCES "TestApp.cpp")
+file(GLOB TI_EXAMPLE_SOURCES "testApp.cpp")
 
 add_executable(${TI_EXAMPLE_NAME} WIN32  MACOSX_BUNDLE ${TI_EXAMPLE_SOURCES})
 target_link_libraries(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY}) 
