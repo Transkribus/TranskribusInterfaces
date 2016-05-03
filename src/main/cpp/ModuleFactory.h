@@ -38,7 +38,7 @@ public:
 
 	virtual ~ModuleFactory() {}
 
-	virtual IModule* create(const std::vector<std::string>& pars) = 0; // diem: this class should be abstract - old: { return NULL; }
+	virtual IModule* create(const std::vector<std::string>& pars) { return NULL; };
 
 	static IModule* createModuleFromLib(const std::string& pathToLib, const std::vector<std::string>& pars);
 
