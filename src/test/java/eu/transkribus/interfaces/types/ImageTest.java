@@ -23,6 +23,8 @@ public class ImageTest {
 				
 				urlImage.createType(Type.OPEN_CV);
 				
+				urlImage.createType(Type.JAVA);
+				
 //				ImageUtils.saveAsFile(urlImage.getImageBufferedImage(), "/tmp/test-" + i + "-java.jpg");
 //				ImageUtils.saveAsFile(urlImage.getImageOpenCVImage(), "/tmp/test-" + i + "-mat.jpg");
 				
