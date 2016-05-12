@@ -35,4 +35,4 @@ mvn install
 
 
 ### Links
-- https://transkribus.eu/TranskribusInterfacces/apidocs/index.html
+- https://transkribus.eu/TranskribusInterfaces/apidocs/index.html
