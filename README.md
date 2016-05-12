@@ -2,12 +2,18 @@
 Interfaces for the Transkribus modules like layout analysis, htr etc.
 
 Directory layout:
-> src/main/java/ -> java interfaces
-> src/main/cpp -> c++ interfaces
-> src/main/swig -> SWIG wrapper implementation for C++ to Java
-> src/main/resources -> shared objects, config files etc.
-> src/test/java -> some java test code
-> src/test/cpp -> some c++ test code
+
+src/main/java/ -> java interfaces
+
+src/main/cpp -> c++ interfaces
+
+src/main/swig -> SWIG wrapper implementation for C++ to Java
+
+src/main/resources -> shared objects, config files etc.
+
+src/test/java -> some java test code
+
+src/test/cpp -> some c++ test code
 
 [![Build Status](http://dbis-halvar.uibk.ac.at/jenkins/buildStatus/icon?job=TranskribusInterfaces)](http://dbis-halvar.uibk.ac.at/jenkins/job/TranskribusInterfaces)
 
