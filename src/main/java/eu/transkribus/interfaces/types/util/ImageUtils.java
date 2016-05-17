@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -214,8 +215,8 @@ public class ImageUtils {
             }
         }
         if (filename == null) {
-            String splits[] = imageUrl.getPath().split("/");
-            filename = splits[splits.length - 1];
+        	String splits[] = imageUrl.getPath().split("/");
+            filename = URLDecoder.decode(splits[splits.length - 1], "UTF-8");
         }
         if (filename == null) {
             filename = "tmp-" + UUID.randomUUID();
