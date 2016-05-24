@@ -69,7 +69,7 @@ public class Image {
 		Object o = getImageObject(type);
 		if (o == null && createIfNecessary) {
 			try {
-				createType(Type.OPEN_CV);
+				createType(type);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
