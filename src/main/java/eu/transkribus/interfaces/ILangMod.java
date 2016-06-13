@@ -11,7 +11,6 @@ import eu.transkribus.interfaces.types.Token;
  *
  * @author gundram
  * 
- *  @deprecated not finalized yet
  */
 public interface ILangMod extends IModule {
 

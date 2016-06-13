@@ -11,7 +11,7 @@ import eu.transkribus.interfaces.types.Image;
  *
  * @author gundram
  */
-public interface IFeatureManipulator extends IModule {
+public interface IFeatureGenerator extends IModule {
 
     public void process(Image image, String pathToFileOut);
 
