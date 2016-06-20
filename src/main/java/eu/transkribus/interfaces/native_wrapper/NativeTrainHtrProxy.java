@@ -12,13 +12,21 @@ public class NativeTrainHtrProxy extends NativeModuleProxy implements ITrainHtr 
 		super(pathToPluginLib, pars);
 		trainHtr = Native_ModuleFactory.castITrainHtr(module);
 	}
-
-	@Override public void trainHtr(String pathToModelsIn, String pathToModelsOut, String[] props, String inputDir) {
-		trainHtr.trainHtr(pathToModelsIn, pathToModelsOut, NativeProxyUtils.toStringVector(props), inputDir);
-	}
-
+	
 	@Override public void createTrainData(String[] pageXmls, String outputDir, String[] props) {
 		trainHtr.createTrainData(NativeProxyUtils.toStringVector(pageXmls), outputDir, NativeProxyUtils.toStringVector(props));
+	}
+
+	@Override
+	public void trainHtr(String pathToModelsIn, String pathToModelsOut, String inputTrainDir, String inputValDir,
+			String[] props) {
+		trainHtr.trainHtr(pathToModelsIn, pathToModelsOut, inputTrainDir, inputValDir, NativeProxyUtils.toStringVector(props));
+		
+	}
+
+	@Override
+	public void createHtr(String pathToModelsOut, String pathToCharMapFile, String[] props) {
+		trainHtr.createHtr(pathToModelsOut, pathToCharMapFile, NativeProxyUtils.toStringVector(props));
 	}
 	
 	
