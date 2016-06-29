@@ -17,4 +17,8 @@ public interface IFeatureGenerator extends IModule {
 
     public void process(String pathToFileIn, String pathToFileOut);
 
+    public void process(Image image, String pathToFileOut, String[] props);
+
+    public void process(String pathToFileIn, String pathToFileOut, String[] props);
+
 }
