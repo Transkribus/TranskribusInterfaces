@@ -34,7 +34,7 @@ public interface ITrainHtr extends IModule {
      */
     public void createHtr(
             String pathToModelsOut,
-            String pathToCharMapFile,
+            String pathToCharacterMap,
             String[] props);
 
     /*
@@ -44,6 +44,7 @@ public interface ITrainHtr extends IModule {
     public void createTrainData(
             String[] pageXmls,
             String outputDir,
+            String pathToCharacterMap,
             String[] props);
 
 }
