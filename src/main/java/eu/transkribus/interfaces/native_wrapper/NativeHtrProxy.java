@@ -15,18 +15,18 @@ public class NativeHtrProxy extends NativeModuleProxy implements IHtr {
         super(pathToPluginLib, pars);
         htr = Native_ModuleFactory.castIHtr(module);
     }
-    
+
     @Override
     public void process(
-        String pathToOpticalModel,
-        String pathToLanguageModel,
-        String pathToCharacterMap,
-        Image image, 
-        String xmlInOut, 
-        String storageDir, 
-        String[] lineIds,
-        String[] props 
-        ){
+            String pathToOpticalModel,
+            String pathToLanguageModel,
+            String pathToCharacterMap,
+            Image image,
+            String xmlInOut,
+            String storageDir,
+            String[] lineIds,
+            String[] props
+    ) {
         try {
             htr.process(pathToOpticalModel, pathToLanguageModel, pathToCharacterMap, NativeProxyUtils.toNativeImage(image), xmlInOut, storageDir, NativeProxyUtils.toStringVector(lineIds), NativeProxyUtils.toStringVector(props));
         } catch (IOException e) {
