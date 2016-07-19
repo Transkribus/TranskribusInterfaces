@@ -38,11 +38,13 @@ public class transkribus_interfacesJNI {
   public final static native void delete_Native_ILayoutAnalysis(long jarg1);
   public final static native void Native_ILayoutAnalysis_process(long jarg1, Native_ILayoutAnalysis jarg1_, long jarg2, Native_Image jarg2_, String jarg3, long jarg4, StringVector jarg4_, long jarg5, StringVector jarg5_);
   public final static native void delete_Native_IHtr(long jarg1);
-  public final static native void Native_IHtr_createModel(long jarg1, Native_IHtr jarg1_, String jarg2, long jarg3, StringVector jarg3_);
-  public final static native void Native_IHtr_process(long jarg1, Native_IHtr jarg1_, String jarg2, long jarg3, Native_Image jarg3_, String jarg4, String jarg5, long jarg6, StringVector jarg6_, long jarg7, StringVector jarg7_);
+//  public final static native void Native_IHtr_createModel(long jarg1, Native_IHtr jarg1_, String jarg2, long jarg3, StringVector jarg3_);
+//  public final static native void Native_IHtr_process(long jarg1, Native_IHtr jarg1_, String jarg2, long jarg3, Native_Image jarg3_, String jarg4, String jarg5, long jarg6, StringVector jarg6_, long jarg7, StringVector jarg7_);
+  public final static native void Native_IHtr_process(long jarg1, Native_IHtr jarg1_, String jarg2, String jarg3, String jarg4, long jarg5, Native_Image jarg5_, String jarg6, String jarg7, long jarg8, StringVector jarg8_, long jarg9, StringVector jarg9_);
   public final static native void delete_Native_ITrainHtr(long jarg1);
   public final static native void Native_ITrainHtr_trainHtr(long jarg1, Native_ITrainHtr jarg1_, String jarg2, String jarg3, String jarg4, String jarg5, long jarg6, StringVector jarg6_);
-  public final static native void Native_ITrainHtr_createTrainData(long jarg1, Native_ITrainHtr jarg1_, long jarg2, StringVector jarg2_, String jarg3, long jarg4, StringVector jarg4_);
+//  public final static native void Native_ITrainHtr_createTrainData(long jarg1, Native_ITrainHtr jarg1_, long jarg2, StringVector jarg2_, String jarg3, long jarg4, StringVector jarg4_);
+  public final static native void Native_ITrainHtr_createTrainData(long jarg1, Native_ITrainHtr jarg1_, long jarg2, StringVector jarg2_, String jarg3, String jarg4, long jarg5, StringVector jarg5_);
   public final static native void Native_ITrainHtr_createHtr(long jarg1, Native_ITrainHtr jarg1_, String jarg2, String jarg3, long jarg4, StringVector jarg4_);
   public final static native String Native_ModuleFactory_FACTORY_VARIABLE_NAME_get();
   public final static native void delete_Native_ModuleFactory(long jarg1);
