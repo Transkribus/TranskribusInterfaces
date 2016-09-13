@@ -10,20 +10,27 @@ import java.io.File;
 import eu.transkribus.interfaces.types.Image;
 
 /**
- * This tool can be used to match a (ASCII-)transcription to given
- * baselines.<br\>
+ * This tool can be used to match a (ASCII-)transcription to given baselines and
+ * words.<br\>
  * INPUT:<br/>
- * Text-file: The UTF-8-coded text-file (diplomatic text) where U+000A ('LINE
- * FEED (LF)') denotes a new line.<br/>
- * PageXML-file: The PageXML-file have to contain baselines with its
+ * Text-file(s): The UTF-8-coded text-file(s) (diplomatic text) where U+000A
+ * ('LINE FEED (LF)') denotes a new line.<br/>
+ * PageXML-file(s): The PageXML-file(s) have to contain baselines with its
  * corresponding surrounding polygon.<br/>
- * Image: The image corresponding to the PageXML-file.<br/>
- * Models: pathes to Optical and Language Model.<br/>
+ * Image: The image corresponding to the PageXML-file or a List of pathes to
+ * Images<br/>
+ * Models: pathes to Optical and Language Model. These Models are optional<br/>
  * CharMap: In many cases the models cannot handle all characters from the
  * transcription text. The CharMap can be used to allocate specific character to
- * existing channels.<br/>
+ * existing channels. The CharMap is optional<br/>
  * Properties: When the algorithm has some Properties/Thresholds, this structure
- * can be used to set them.
+ * can be used to set them. If props has the property "words:=true", an
+ * alignment on word-level is done.<br/>
+ * Region IDs: If the algorithm should only work on specific regions, the
+ * region_id of the PageXML file can be given.
+ * <br/>
+ * If a match is found, the algorithm tries to calculate a confidence of this
+ * match. This confidence is saved in the TextEquiv-tag as "conf".
  *
  *
  * @author gundram
@@ -31,27 +38,73 @@ import eu.transkribus.interfaces.types.Image;
 public interface IText2Image extends IModule {
 
     /**
-     * in URO-CITlab this is done by an MDRNN (sprnn). Output in this case would
-     * be a Confidence-Matrix.
+     * The methods tries to align a given text to a whole Collection. It is
+     * assumed that the text (pathToText) has no page breaks, Line breaks are
+     * optional
      *
-     * @param pathToOpticalModel is either path to serialized RNN or path to
-     * GMM/HMM.
-     * @param pathToLanguageModel is either path to ARPA-file or other language
-     * resource file.
-     * @param pathToCharacterMap is path to character map file (TODO: add link
-     * to file description)
-     * @param pathToText is path to an UTF-8 coded text file
-     * @param image
-     * @param xmlInOut
-     * @param props set of parameters for recognition (has to be documented)
+     * @param pathToOpticalModel
+     * @param pathToLanguageModel
+     * @param pathToCharacterMap
+     * @param pathToText
+     * @param images has to be from same size as xmlInOut
+     * @param xmlInOut has to be from same size as images
+     * @param props
      */
-    public void match(
+    public void matchCollection(
             String pathToOpticalModel,
             String pathToLanguageModel,
             String pathToCharacterMap,
             String pathToText,
-            Image image,
+            String[] images,
+            String[] xmlInOut,
+            String[] props
+    );
+
+    /**
+     * This method tries to align one text (with or without line breaks) to a
+     * given image.
+     *
+     * @param pathToOpticalModel
+     * @param pathToLanguageModel
+     * @param pathToCharacterMap
+     * @param pathToText
+     * @param images
+     * @param xmlInOut
+     * @param regionIds
+     * @param props
+     */
+    public void matchImage(
+            String pathToOpticalModel,
+            String pathToLanguageModel,
+            String pathToCharacterMap,
+            String pathToText,
+            Image images,
             String xmlInOut,
+            String[] regionIds,
+            String[] props
+    );
+
+    /**
+     * This method tries to match a set of transcriptions to a set of regions.
+     * The length of pathToText has to fit the length of regionIds.
+     *
+     * @param pathToOpticalModel
+     * @param pathToLanguageModel
+     * @param pathToCharacterMap
+     * @param pathToText
+     * @param images
+     * @param xmlInOut
+     * @param regionIds
+     * @param props
+     */
+    public void matchRegions(
+            String pathToOpticalModel,
+            String pathToLanguageModel,
+            String pathToCharacterMap,
+            String[] pathToText,
+            String images,
+            String xmlInOut,
+            String[] regionIds,
             String[] props
     );
 
