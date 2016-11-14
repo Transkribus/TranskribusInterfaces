@@ -17,23 +17,25 @@ import eu.transkribus.interfaces.types.Image;
  */
 public interface IHtr extends IModule{
 	
-	public void createModel(String path, String[] pars);
+//	public void createModel(String path, String[] pars);
 
     /**
      * in URO-CITlab this is done by an MDRNN (sprnn). Output in this case would
      * be a Confidence-Matrix.
      *
-     * @param pathToModels is either path to serialized RNN or path to directory with HMM/LM/etc.
+     * @param pathToOpticalModel is either path to serialized RNN or path to GMM/HMM.
+     * @param pathToLanguageModel is either path to ARPA-file or other language resource file.
+     * @param pathToCharacterMap is path to character map file (TODO: add link to file description)
      * @param image
-     * @param pageXmlIn
-     * @param pageXmlOut
+     * @param xmlInOut
      * @param storageDir
-     * @param props set of parameters for recognition (has to be documented)
      * @param lineIds 
-     * @return
+     * @param props set of parameters for recognition (has to be documented)
      */
     public void process(
-        String pathToModels,
+        String pathToOpticalModel,
+        String pathToLanguageModel,
+        String pathToCharacterMap,
         Image image, 
         String xmlInOut, 
         String storageDir, 

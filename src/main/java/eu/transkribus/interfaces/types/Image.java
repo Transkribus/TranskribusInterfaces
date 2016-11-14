@@ -8,7 +8,6 @@ package eu.transkribus.interfaces.types;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +68,7 @@ public class Image {
 		Object o = getImageObject(type);
 		if (o == null && createIfNecessary) {
 			try {
-				createType(Type.OPEN_CV);
+				createType(type);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

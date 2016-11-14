@@ -5,21 +5,28 @@ import eu.transkribus.interfaces.native_wrapper.swig.Native_ITrainHtr;
 import eu.transkribus.interfaces.native_wrapper.swig.Native_ModuleFactory;
 
 public class NativeTrainHtrProxy extends NativeModuleProxy implements ITrainHtr {
-	
-	Native_ITrainHtr trainHtr;
-	
-	public NativeTrainHtrProxy(String pathToPluginLib, String[] pars) {
-		super(pathToPluginLib, pars);
-		trainHtr = Native_ModuleFactory.castITrainHtr(module);
-	}
 
-	@Override public void trainHtr(String pathToModelsIn, String pathToModelsOut, String[] props, String inputDir) {
-		trainHtr.trainHtr(pathToModelsIn, pathToModelsOut, NativeProxyUtils.toStringVector(props), inputDir);
-	}
+    Native_ITrainHtr trainHtr;
 
-	@Override public void createTrainData(String[] pageXmls, String outputDir, String[] props) {
-		trainHtr.createTrainData(NativeProxyUtils.toStringVector(pageXmls), outputDir, NativeProxyUtils.toStringVector(props));
-	}
-	
-	
+    public NativeTrainHtrProxy(String pathToPluginLib, String[] pars) {
+        super(pathToPluginLib, pars);
+        trainHtr = Native_ModuleFactory.castITrainHtr(module);
+    }
+
+    @Override
+    public void createTrainData(String[] pageXmls, String outputDir, String pathToCharacterMap, String[] props) {
+        trainHtr.createTrainData(NativeProxyUtils.toStringVector(pageXmls), outputDir, pathToCharacterMap, NativeProxyUtils.toStringVector(props));
+    }
+
+    @Override
+    public void trainHtr(String pathToModelsIn, String pathToModelsOut, String inputTrainDir, String inputValDir, String[] props) {
+        trainHtr.trainHtr(pathToModelsIn, pathToModelsOut, inputTrainDir, inputValDir, NativeProxyUtils.toStringVector(props));
+
+    }
+
+    @Override
+    public void createHtr(String pathToModelsOut, String pathToCharMapFile, String[] props) {
+        trainHtr.createHtr(pathToModelsOut, pathToCharMapFile, NativeProxyUtils.toStringVector(props));
+    }
+
 }
