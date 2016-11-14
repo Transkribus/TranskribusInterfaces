@@ -11,6 +11,7 @@ namespace transkribus {
 class MyLayoutAnalysis : public ILayoutAnalysis
 {
 public:
+
 	MyLayoutAnalysis();
 
 	virtual ~MyLayoutAnalysis();
