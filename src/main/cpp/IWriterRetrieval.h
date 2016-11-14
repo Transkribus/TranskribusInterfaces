@@ -21,13 +21,13 @@ public:
 	/// Processes the WR feature for one images and writes it to the PAGE XML.
 	/// </summary>
 	/// <param name="image">The image.</param>
-	/// <param name="xmlInOut">The XML input (regions) and output (feature).</param>
+	/// <param name="xmlInOut">The XML input (regions).</param>
 	/// <param name="ids">The settings IDs.</param>
 	/// <param name="props">The settings values.</param>
-	/// <returns>true if the process finished without errors.</returns>
-	virtual bool process(
+	/// <returns>feature vector with comma separated values.</returns>
+	virtual std::string process(
 		const Image& image, 
-		const std::string& xmlInOut, 
+		const std::string& xmlIn, 
 		const std::vector<std::string>& ids = std::vector<std::string>(), 
 		const std::vector<std::string>& props = std::vector<std::string>()) = 0;
 
