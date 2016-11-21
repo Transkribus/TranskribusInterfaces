@@ -115,6 +115,10 @@ ITrainHtr * ModuleFactory::castITrainHtr(IModule * module)
 	return (ITrainHtr *) module;
 }
 
+IWriterRetrieval * ModuleFactory::castIWriterRetrieval(IModule * module) {
+	return (IWriterRetrieval *)module;
+}
+
 //ILayoutAnalysis* PluginFactory::createLayoutAnalysis(const std::string& pathToLib)
 //{
 //	LayoutAnalysisFactory* factory;

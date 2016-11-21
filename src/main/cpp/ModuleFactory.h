@@ -30,6 +30,7 @@ class ILayoutAnalysis;
 class IHtr;
 class IBaseline2Polygon;
 class ITrainHtr;
+class IWriterRetrieval;
 
 class TiExport ModuleFactory
 {
@@ -51,6 +52,8 @@ public:
 	static IBaseline2Polygon* castIBaseline2Coords(IModule* module);
 
 	static ITrainHtr* castITrainHtr(IModule* module);
+
+	static IWriterRetrieval* castIWriterRetrieval(IModule* module);
 
 private:
 	static void* loadLibrary(const std::string& pathToLib);

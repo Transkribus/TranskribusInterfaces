@@ -74,9 +74,14 @@ TI_CREATE_TARGETS()
 
 # add test plugin
 option(WITH_TEST_PLUGIN "WITH TEST PLUGIN" OFF)
+option(WITH_WRITERRETRIEVAL "WITH WRITER RETRIEVAL" OFF)
 
 if (WITH_TEST_PLUGIN)
 	add_subdirectory(example_plugin)
+endif()
+
+if (WITH_WRITERRETRIEVAL)
+	add_subdirectory(writerretrieval_plugin)
 endif()
 
 if (MSVC)
