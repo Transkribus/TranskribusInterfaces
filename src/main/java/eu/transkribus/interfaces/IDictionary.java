@@ -1,7 +1,6 @@
 package eu.transkribus.interfaces;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+//import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
@@ -29,4 +28,12 @@ public interface IDictionary {
     public Collection<IEntry> getEntries();
     public IEntry getEntry(String key) throws NoSuchElementException;
     public Collection<IEntry> getEntriesByValue(String name) throws NoSuchElementException;
+
+    /**
+     * should return strings that could be parsed
+     * by TranskribusCore to instances of CostumTags.
+     * @param entry
+     * @return null if on tags available, a String for each tag otherwise
+     */
+    public String[] getTags(IEntry entry);
 }
