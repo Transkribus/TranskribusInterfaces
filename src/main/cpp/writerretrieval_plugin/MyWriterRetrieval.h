@@ -4,6 +4,7 @@
 #include "../IWriterRetrieval.h"		// diem: the include directory should be added to the project rather than using relative includes
 #include "../ModuleFactory.h"
 
+#pragma warning(disable: 4251)	// dll interface
 
 namespace transkribus {
 

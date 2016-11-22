@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "WriterRetrieval.h"
+
 namespace transkribus {
 
 
@@ -41,11 +43,11 @@ const std::string MyWriterRetrieval::usage() const {
 }
 
 const std::string MyWriterRetrieval::getToolName() const {
-	return std::string("MyToolName");
+	return std::string("Writer Retrieval");
 }
 
 const std::string MyWriterRetrieval::getVersion() const {
-	return std::string("MyVersion");
+	return std::string("0.0.1");
 }
 
 const std::string MyWriterRetrieval::getProvider() const {
