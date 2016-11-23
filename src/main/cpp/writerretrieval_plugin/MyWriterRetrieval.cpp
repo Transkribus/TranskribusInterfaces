@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "WriterRetrieval.h"
+#include "WriterDatabase.h"
 
 namespace transkribus {
 
@@ -22,12 +23,24 @@ std::string MyWriterRetrieval::process(const Image& image, const std::string& xm
 	std::cout << "MyWriterRetrieval, process, xmlIn =  " << xmlIn << std::endl;
 	std::cout << image << std::endl;
 
+	rdf::WriterRetrieval wr = rdf::WriterRetrieval();
+	wr.setImage(image.mat());
+	wr.calculateFeatures();
+
+	rdf::WriterVocabulary wv = rdf::WriterVocabulary(); // TODO load the correct Voc
+	cv::Mat feature = wv.generateHist(wr.descriptors());
+	
+	// TODO convert features to comma seperated string
+
 	return "";
 }
 
 Image MyWriterRetrieval::distances(const Image& features,
 								   const std::vector<std::string>& ids,
 								   const std::vector<std::string>& props) {
+
+
+
 	return Image();
 }
 
