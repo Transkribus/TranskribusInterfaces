@@ -1,10 +1,5 @@
 PROJECT(MyWriterRetrieval)
 
-IF(EXISTS ${CMAKE_SOURCE_DIR}/../CMakeUser.cmake)
-	include(${CMAKE_SOURCE_DIR}/../CMakeUser.cmake)
-ENDIF()
-
-
 SET(PLUGIN_VERSION "0.0.1")
 add_definitions(-DPLUGIN_VERSION="${PLUGIN_VERSION}")
 
