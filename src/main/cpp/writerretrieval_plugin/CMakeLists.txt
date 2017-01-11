@@ -25,8 +25,8 @@ include_directories (
 	${RDF_INCLUDE_DIRECTORY}
 )
 
-file(GLOB TI_PLUGIN_SOURCES "MyWriterRetrieval.cpp")
-file(GLOB TI_PLUGIN_HEADERS "MyWriterRetrieval.h")
+file(GLOB TI_INTERFACE_SOURCES "MyWriterRetrieval.cpp")
+file(GLOB TI_INTERFACE_HEADERS "MyWriterRetrieval.h")
 
 file(GLOB TI_TEST_SOURCES "testApp.cpp")
 

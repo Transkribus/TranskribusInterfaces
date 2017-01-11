@@ -12,7 +12,8 @@ macro(TI_CREATE_TARGETS)
 
 	# add interface
 	add_library(${TI_INTERFACE_NAME} SHARED ${TI_INTERFACE_SOURCES} ${TI_INTERFACE_HEADERS})
-	target_link_libraries(${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY})
+	target_link_libraries(${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces ${RDF_LIBS})
+	add_dependencies(${TI_INTERFACE_NAME} TranskribusInterfaces)
 
 	# interface flags
 	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs)
@@ -35,12 +36,15 @@ macro(TI_CREATE_TARGETS)
 
 	# add test
 	add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
-	target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY})
+	target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces)
 	set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
-	add_dependencies(${TI_TEST_NAME} ${TI_INTERFACE_NAME})
+	add_dependencies(${TI_TEST_NAME} ${TI_INTERFACE_NAME} TranskribusInterfaces)
 	
 	target_include_directories(${TI_INTERFACE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 	target_include_directories(${TI_TEST_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
+	
+	qt5_use_modules(${TI_INTERFACE_NAME} 		Core)
+	qt5_use_modules(${TI_TEST_NAME} 		Core)
 	
 	if (MSVC)
 		### DependencyCollector

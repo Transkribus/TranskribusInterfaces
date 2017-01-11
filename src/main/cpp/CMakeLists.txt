@@ -61,6 +61,7 @@ endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Utils.cmake)
 
 TI_FIND_OPENCV()
+TI_FIND_QT()
 TI_FIND_CURL()
 
 file(GLOB TI_TEST_SOURCES "test_image/*.cpp")
@@ -76,9 +77,27 @@ include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}/test_image
 )
 
-TI_CREATE_TARGETS()
+# do not use TI_CREATE_TARGETS macro here because these targets link against this interface
+#
+# add interface
+add_library(${PROJECT_NAME} SHARED ${TI_INTERFACE_SOURCES} ${TI_INTERFACE_HEADERS})
+target_include_directories(${PROJECT_NAME} 	PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY})
+# interface flags
+set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs)
+set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/libs)
+set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/libs)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+# add test program
+set(TI_TEST_NAME "Test${PROJECT_NAME}")
+add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
+target_include_directories(${TI_TEST_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} ${PROJECT_NAME})
+set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+add_dependencies(${TI_TEST_NAME} ${PROJECT_NAME})
 
-# add test plugin
+
+# add plugins
 option(WITH_TEST_PLUGIN "WITH TEST PLUGIN" OFF)
 option(WITH_WRITERRETRIEVAL "WITH WRITER RETRIEVAL" OFF)
 

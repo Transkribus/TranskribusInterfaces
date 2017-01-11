@@ -1,8 +1,9 @@
 #include <iostream>
 #include <stdexcept>
-#include "../IWriterRetrieval.h"
-#include "../ModuleFactory.h"
-#include "../Image.h"
+#include "IWriterRetrieval.h"
+#include "ModuleFactory.h"
+#include "Image.h"
+#include "Utils.h"
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -17,6 +18,9 @@ void* loadLibrary(std::string& libName);
 void test();
 
 int main(int argc, char** argv) {
+	
+	rdf::Utils::initDefaultFramework();
+
 	test();
 	test();
 
@@ -55,7 +59,6 @@ void test() {
 #else
 
 void test() {
-
 	transkribus::IWriterRetrieval* wr;
 
 	std::string libName("MyWriterRetrieval.dll");
