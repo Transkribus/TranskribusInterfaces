@@ -60,8 +60,11 @@ void test() {
 
 void test() {
 	transkribus::IWriterRetrieval* wr;
-
+#ifdef _DEBUG
+	std::string libName("MyWriterRetrievald.dll");
+#else
 	std::string libName("MyWriterRetrieval.dll");
+#endif
 
 	//transkribus::Image image("C:/temp/test.jpg");
 	transkribus::Image image("D:/Databases/icdar2011/cropped/1-1.png");

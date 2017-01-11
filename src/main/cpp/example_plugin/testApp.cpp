@@ -58,8 +58,12 @@ void test() {
 
 	transkribus::ILayoutAnalysis* la;
 
+	
+#ifdef _DEBUG
+	std::string libName("MyLayoutAnalysisd.dll");
+#else
 	std::string libName("MyLayoutAnalysis.dll");
-
+#endif
 	transkribus::Image image("C:/temp/test.jpg");
 
 	std::vector<std::string> constructorPars;

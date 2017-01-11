@@ -23,9 +23,8 @@ std::string MyWriterRetrieval::process(const Image& image, const std::string& xm
 	std::cout << "MyWriterRetrieval, process, xmlIn =  " << xmlIn << std::endl;
 	std::cout << image << std::endl;
 
-	QSharedPointer<rdf::WriterRetrievalConfig> wrc = QSharedPointer<rdf::WriterRetrievalConfig>::create();
+	QSharedPointer<rdf::WriterRetrievalConfig> wrc = QSharedPointer<rdf::WriterRetrievalConfig>(new rdf::WriterRetrievalConfig());
 	wrc->loadSettings();
-
 
 	rdf::WriterRetrieval wr = rdf::WriterRetrieval(image.mat());
 	wr.setConfig(wrc);
