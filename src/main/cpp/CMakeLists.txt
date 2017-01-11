@@ -90,10 +90,6 @@ if (WITH_WRITERRETRIEVAL)
 	add_subdirectory(writerretrieval_plugin)
 endif()
 
-if (MSVC)
-	TI_USE_DEPENDENCY_COLLECTOR()
-endif()
-
 #debug for printing out all variables 
 # get_cmake_property(_variableNames VARIABLES)
 # foreach (_variableName ${_variableNames})

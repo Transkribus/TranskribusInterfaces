@@ -21,6 +21,9 @@ macro(TI_CREATE_TARGETS)
 
 	if(MSVC) # linux does not need this
 		set_target_properties(${TI_INTERFACE_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+	else() # enable soname
+    set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR}.${TI_VERSION_PATCH})
+    set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
 	endif()
 	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES DEBUG_OUTPUT_NAME ${TI_INTERFACE_NAME}d)
 	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES RELEASE_OUTPUT_NAME ${TI_INTERFACE_NAME})
@@ -34,9 +37,30 @@ macro(TI_CREATE_TARGETS)
 	add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
 	target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY})
 	set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+	add_dependencies(${TI_TEST_NAME} ${TI_INTERFACE_NAME})
 	
 	target_include_directories(${TI_INTERFACE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 	target_include_directories(${TI_TEST_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
+	
+	if (MSVC)
+		### DependencyCollector
+		set(DC_SCRIPT ${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.py)
+		set(DC_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/DependencyCollector.ini)
+
+		GET_FILENAME_COMPONENT(VS_PATH ${CMAKE_LINKER} PATH)
+		if(CMAKE_CL_64)
+			SET(VS_PATH "${VS_PATH}/../../../Common7/IDE/Remote Debugger/x64")
+		else()
+			SET(VS_PATH "${VS_PATH}/../../Common7/IDE/Remote Debugger/x86")
+		endif()
+		SET(DC_PATHS_RELEASE ${OpenCV_DIR}/bin/Release ${QT_QMAKE_PATH} ${VS_PATH} ${ReadFramework_DIR}/Release)
+		SET(DC_PATHS_DEBUG ${OpenCV_DIR}/bin/Debug ${QT_QMAKE_PATH} ${VS_PATH} ${ReadFramework_DIR}/Debug)
+
+		configure_file(${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.config.cmake.in ${DC_CONFIG})
+		
+		add_custom_command(TARGET ${TI_INTERFACE_NAME} POST_BUILD COMMAND ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
+		add_custom_command(TARGET ${TI_TEST_NAME} POST_BUILD COMMAND ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
+	endif(MSVC)
 endmacro(TI_CREATE_TARGETS)
 
 # Searches for OpenCV
@@ -150,22 +174,3 @@ macro(TI_FIND_CURL)
 			message(STATUS "building without cURL")
 	endif() # WITH_CURL
 endmacro(TI_FIND_CURL)
-
-macro(TI_USE_DEPENDENCY_COLLECTOR)
-		### DependencyCollector
-		set(DC_SCRIPT ${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.py)
-		set(DC_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/DependencyCollector.ini)
-
-		GET_FILENAME_COMPONENT(VS_PATH ${CMAKE_LINKER} PATH)
-		if(CMAKE_CL_64)
-			SET(VS_PATH "${VS_PATH}/../../../Common7/IDE/Remote Debugger/x64")
-		else()
-			SET(VS_PATH "${VS_PATH}/../../Common7/IDE/Remote Debugger/x86")
-		endif()
-		SET(DC_PATHS_RELEASE ${OpenCV_DIR}/bin/Release ${QT_QMAKE_PATH} ${VS_PATH} ${ReadFramework_DIR}/Release)
-		SET(DC_PATHS_DEBUG ${OpenCV_DIR}/bin/Debug ${QT_QMAKE_PATH} ${VS_PATH} ${ReadFramework_DIR}/Debug)
-
-		configure_file(${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.config.cmake.in ${DC_CONFIG})
-		
-		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
-endmacro(TI_USE_DEPENDENCY_COLLECTOR)
