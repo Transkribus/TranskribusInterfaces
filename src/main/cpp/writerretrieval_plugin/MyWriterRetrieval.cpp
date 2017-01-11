@@ -23,12 +23,15 @@ std::string MyWriterRetrieval::process(const Image& image, const std::string& xm
 	std::cout << "MyWriterRetrieval, process, xmlIn =  " << xmlIn << std::endl;
 	std::cout << image << std::endl;
 
-	rdf::WriterRetrieval wr = rdf::WriterRetrieval();
-	wr.setImage(image.mat());
-	wr.calculateFeatures();
+	QSharedPointer<rdf::WriterRetrievalConfig> wrc = QSharedPointer<rdf::WriterRetrievalConfig>::create();
+	wrc->loadSettings();
 
-	rdf::WriterVocabulary wv = rdf::WriterVocabulary(); // TODO load the correct Voc
-	cv::Mat feature = wv.generateHist(wr.descriptors());
+
+	rdf::WriterRetrieval wr = rdf::WriterRetrieval(image.mat());
+	wr.setConfig(wrc);
+	wr.compute();
+
+	cv::Mat feature = wr.getFeature();
 	
 	// TODO convert features to comma seperated string
 
@@ -56,7 +59,7 @@ const std::string MyWriterRetrieval::usage() const {
 }
 
 const std::string MyWriterRetrieval::getToolName() const {
-	return std::string("Writer Retrieval");
+	return std::string("WriterRetrieval");
 }
 
 const std::string MyWriterRetrieval::getVersion() const {

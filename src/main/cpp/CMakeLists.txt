@@ -58,7 +58,7 @@ else()
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/)
 endif()
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/Utils.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Utils.cmake)
 
 TI_FIND_OPENCV()
 TI_FIND_CURL()
@@ -91,7 +91,7 @@ if (WITH_WRITERRETRIEVAL)
 endif()
 
 if (MSVC)
-	TI_COPY_DLLS()
+	TI_USE_DEPENDENCY_COLLECTOR()
 endif()
 
 #debug for printing out all variables 

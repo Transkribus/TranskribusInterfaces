@@ -151,33 +151,21 @@ macro(TI_FIND_CURL)
 	endif() # WITH_CURL
 endmacro(TI_FIND_CURL)
 
-macro(TI_COPY_DLLS)
-	IF (WITH_HIGHGUI)
-		set(ti_all_cv_libs ${OpenCV_LIBS} opencv_imgproc310 opencv_imgcodecs310 opencv_videoio310)
-	ELSE ()
-		set(ti_all_cv_libs ${OpenCV_LIBS})
-	ENDIF()
+macro(TI_USE_DEPENDENCY_COLLECTOR)
+		### DependencyCollector
+		set(DC_SCRIPT ${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.py)
+		set(DC_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/DependencyCollector.ini)
 
-	# copy required opencv dlls to the directories
-	foreach(opencvlib ${ti_all_cv_libs})
-		file(GLOB dllpath ${OpenCV_DIR}/bin/Release/${opencvlib}*.dll)
-		file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
-		file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo)
+		GET_FILENAME_COMPONENT(VS_PATH ${CMAKE_LINKER} PATH)
+		if(CMAKE_CL_64)
+			SET(VS_PATH "${VS_PATH}/../../../Common7/IDE/Remote Debugger/x64")
+		else()
+			SET(VS_PATH "${VS_PATH}/../../Common7/IDE/Remote Debugger/x86")
+		endif()
+		SET(DC_PATHS_RELEASE ${OpenCV_DIR}/bin/Release ${QT_QMAKE_PATH} ${VS_PATH} ${ReadFramework_DIR}/Release)
+		SET(DC_PATHS_DEBUG ${OpenCV_DIR}/bin/Debug ${QT_QMAKE_PATH} ${VS_PATH} ${ReadFramework_DIR}/Debug)
 
-		file(GLOB dllpath ${OpenCV_DIR}/bin/Debug/${opencvlib}*d.dll)
-		file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
-		message(STATUS "${dllpath} copied...")
-	endforeach(opencvlib)
-
-	IF (WITH_CURL)
-
-		# copy required cURL dll(s) to the directories
-		file(GLOB dllpath ${CURL_BUILD_DIR}/lib/Release/*.dll)
-		file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
-		file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo)
-
-		file(GLOB dllpath ${CURL_BUILD_DIR}/lib/Debug/*.dll)
-		file(COPY ${dllpath} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
-		message(STATUS "${dllpath} copied...")
-	ENDIF()
-endmacro(TI_COPY_DLLS)
+		configure_file(${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.config.cmake.in ${DC_CONFIG})
+		
+		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
+endmacro(TI_USE_DEPENDENCY_COLLECTOR)

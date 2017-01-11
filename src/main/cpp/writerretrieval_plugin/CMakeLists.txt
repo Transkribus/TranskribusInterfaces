@@ -4,8 +4,6 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/../CMakeUser.cmake)
 	include(${CMAKE_SOURCE_DIR}/../CMakeUser.cmake)
 ENDIF()
 
-# include macros needed
-include("${CMAKE_CURRENT_SOURCE_DIR}/../Utils.cmake")
 
 SET(PLUGIN_VERSION "0.0.1")
 add_definitions(-DPLUGIN_VERSION="${PLUGIN_VERSION}")
@@ -54,11 +52,6 @@ set_target_properties(${TI_EXAMPLE_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSO
 
 add_dependencies(${TI_EXAMPLE_NAME} ${TI_INTERFACE_NAME})
 
-if (MSVC)
-	TI_COPY_DLLS()
+if(MSVC)
+	TI_USE_DEPENDENCY_COLLECTOR()
 endif()
-
-# get_cmake_property(_variableNames VARIABLES)
-# foreach (_variableName ${_variableNames})
-#    message(STATUS "${_variableName}=${${_variableName}}")
-# endforeach()

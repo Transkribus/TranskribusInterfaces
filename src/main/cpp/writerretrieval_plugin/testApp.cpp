@@ -60,7 +60,8 @@ void test() {
 
 	std::string libName("MyWriterRetrieval.dll");
 
-	transkribus::Image image("C:/temp/test.jpg");
+	//transkribus::Image image("C:/temp/test.jpg");
+	transkribus::Image image("D:/Databases/icdar2011/cropped/1-1.png");
 
 	std::vector<std::string> constructorPars;
 	try {
