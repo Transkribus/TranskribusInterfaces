@@ -5,6 +5,8 @@
 #include "Image.h"
 #include "Utils.h"
 
+#include <QCoreApplication>
+
 #ifndef WIN32
 #include <dlfcn.h>
 #endif
@@ -20,6 +22,7 @@ void test();
 int main(int argc, char** argv) {
 	
 	rdf::Utils::initDefaultFramework();
+	QCoreApplication app(argc, (char**)argv);
 
 	test();
 	test();
@@ -72,7 +75,7 @@ void test() {
 	std::vector<std::string> constructorPars;
 	try {
 		transkribus::IModule* module = transkribus::ModuleFactory::createModuleFromLib(libName, constructorPars);
-		wr = transkribus::ModuleFactory::castIWriterRetrieval(module);
+		wr = transkribus::ModuleFactory::castIWriterRetrieval(module); 
 
 		std::vector<std::string> ids;
 		std::vector<std::string> props;
