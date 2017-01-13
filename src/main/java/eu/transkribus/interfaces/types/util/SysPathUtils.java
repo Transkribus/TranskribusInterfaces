@@ -13,8 +13,8 @@ import java.util.List;
  *
  */
 public class SysPathUtils {
-	public static String OS_NAME = System.getProperty("os.name").toLowerCase();
-	public static String PATH_VAR_SEPERATOR = isWindows() ? ";" : ":";
+	public static final String OS_NAME = System.getProperty("os.name").toLowerCase();
+	public static final String PATH_VAR_SEPERATOR = isWindows() ? ";" : ":";
 	
 	public static boolean isWindows() {
 		return (OS_NAME.indexOf("win") >= 0);
@@ -37,6 +37,31 @@ public class SysPathUtils {
     	return path==null ? "" : path;
     }
     
+    public static boolean removeFromPath(String dir) {
+    	if (dir == null)
+    		return false;
+    	
+    	String pathNew="";
+    	
+    	boolean found=false;
+    	for (String d : getPathDirs()) {
+    		
+    		if (d!=null && d.equals(dir)) {
+    			found = true;
+//    			break;
+    		} else {
+    			pathNew += d+PATH_VAR_SEPERATOR;
+    		}
+    	}
+    	if (pathNew.endsWith(PATH_VAR_SEPERATOR)) {
+    		pathNew = pathNew.substring(0, pathNew.length()-1);
+    	}
+    	
+    	setLibraryPath(pathNew);
+    	
+    	return found;
+    }
+    
     public static List<String> getPathDirs() {    	
     	return (List<String>) Arrays.asList(getPath().split(PATH_VAR_SEPERATOR));
     }
@@ -54,6 +79,10 @@ public class SysPathUtils {
     }
     
     public static boolean addDirToPath(String newDir) {
+    	return addDirToPath(newDir, true);
+    }
+    
+    public static boolean addDirToPath(String newDir, boolean suffixPath) {
     	String newDirCan;
 		try {
 			newDirCan = new File(newDir).getCanonicalPath();
@@ -66,7 +95,11 @@ public class SysPathUtils {
     	if (getPathDirsCanonical().contains(newDirCan))
     		return false;
     	
-    	setLibraryPath(getPath()+PATH_VAR_SEPERATOR+newDirCan);
+    	if (suffixPath)
+    		setLibraryPath(getPath()+PATH_VAR_SEPERATOR+newDirCan);
+    	else
+    		setLibraryPath(newDirCan+PATH_VAR_SEPERATOR+getPath());
+    	
     	return true;
     }
     
