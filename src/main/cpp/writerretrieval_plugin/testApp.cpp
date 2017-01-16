@@ -18,6 +18,7 @@
 // declare local functions
 void* loadLibrary(std::string& libName);
 void test();
+cv::Mat vecOfCSVStringToMat(std::vector<std::string> test);
 
 int main(int argc, char** argv) {
 	
@@ -26,6 +27,12 @@ int main(int argc, char** argv) {
 
 	test();
 	test();
+
+	//std::string testString  = "-0.057322,0.0148466,-0.0701324";
+	//std::vector<std::string> testVec;
+	//testVec.push_back(testString);
+	//cv::Mat featMat = vecOfCSVStringToMat(testVec);
+	//std::cout << featMat;
 
 	return 0;
 }
@@ -60,6 +67,31 @@ void test() {
 }
 
 #else
+cv::Mat vecOfCSVStringToMat(std::vector<std::string> strings) {
+	if(strings.size() == 0)
+		return cv::Mat();
+
+	std::vector<std::vector<float> > feat;
+	for(int i = 0; i < strings.size(); i++) {
+		feat.push_back(std::vector<float>());
+		std::stringstream sstream(strings[i]);
+		while(sstream.good()) {
+			std::string substr;
+			getline(sstream, substr, ',');
+			feat[i].push_back((float)atof(substr.c_str()));
+		}
+}
+
+	if(feat.size() == 0)
+		return cv::Mat();
+
+	cv::Mat res = cv::Mat((int)strings.size(), (int)feat[0].size(), CV_32F);
+	for(int i = 0; i < feat.size(); i++) {
+		for(int j = 0; j < feat[i].size(); j++)
+			res.at<float>(i, j) = feat[i][j];
+	}
+	return res;
+}
 
 void test() {
 	transkribus::IWriterRetrieval* wr;
@@ -71,6 +103,8 @@ void test() {
 
 	//transkribus::Image image("C:/temp/test.jpg");
 	transkribus::Image image("D:/Databases/icdar2011/cropped/1-1.png");
+	transkribus::Image image2("D:/Databases/icdar2011/cropped/1-2.png");
+	transkribus::Image image3("D:/Databases/icdar2011/cropped/2-1.png");
 
 	std::vector<std::string> constructorPars;
 	try {
@@ -84,6 +118,21 @@ void test() {
 		std::cout << "writer retrieval feature:" << std::endl;
 		std::cout << feature << std::endl;
 
+
+		std::string feature2 = wr->process(image2, "pageXmlFileUrl", ids, props);
+		std::string feature3 = wr->process(image3, "pageXmlFileUrl", ids, props);
+
+		std::vector<std::string> strings;
+		strings.push_back(feature);
+		strings.push_back(feature2);
+		strings.push_back(feature3);
+		cv::Mat featMat = vecOfCSVStringToMat(strings);
+		transkribus::Image i = transkribus::Image(featMat);
+
+		transkribus::Image dist = wr->distances(i, ids, props);
+		std::cout << "distances:" << std::endl;
+		std::cout << dist.mat() << std::endl;
+
 		delete module;	// diem: the module has to be deleted after use!
 	}
 	catch (std::exception e) {
@@ -95,5 +144,4 @@ void test() {
 	}
 	
 }
-
 #endif

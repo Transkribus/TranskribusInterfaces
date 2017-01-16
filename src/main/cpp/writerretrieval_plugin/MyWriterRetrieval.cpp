@@ -32,18 +32,29 @@ std::string MyWriterRetrieval::process(const Image& image, const std::string& xm
 
 	cv::Mat feature = wr.getFeature();
 	
-	// TODO convert features to comma seperated string
+	QString csvFeature;
+	for(int i = 0; i < feature.rows; i++) {
+		const float* r = feature.ptr<float>(i);
+		for(int j = 0; j < feature.cols; j++) {
+			csvFeature += QString::number(r[j]);
+			if (j!=feature.cols-1)
+				csvFeature += ",";
 
-	return "";
+		}
+	}
+	return csvFeature.toStdString();
 }
 
 Image MyWriterRetrieval::distances(const Image& features,
 								   const std::vector<std::string>& ids,
 								   const std::vector<std::string>& props) {
 
+	QSharedPointer<rdf::WriterRetrievalConfig> wrc = QSharedPointer<rdf::WriterRetrievalConfig>(new rdf::WriterRetrievalConfig());
+	wrc->loadSettings();
 
+	rdf::WriterVocabulary voc = wrc->vocabulary();
 
-	return Image();
+	return voc.calcualteDistanceMatrix(features.mat());
 }
 
 Image MyWriterRetrieval::train(const std::vector<Image>& features,
