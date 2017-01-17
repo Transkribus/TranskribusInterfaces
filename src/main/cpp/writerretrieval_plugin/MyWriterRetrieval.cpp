@@ -31,9 +31,9 @@ std::string MyWriterRetrieval::process(const Image& image, const std::string& xm
 	wr.setXmlPath(xmlIn);
 	wr.compute();
 
-	cv::Mat i = wr.draw(image.mat());
-	Image i2 = Image(i);
-	i2.display();
+	//cv::Mat i = wr.draw(image.mat());
+	//Image i2 = Image(i);
+	//i2.display();
 
 	cv::Mat feature = wr.getFeature();
 	
