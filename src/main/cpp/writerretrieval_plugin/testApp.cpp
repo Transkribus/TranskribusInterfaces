@@ -80,7 +80,7 @@ cv::Mat vecOfCSVStringToMat(std::vector<std::string> strings) {
 			getline(sstream, substr, ',');
 			feat[i].push_back((float)atof(substr.c_str()));
 		}
-}
+	}
 
 	if(feat.size() == 0)
 		return cv::Mat();

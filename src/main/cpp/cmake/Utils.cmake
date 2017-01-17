@@ -1,9 +1,10 @@
 macro(TI_CREATE_TARGETS)
+
 	# create the targets
 	set(TI_TEST_NAME 		Test${PROJECT_NAME})
-	set(TI_INTERFACE_NAME 	${PROJECT_NAME})
+	set(TI_PLUGIN_NAME 	${PROJECT_NAME})
 
-	set(LIB_INTERFACE_NAME	optimized ${TI_INTERFACE_NAME}.lib debug ${TI_INTERFACE_NAME}d.lib)
+	set(LIB_INTERFACE_NAME	optimized ${TI_PLUGIN_NAME}.lib debug ${TI_PLUGIN_NAME}d.lib)
 
 	set(LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/libs ${CMAKE_CURRENT_BINARY_DIR}) #add libs directory to library dirs
 	link_directories(${LIBRARY_DIR})
@@ -11,39 +12,47 @@ macro(TI_CREATE_TARGETS)
 	set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
 
 	# add interface
-	add_library(${TI_INTERFACE_NAME} SHARED ${TI_INTERFACE_SOURCES} ${TI_INTERFACE_HEADERS})
-	target_link_libraries(${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces ${RDF_LIBS})
-	add_dependencies(${TI_INTERFACE_NAME} TranskribusInterfaces)
+	add_library(${TI_PLUGIN_NAME} SHARED ${TI_PLUGIN_SOURCES} ${TI_PLUGIN_HEADERS})
+	target_link_libraries(${TI_PLUGIN_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces ${RDF_LIBS})
+	add_dependencies(${TI_PLUGIN_NAME} TranskribusInterfaces)
 
 	# interface flags
-	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs)
-	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/libs)
-	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/libs)
+	set_target_properties(${TI_PLUGIN_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/libs)
+	set_target_properties(${TI_PLUGIN_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/libs)
+	set_target_properties(${TI_PLUGIN_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/libs)
 
 	if(MSVC) # linux does not need this
-		set_target_properties(${TI_INTERFACE_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+		set_target_properties(${TI_PLUGIN_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+		# make RelWithDebInfo link against release instead of debug opencv dlls
+		set_target_properties(${TI_PLUGIN_NAME} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
+		set_target_properties(${TI_PLUGIN_NAME} PROPERTIES MAP_IMPORTED_CONFIG_MINSIZEREL RELEASE)
+		
 	else() # enable soname
-    set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR}.${TI_VERSION_PATCH})
-    set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
+    set_property(TARGET ${TI_PLUGIN_NAME} PROPERTY VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR}.${TI_VERSION_PATCH})
+    set_property(TARGET ${TI_PLUGIN_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
 	endif()
-	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES DEBUG_OUTPUT_NAME ${TI_INTERFACE_NAME}d)
-	set_target_properties(${TI_INTERFACE_NAME} PROPERTIES RELEASE_OUTPUT_NAME ${TI_INTERFACE_NAME})
+	set_target_properties(${TI_PLUGIN_NAME} PROPERTIES DEBUG_OUTPUT_NAME ${TI_PLUGIN_NAME}d)
+	set_target_properties(${TI_PLUGIN_NAME} PROPERTIES RELEASE_OUTPUT_NAME ${TI_PLUGIN_NAME})
 
-	set(TI_INTERFACE_LIB_PATH ${CMAKE_CURRENT_BINARY_DIR}/libs/${TI_INTERFACE_NAME})
+	set(TI_PLUGIN_LIB_PATH ${CMAKE_CURRENT_BINARY_DIR}/libs/${TI_PLUGIN_NAME})
 
-	set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR}.${TI_VERSION_PATCH})
-	set_property(TARGET ${TI_INTERFACE_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
-
-	# add test
-	add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
-	target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces)
-	set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
-	add_dependencies(${TI_TEST_NAME} ${TI_INTERFACE_NAME} TranskribusInterfaces)
+	set_property(TARGET ${TI_PLUGIN_NAME} PROPERTY VERSION ${TI_VERSION_MAJOR}.${TI_VERSION_MINOR}.${TI_VERSION_PATCH})
+	set_property(TARGET ${TI_PLUGIN_NAME} PROPERTY SOVERSION ${TI_VERSION_MAJOR})
 	
-	target_include_directories(${TI_INTERFACE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
+	# add test ##########################
+	add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
+	target_link_libraries(${TI_TEST_NAME} ${TI_PLUGIN_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces)
+	set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+	add_dependencies(${TI_TEST_NAME} ${TI_PLUGIN_NAME} TranskribusInterfaces)
+	
+	target_include_directories(${TI_PLUGIN_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 	target_include_directories(${TI_TEST_NAME} 		PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
 	
-	qt5_use_modules(${TI_INTERFACE_NAME} 		Core)
+	# make RelWithDebInfo link against release instead of debug opencv dlls
+	set_target_properties(${TI_TEST_NAME} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
+	set_target_properties(${TI_TEST_NAME} PROPERTIES MAP_IMPORTED_CONFIG_MINSIZEREL RELEASE)
+
+	qt5_use_modules(${TI_PLUGIN_NAME} 		Core)
 	qt5_use_modules(${TI_TEST_NAME} 		Core)
 	
 	if (MSVC)
@@ -62,7 +71,7 @@ macro(TI_CREATE_TARGETS)
 
 		configure_file(${CMAKE_SOURCE_DIR}/cmake/DependencyCollector.config.cmake.in ${DC_CONFIG})
 		
-		add_custom_command(TARGET ${TI_INTERFACE_NAME} POST_BUILD COMMAND python ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
+		add_custom_command(TARGET ${TI_PLUGIN_NAME} POST_BUILD COMMAND python ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
 		add_custom_command(TARGET ${TI_TEST_NAME} POST_BUILD COMMAND python ${DC_SCRIPT} --infile $<TARGET_FILE:${PROJECT_NAME}> --configfile ${DC_CONFIG} --configuration $<CONFIGURATION>)		
 	endif(MSVC)
 endmacro(TI_CREATE_TARGETS)
@@ -73,31 +82,31 @@ macro(TI_FIND_OPENCV)
 
 	# OpenCV
 	IF (WITH_HIGHGUI)
-		SET(OpenCV_REQUIRED_MODULES core highgui)
+		SET(OpenCV_REQUIRED_MODULES core highgui imgcodecs)
 	ELSE()
-		SET(OpenCV_REQUIRED_MODULES core highgui)
+		SET(OpenCV_REQUIRED_MODULES core)
 	ENDIF()
 	SET(OpenCV_LIBS "")
 
 	IF (OpenCV_LIBS STREQUAL "")
-		find_package(OpenCV)
+		find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_MODULES})
 	ENDIF()
 
 	IF (NOT OpenCV_FOUND)
 		message(FATAL_ERROR "OpenCV not found. Please specify a valid path")
 	ELSE()
-		unset(OPENCV_LIBS)
+	unset(OPENCV_LIBS)
 
-		IF (WITH_HIGHGUI)
-			add_definitions(-DWITH_OPENCV)
-			set(OpenCV_LIBS opencv_core opencv_highgui)
-		ELSE()
-			add_definitions(-DWITH_OPENCV -DWITHOUT_HIGHGUI)
-			set(OpenCV_LIBS opencv_core)
-			message(STATUS "building without highgui")
-		ENDIF()
+	IF (WITH_HIGHGUI)
+		add_definitions(-DWITH_OPENCV)
+		set(OpenCV_LIBS ${OpenCV_LIBRARIES})
+	ELSE()
+		add_definitions(-DWITH_OPENCV -DWITHOUT_HIGHGUI)
+		set(OpenCV_LIBS ${OpenCV_LIBRARIES})
+		message(STATUS "building without highgui")
+	ENDIF()
 
-		message(STATUS "OpenCV Modules ${OpenCV_LIBS} added...")
+	message(STATUS "OpenCV Modules ${OpenCV_LIBS} added...")
 	ENDIF()
 endmacro(TI_FIND_OPENCV)
 

@@ -88,13 +88,21 @@ set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG 
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/libs)
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/libs)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DTI_DLL_EXPORT")
+# make RelWithDebInfo link against release instead of debug opencv dlls
+set_target_properties(${PROJECT_NAME} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
+set_target_properties(${PROJECT_NAME} PROPERTIES MAP_IMPORTED_CONFIG_MINSIZEREL RELEASE)
+
 # add test program
 set(TI_TEST_NAME "Test${PROJECT_NAME}")
 add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
 target_include_directories(${TI_TEST_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${TI_TEST_NAME} ${TI_INTERFACE_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} ${PROJECT_NAME})
 set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+
 add_dependencies(${TI_TEST_NAME} ${PROJECT_NAME})
+# make RelWithDebInfo link against release instead of debug opencv dlls
+set_target_properties(${TI_TEST_NAME} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
+set_target_properties(${TI_TEST_NAME} PROPERTIES MAP_IMPORTED_CONFIG_MINSIZEREL RELEASE)
 
 
 # add plugins
@@ -112,5 +120,5 @@ endif()
 #debug for printing out all variables 
 # get_cmake_property(_variableNames VARIABLES)
 # foreach (_variableName ${_variableNames})
-#     message(STATUS "${_variableName}=${${_variableName}}")
+    # message(STATUS "${_variableName}=${${_variableName}}")
 # endforeach()
