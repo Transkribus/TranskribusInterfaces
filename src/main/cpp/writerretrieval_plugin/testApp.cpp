@@ -102,7 +102,10 @@ void test() {
 #endif
 
 	//transkribus::Image image("C:/temp/test.jpg");
-	transkribus::Image image("D:/Databases/icdar2011/cropped/1-1.png");
+	//transkribus::Image image("D:/Databases/icdar2011/cropped/1-1.png");
+	transkribus::Image image("D:/ABP_FirstTestCollection/M_Aigen_am_Inn_007_0021.jpg");
+	std::string xmlFile = "D:/ABP_FirstTestCollection/page/M_Aigen_am_Inn_007_0021.xml";
+
 	transkribus::Image image2("D:/Databases/icdar2011/cropped/1-2.png");
 	transkribus::Image image3("D:/Databases/icdar2011/cropped/2-1.png");
 
@@ -113,7 +116,8 @@ void test() {
 
 		std::vector<std::string> ids;
 		std::vector<std::string> props;
-		std::string feature = wr->process(image, "pageXmlFileUrl", ids, props);
+		//std::string feature = wr->process(image, "pageXmlFileUrl", ids, props);
+		std::string feature = wr->process(image, xmlFile, ids, props);
 
 		std::cout << "writer retrieval feature:" << std::endl;
 		std::cout << feature << std::endl;
