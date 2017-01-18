@@ -49,49 +49,37 @@ void* loadLibrary(std::string& libName) {
 }
 
 void test() {
-	transkribus::ILayoutAnalysis* la;
+	transkribus::IWriterRetrieval* wr;
 
-	std::string libName("./libMyLayoutAnalysis.so");
+	std::string libName("./libMyWriterRetrieval.so");
 	std::cout << "opening lib: " << libName << std::endl;
 
-	transkribus::Image image("/tmp/test.jpg");
+	transkribus::Image image("/tmp/1-1.png");
 
 	std::vector<std::string> constructorPars;
 	transkribus::IModule* module = transkribus::ModuleFactory::createModuleFromLib(libName, constructorPars);
-	la = transkribus::ModuleFactory::castILayoutAnalysis(module);
+	wr = transkribus::ModuleFactory::castIWriterRetrieval(module);
 
 	std::vector<std::string> ids;
 	std::vector<std::string> props;
-	la->process(image, "pageXmlFileUrl", ids, props);
+	std::string feature =  wr->process(image, "pageXmlFileUrl", ids, props);
+
+	std::vector<std::string> strings;
+	strings.push_back(feature);
+	strings.push_back(feature);
+	strings.push_back(feature);
+	cv::Mat featMat = vecOfCSVStringToMat(strings);
+	transkribus::Image i = transkribus::Image(featMat);
+
+	transkribus::Image dist = wr->distances(i, ids, props);
+	std::cout << "distances:" << std::endl;
+	std::cout << dist.mat() << std::endl;
+
+	delete module;	// diem: the module has to be deleted after use!
 
 }
 
 #else
-cv::Mat vecOfCSVStringToMat(std::vector<std::string> strings) {
-	if(strings.size() == 0)
-		return cv::Mat();
-
-	std::vector<std::vector<float> > feat;
-	for(int i = 0; i < strings.size(); i++) {
-		feat.push_back(std::vector<float>());
-		std::stringstream sstream(strings[i]);
-		while(sstream.good()) {
-			std::string substr;
-			getline(sstream, substr, ',');
-			feat[i].push_back((float)atof(substr.c_str()));
-		}
-	}
-
-	if(feat.size() == 0)
-		return cv::Mat();
-
-	cv::Mat res = cv::Mat((int)strings.size(), (int)feat[0].size(), CV_32F);
-	for(int i = 0; i < feat.size(); i++) {
-		for(int j = 0; j < feat[i].size(); j++)
-			res.at<float>(i, j) = feat[i][j];
-	}
-	return res;
-}
 
 void test() {
 	transkribus::IWriterRetrieval* wr;
@@ -119,8 +107,8 @@ void test() {
 		//std::string feature = wr->process(image, "pageXmlFileUrl", ids, props);
 		std::string feature = wr->process(image, xmlFile, ids, props);
 
-		std::cout << "writer retrieval feature:" << std::endl;
-		std::cout << feature << std::endl;
+		//std::cout << "writer retrieval feature:" << std::endl;
+		//std::cout << feature << std::endl;
 
 
 		std::string feature2 = wr->process(image2, "pageXmlFileUrl", ids, props);
@@ -149,3 +137,29 @@ void test() {
 	
 }
 #endif
+
+cv::Mat vecOfCSVStringToMat(std::vector<std::string> strings) {
+	if(strings.size() == 0)
+		return cv::Mat();
+
+	std::vector<std::vector<float> > feat;
+	for(int i = 0; i < strings.size(); i++) {
+		feat.push_back(std::vector<float>());
+		std::stringstream sstream(strings[i]);
+		while(sstream.good()) {
+			std::string substr;
+			getline(sstream, substr, ',');
+			feat[i].push_back((float)atof(substr.c_str()));
+		}
+	}
+
+	if(feat.size() == 0)
+		return cv::Mat();
+
+	cv::Mat res = cv::Mat((int)strings.size(), (int)feat[0].size(), CV_32F);
+	for(int i = 0; i < feat.size(); i++) {
+		for(int j = 0; j < feat[i].size(); j++)
+			res.at<float>(i, j) = feat[i][j];
+	}
+	return res;
+}
