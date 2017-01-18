@@ -43,7 +43,9 @@ macro(TI_CREATE_TARGETS)
 	# add test ##########################
 	add_executable(${TI_TEST_NAME} WIN32  MACOSX_BUNDLE ${TI_TEST_SOURCES} ${TI_TEST_HEADERS})
 	target_link_libraries(${TI_TEST_NAME} ${TI_PLUGIN_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces)
-	set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+	if(MSVC)
+		set_target_properties(${TI_TEST_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+	endif()
 	add_dependencies(${TI_TEST_NAME} ${TI_PLUGIN_NAME} TranskribusInterfaces)
 	
 	target_include_directories(${TI_PLUGIN_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS} ${CURL_INCLUDE})
