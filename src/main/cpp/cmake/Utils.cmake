@@ -11,9 +11,10 @@ macro(TI_CREATE_TARGETS)
 
 	set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
 
+	
 	# add interface
 	add_library(${TI_PLUGIN_NAME} SHARED ${TI_PLUGIN_SOURCES} ${TI_PLUGIN_HEADERS})
-	target_link_libraries(${TI_PLUGIN_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces ${RDF_LIBS})
+	target_link_libraries(${TI_PLUGIN_NAME} ${OpenCV_LIBS} ${CURL_LIBRARY} TranskribusInterfaces ${RDF_LIBS_FULLPATH})
 	add_dependencies(${TI_PLUGIN_NAME} TranskribusInterfaces)
 
 	# interface flags
@@ -138,6 +139,11 @@ macro(TI_FIND_RDF)
 	set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_BINARY_DIR})
 	find_package(ReadFramework)
 
+	if(MSVC)
+		set(RDF_LIBS_FULLPATH ${RDF_LIBS})
+	else()
+		find_library(RDF_LIBS_FULLPATH NAMES ${RDF_LIBS} PATHS ${RDF_BUILD_DIRECTORY})
+	endif(NOT MSVC)
 	if(NOT RDF_FOUND)
 		set(RDF_BUILD_DIRECTORY "NOT_SET" CACHE PATH "Path to the READ Framework build directory")
 		if(${RDF_BUILD_DIRECTORY} STREQUAL "NOT_SET")
