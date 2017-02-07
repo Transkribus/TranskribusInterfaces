@@ -15,7 +15,7 @@ public interface IDictionary {
     public String getName();
     public String getDescription();
     public String getLanguage();
-    public int getNumberTokens();
+    public long getNumberTokens();
     public int getNumberTypes();
     public Map<Character, Integer> getEntryCharacterTable();
     public Map<Character, Integer> getValueCharacterTable();
