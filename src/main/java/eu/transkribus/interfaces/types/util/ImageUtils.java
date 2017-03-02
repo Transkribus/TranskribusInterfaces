@@ -5,10 +5,8 @@ import java.awt.image.DataBufferByte;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -19,6 +17,7 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -32,6 +31,7 @@ import org.opencv.core.Mat;
  *
  */
 public class ImageUtils {
+	private static final Logger logger = Logger.getLogger(ImageUtils.class);
 
     public static BufferedImage convertToBufferedImage(Mat m) {
         // BufferedImage imageBufferedImage = new
@@ -63,12 +63,16 @@ public class ImageUtils {
 
     public static BufferedImage convertToBufferedImage(URL u) throws IOException {
         BufferedImage b = ImageIO.read(u);
+        System.out.println("readddd buffered image from url: "+b);
+        logger.debug("read buffered image from url: "+b);
+        
         if (b == null) {
             //ImageIO.read() can't handle 302 status code on url
             File tmpFile = ImageUtils.downloadImgFile(u);
             b = ImageIO.read(tmpFile);
+            logger.debug("read buffered image from file: "+b);
             if (!tmpFile.delete()) {
-                System.out.println("Temp file could not be deleted: " + tmpFile.getAbsolutePath());
+                logger.warn("Temp file could not be deleted: " + tmpFile.getAbsolutePath());
             }
         }
         if (b == null) {
@@ -108,7 +112,7 @@ public class ImageUtils {
         	error.printStackTrace();
         	
             try {
-            	System.out.println("Could not find "+Core.NATIVE_LIBRARY_NAME+" - trying to load fallback lib "+opencv2lib);
+            	logger.error("Could not find "+Core.NATIVE_LIBRARY_NAME+" - trying to load fallback lib "+opencv2lib);
             	
                 System.loadLibrary(opencv2lib);
                 opencvlibname = opencv2lib;
@@ -118,8 +122,7 @@ public class ImageUtils {
             }
         }
         
-        System.out.println("Successfully loaded opencv: "+opencvlibname);
-        System.out.println("t = "+(System.currentTimeMillis()-t0));
+        logger.debug("Loaded opencv ("+opencvlibname+") in t = "+(System.currentTimeMillis()-t0));
     }
     
 //    static {
@@ -158,7 +161,7 @@ public class ImageUtils {
             imageOpenCVImage = (Mat) method.invoke(null, tmpFile.getAbsolutePath());
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             try {
-                System.out.println("expect OpenCV 2.* - use other static loader");
+                logger.info("expect OpenCV 2.* - use other static loader");
                 Class clazz = Class.forName("org.opencv.highgui.Highgui");
                 Method method = clazz.getMethod("imread", String.class);
                 imageOpenCVImage = (Mat) method.invoke(null, tmpFile.getAbsolutePath());
@@ -169,7 +172,7 @@ public class ImageUtils {
 //        Mat imageOpenCVImage = Highgui.imread(tmpFile.getAbsolutePath());
 //        Mat imageOpenCVImage = Imgcodecs.imread(tmpFile.getAbsolutePath());
         if (!tmpFile.delete()) {
-            System.out.println("Temp file could not be deleted: " + tmpFile.getAbsolutePath());
+            logger.warn("Temp file could not be deleted: " + tmpFile.getAbsolutePath());
         }
         return imageOpenCVImage;
     }
@@ -221,7 +224,7 @@ public class ImageUtils {
         if (filename == null) {
             filename = "tmp-" + UUID.randomUUID();
         }
-        System.out.println(filename);
+        logger.debug("filename = "+filename+" tmpdir = "+System.getProperty("java.io.tmpdir"));
         File output = new File(System.getProperty("java.io.tmpdir") + File.separator + filename);
 
         BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
@@ -247,7 +250,7 @@ public class ImageUtils {
             }
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             try {
-                System.out.println("expect OpenCV 2.* - use other static loader");
+                logger.info("expect OpenCV 2.* - use other static loader");
                 Class clazz = Class.forName("org.opencv.highgui.Highgui");
                 Method method = clazz.getMethod("imwrite", String.class, Mat.class);
                 Boolean res = (Boolean) method.invoke(null, path, m);
