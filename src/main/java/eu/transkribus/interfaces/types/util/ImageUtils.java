@@ -63,7 +63,6 @@ public class ImageUtils {
 
     public static BufferedImage convertToBufferedImage(URL u) throws IOException {
         BufferedImage b = ImageIO.read(u);
-        System.out.println("readddd buffered image from url: "+b);
         logger.debug("read buffered image from url: "+b);
         
         if (b == null) {
