@@ -15,13 +15,14 @@ public interface IKeywordSpotter extends IModule {
 
     /**
      *
-     * @param folderIn folder which contains storages
+     * @param imagesIn path to image-list
+     * @param imagesIn path to storage-list
      * @param queriesIn file which contains query strings
      * @param dictIn file which contains a unigram of possible words (can be
      * null)
      * @param resultOut path to json-output file
      * @param props properties (can be null)
      */
-    public void process(String folderIn, String queriesIn, String dictIn, String resultOut, String[] props);
+    public void process(String imagesIn, String storageIn, String queriesIn, String dictIn, String resultOut, String[] props);
 
 }
