@@ -43,34 +43,34 @@ public interface IHtr extends IModule {
             String[] props
     );
 
-    /**
-     * in URO-CITlab this is done by an MDRNN (sprnn). Output in this case would
-     * be a Confidence-Matrix.
-     *
-     * @param pathToOpticalModel is either path to serialized RNN or path to
-     * GMM/HMM.
-     * @param pathToLanguageModel is either path to ARPA-file or other language
-     * resource file.
-     * @param pathToCharacterMap is path to character map file (TODO: add link
-     * to file description)
-     * @param image
-     * @param xmlInOut
-     * @param storageDir
-     * @param pathToAbbrDict
-     * @param lineIds
-     * @param props set of parameters for recognition (has to be documented)
-     */
-    public void process(
-            String pathToOpticalModel,
-            String pathToLanguageModel,
-            String pathToCharacterMap,
-            Image image,
-            String xmlInOut,
-            String storageDir,
-            String pathToAbbrDict,
-            String[] lineIds,
-            String[] props
-    );
+//    /**
+//     * in URO-CITlab this is done by an MDRNN (sprnn). Output in this case would
+//     * be a Confidence-Matrix.
+//     *
+//     * @param pathToOpticalModel is either path to serialized RNN or path to
+//     * GMM/HMM.
+//     * @param pathToLanguageModel is either path to ARPA-file or other language
+//     * resource file.
+//     * @param pathToCharacterMap is path to character map file (TODO: add link
+//     * to file description)
+//     * @param image
+//     * @param xmlInOut
+//     * @param storageDir
+//     * @param pathToAbbrDict
+//     * @param lineIds
+//     * @param props set of parameters for recognition (has to be documented)
+//     */
+//    public void process(
+//            String pathToOpticalModel,
+//            String pathToLanguageModel,
+//            String pathToCharacterMap,
+//            Image image,
+//            String xmlInOut,
+//            String storageDir,
+//            String pathToAbbrDict,
+//            String[] lineIds,
+//            String[] props
+//    );
 
 //    public static boolean process(String pathToModels, Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);
 //    public boolean process(Image image, String pageXmlIn, String pageXmlOut, String storageDir, String[] props);
