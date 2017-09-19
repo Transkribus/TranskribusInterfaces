@@ -17,11 +17,12 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 //import org.opencv.highgui.Highgui;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class with static methods with image operations needed for conversion of
@@ -31,7 +32,7 @@ import org.opencv.core.Mat;
  *
  */
 public class ImageUtils {
-	private static final Logger logger = Logger.getLogger(ImageUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImageUtils.class);
 
     public static BufferedImage convertToBufferedImage(Mat m) {
         // BufferedImage imageBufferedImage = new

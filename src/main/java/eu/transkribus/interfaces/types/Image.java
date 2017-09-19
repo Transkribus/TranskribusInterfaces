@@ -15,11 +15,10 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.IIORegistry;
-import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.spi.ImageWriterSpi;
 
-import org.apache.log4j.Logger;
 import org.opencv.core.Mat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi;
 import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
@@ -31,7 +30,7 @@ import eu.transkribus.interfaces.types.util.ImageUtils;
  * @author gundram
  */
 public class Image {
-	private static final Logger logger = Logger.getLogger(Image.class);
+	private static final Logger logger = LoggerFactory.getLogger(Image.class);
 
 	private URL imageUrl;
 	private BufferedImage imageBufferedImage;
@@ -249,6 +248,15 @@ public class Image {
 			while (readers.hasNext()) {
 				logger.info("reader: " + readers.next());
 			}
+		}
+	}
+	
+	public void dispose() {
+		if(imageBufferedImage != null) {
+			imageBufferedImage.flush();
+		}
+		if(imageOpenCVImage != null) {
+			imageOpenCVImage.release();
 		}
 	}
 	

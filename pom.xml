@@ -38,10 +38,10 @@
 		</dependency>
 		
 		<dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.10</version>
+		</dependency>		
 
 		<!-- Image IO stuff -->
 		<dependency>
@@ -51,6 +51,7 @@
 		</dependency>
 	
 		<!-- Additional readers for jpeg and tiff -->
+		
 		<dependency>
 	        <groupId>com.twelvemonkeys.imageio</groupId>
 	        <artifactId>imageio-jpeg</artifactId>
