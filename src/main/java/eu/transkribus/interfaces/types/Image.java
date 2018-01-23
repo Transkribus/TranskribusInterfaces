@@ -205,22 +205,21 @@ public class Image {
 	
 	public static void listImageIOServices() {
 		IIORegistry registry = IIORegistry.getDefaultInstance();
-		
-		logger.info("image-io services:");
+		logger.debug("image-io services:");
 		Iterator<Class<?>> cats = registry.getCategories();
 		while (cats.hasNext()) {
 			Class<?> cat = cats.next();
-			logger.info("image-io category = " + cat);
+			logger.debug("image-io category = " + cat);
 
 			Iterator<?> providers = registry.getServiceProviders(cat, true);
 			while (providers.hasNext()) {
-				logger.info("image-io provider = " + providers.next());
+				logger.debug("image-io provider = " + providers.next());
 			}
 		}
 	}
 	
 	public static void registerImageIOServices() {
-		logger.info("registering image readers / writers");
+		logger.debug("registering image readers / writers");
 		
 		IIORegistry registry = IIORegistry.getDefaultInstance();
 
