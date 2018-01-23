@@ -62,7 +62,7 @@ package eu.transkribus.interfaces;
 public interface IKeywordSpotter extends IModule {
 	
     /**
-     * @param imagesIn array with absolute paths to images
+     * @param imagesIn array with absolute paths to images (only for reference in result! can contain any identifier)
      * @param storageIn array with absolute paths to stored HTR results, e.g. ConfMat container. 
      * Aligned to imagesIn
      * @param queriesIn array that contains query strings
