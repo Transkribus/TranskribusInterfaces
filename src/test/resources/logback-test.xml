@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="conversionPattern" value="%d{MM/dd HH:mm:ss.SSS}%X{ip}%X{user}%X{gui} %5p | [%c{1}, %t] %m%n"></property>
+   
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{MM/dd HH:mm:ss.SSS} %5p | [%c{1}] %m%n</pattern>
+		</encoder>
+	</appender>
+
+
+	
+	<!-- planet.jar logging -->
+	<logger name="com.achteck" level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="de.planet" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="de.uro.citlab.module" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="org.apache" level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	<logger name="org.dea" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	<logger name="eu.transkribus" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+</configuration>
