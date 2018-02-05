@@ -253,9 +253,11 @@ public class Image {
 	public void dispose() {
 		if(imageBufferedImage != null) {
 			imageBufferedImage.flush();
+			imageBufferedImage = null;
 		}
 		if(imageOpenCVImage != null) {
 			imageOpenCVImage.release();
+			imageOpenCVImage = null;
 		}
 	}
 	
