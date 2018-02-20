@@ -21,6 +21,7 @@ public:
 	virtual void createTrainData(
 		const std::vector<std::string>& pageXmls, 
 		const std::string& outputDir, 
+		const std::string& pathToCharacterMap, 
 		const std::vector<std::string>& props) = 0;
 	
 	virtual void createHtr(

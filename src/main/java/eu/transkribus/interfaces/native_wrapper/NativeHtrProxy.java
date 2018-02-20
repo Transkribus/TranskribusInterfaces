@@ -28,7 +28,15 @@ public class NativeHtrProxy extends NativeModuleProxy implements IHtr {
             String[] props
     ) {
         try {
-            htr.process(pathToOpticalModel, pathToLanguageModel, pathToCharacterMap, NativeProxyUtils.toNativeImage(image), xmlInOut, storageDir, NativeProxyUtils.toStringVector(lineIds), NativeProxyUtils.toStringVector(props));
+            htr.process(
+            	pathToOpticalModel, 
+            	pathToLanguageModel, 
+            	pathToCharacterMap, 
+            	NativeProxyUtils.toNativeImage(image), 
+            	xmlInOut, 
+            	storageDir, 
+            	NativeProxyUtils.toStringVector(lineIds), 
+            	NativeProxyUtils.toStringVector(props));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
