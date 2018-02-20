@@ -185,6 +185,9 @@ public class ImageUtils {
     }
 
     public static File downloadImgFile(URL imageUrl) throws IOException {
+    	if(!imageUrl.getProtocol().startsWith("http")) {
+    		throw new IllegalArgumentException("Only http/https protocol is supported in image URL.");
+    	}
         HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
         conn.setRequestMethod("GET");
         conn.setInstanceFollowRedirects(true);
