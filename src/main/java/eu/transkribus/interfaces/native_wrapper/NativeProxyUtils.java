@@ -31,8 +31,7 @@ public class NativeProxyUtils {
 			return new Native_Image(img.getImageOpenCVImage());
 		}
 		else if (img.hasType(Type.JAVA)) {
-			img.createType(Type.OPEN_CV);
-			return new Native_Image(img.getImageOpenCVImage());
+			return new Native_Image(img.getImageOpenCVImage(true));
 		}
 		else if (img.hasType(Type.URL)) {
 			return new Native_Image(img.getImageUrl().toString());
