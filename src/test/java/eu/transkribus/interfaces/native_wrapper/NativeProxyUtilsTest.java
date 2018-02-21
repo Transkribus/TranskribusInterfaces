@@ -12,6 +12,12 @@ import eu.transkribus.interfaces.types.Image;
 import eu.transkribus.interfaces.types.util.SysPathUtils;
 
 public class NativeProxyUtilsTest {
+	
+	public NativeProxyUtilsTest() {
+		SysPathUtils.loadTranskribusInterfacesLib();
+		SysPathUtils.addDirToPath("/usr/local/share/OpenCV/java/");
+		System.loadLibrary("opencv_java310");
+	}
 
 	@Before
 	public void setupEnvironment() {

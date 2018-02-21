@@ -117,4 +117,14 @@ public class SysPathUtils {
 		}
 	}
 	
+	public static void loadTranskribusInterfacesLib() {
+		String libName = "TranskribusInterfacesWrapper";
+		try {
+			System.loadLibrary(libName);
+			System.out.println("Loaded transkribus interfaces lib");
+		} catch (UnsatisfiedLinkError e) {
+			throw new RuntimeException("Could not load "+libName+".so: " + e.getMessage(), e);
+		}
+	}
+	
 }
