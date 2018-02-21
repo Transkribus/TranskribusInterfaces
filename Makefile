@@ -3,6 +3,7 @@ CPP_DIR=src/main/cpp
 SWIG_DIR=src/main/swig
 
 all: clean cpp swig mvn
+wrapper: cpp swig
 
 cpp: 
 	make -C $(CPP_DIR) all
@@ -14,10 +15,8 @@ clean_swig:
 	make -C $(SWIG_DIR) clean
 mvn: 
 	mvn clean install
-clean_mvn: 
-	mvn clean
 
-clean: clean_cpp clean_swig clean_mvn
+clean: clean_cpp clean_swig
 	rm src/main/resources/*.so
 install: 
 	cp src/main/resources/*.so /usr/local/lib/.
