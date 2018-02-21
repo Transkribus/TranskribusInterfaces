@@ -6,6 +6,8 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import eu.transkribus.interfaces.util.SysPathUtils;
+
 public class SysPathUtilsTest {
 	
 	@Test public void testMultipleAddOfSameDir() throws IOException {

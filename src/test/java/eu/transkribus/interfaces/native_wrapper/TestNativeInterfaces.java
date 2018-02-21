@@ -5,7 +5,7 @@ import java.net.URL;
 
 import eu.transkribus.interfaces.ILayoutAnalysis;
 import eu.transkribus.interfaces.types.Image;
-import eu.transkribus.interfaces.types.util.SysPathUtils;
+import eu.transkribus.interfaces.util.SysPathUtils;
 
 public class TestNativeInterfaces {
 	

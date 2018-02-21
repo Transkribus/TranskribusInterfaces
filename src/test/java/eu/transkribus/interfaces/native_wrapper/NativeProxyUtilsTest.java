@@ -9,20 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.transkribus.interfaces.types.Image;
-import eu.transkribus.interfaces.types.util.SysPathUtils;
+import eu.transkribus.interfaces.util.NativeLibRegistry;
 
 public class NativeProxyUtilsTest {
-	
-	public NativeProxyUtilsTest() {
-		SysPathUtils.loadTranskribusInterfacesLib();
-		SysPathUtils.addDirToPath("/usr/local/share/OpenCV/java/");
-		System.loadLibrary("opencv_java310");
-	}
 
 	@Before
 	public void setupEnvironment() {
-		SysPathUtils.addDirToPath("/usr/local/lib");
-		SysPathUtils.addDirToPath("/usr/local/share/OpenCV/java");
+		NativeLibRegistry.INSTANCE.addDirsToPath("/usr/local/share/OpenCV/java/");
+		NativeLibRegistry.INSTANCE.loadTranskribusInterfacesLib();
+		NativeLibRegistry.INSTANCE.loadLibrary("opencv_java310");
 		Image.registerImageIOServices();
 	}
 	

@@ -1,4 +1,4 @@
-package eu.transkribus.interfaces.types.util;
+package eu.transkribus.interfaces.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,16 +115,5 @@ public class SysPathUtils {
 			System.err.println("Could not set sys_path to null - updated path won't be available in JVM!");
 			e.printStackTrace();
 		}
-	}
-	
-	public static void loadTranskribusInterfacesLib() {
-		String libName = "TranskribusInterfacesWrapper";
-		try {
-			System.loadLibrary(libName);
-			System.out.println("Loaded transkribus interfaces lib");
-		} catch (UnsatisfiedLinkError e) {
-			throw new RuntimeException("Could not load "+libName+".so: " + e.getMessage(), e);
-		}
-	}
-	
+	}	
 }
