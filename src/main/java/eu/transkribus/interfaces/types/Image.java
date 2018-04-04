@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ImageReaderWriterSpi;
 
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
@@ -224,14 +225,24 @@ public class Image {
 		IIORegistry registry = IIORegistry.getDefaultInstance();
 
 		// have to programmatically register tiff reader / writer in tomcat
-		registry.registerServiceProvider(new TIFFImageWriterSpi(), javax.imageio.spi.ImageWriterSpi.class);
-		registry.registerServiceProvider(new TIFFImageReaderSpi(), javax.imageio.spi.ImageReaderSpi.class);
+		registerImageIOService(registry, new TIFFImageWriterSpi(), javax.imageio.spi.ImageWriterSpi.class);
+		registerImageIOService(registry, new TIFFImageReaderSpi(), javax.imageio.spi.ImageReaderSpi.class);
 
-		registry.registerServiceProvider(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageWriterSpi(),
+		registerImageIOService(registry, new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageWriterSpi(),
 				javax.imageio.spi.ImageWriterSpi.class);
-		registry.registerServiceProvider(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi(),
-				javax.imageio.spi.ImageReaderSpi.class);
-		
+		registerImageIOService(registry, new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi(),
+				javax.imageio.spi.ImageReaderSpi.class);	
+	}
+	
+	private static <T extends ImageReaderWriterSpi> void registerImageIOService(IIORegistry registry, T provider, Class<T> clazz) {
+		if(registry == null || provider == null || clazz == null) {
+			throw new IllegalArgumentException("An argument is null!");
+		}
+		if(registry.registerServiceProvider(provider, clazz)) {
+			logger.info("Registered IIOServiceProvider: " + provider.getPluginClassName());
+		} else {
+			logger.info("Ignoring already registered IIOServiceProvider: " + provider.getPluginClassName());
+		}
 	}
 
 	public static void testReaders() throws IOException {
