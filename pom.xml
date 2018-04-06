@@ -37,31 +37,37 @@
 			<version>310</version>
 		</dependency>
 		
+		<!-- FOR LOGGING:  -->
+		
+		<!-- slf4j api already is pulled by logback below. -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.10</version>
-		</dependency>
+			<version>1.7.25</version>
+		</dependency>	
 		
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		
-		<!--  redirect all log4j output to slf4j -->
+		<!--  redirect all log4j stuff to slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.16</version>
-		</dependency>	
+			<version>1.7.25</version>
+		</dependency>
+	
+		<!-- Logback logging via sl4j: -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 
+		<!-- This is for supporting conditions in logback.xml: -->
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>3.0.8</version>
+		</dependency>		
+		<!-- END FOR LOGGING  -->
+		
 		<!-- Image IO stuff -->
 		<dependency>
 			<groupId>com.sun.media</groupId>
