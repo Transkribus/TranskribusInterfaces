@@ -26,7 +26,7 @@ public class ImageTest {
 
 	}
 
-	@Test
+//	@Test
 	public void testFromUrlToOpenCv() throws IOException {
 		logger.debug("testFromUrlToOpenCv");
 
@@ -42,5 +42,21 @@ public class ImageTest {
 		}
 
 	}
+	
+	
+		@Test
+		public void testFromUrlToBufferedImage() throws IOException {
+			logger.debug("testFromUrlToBufferedImage");
 
+			URL[] urls = { 
+					new URL("https://dbis-thure.uibk.ac.at/f/Get?fileType=orig&id=VJCQMQBNZFDFCZMAJZHKNJKW") };
+
+			for (URL url : urls) {
+				Image img = new Image(url);
+				img.createType(Type.JAVA);
+
+				logger.info("Created java image for url: " + url);
+			}
+
+		}
 }
