@@ -8,25 +8,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.transkribus.interfaces.types.Image.Type;
+import eu.transkribus.interfaces.types.util.ImageUtils;
 
 public class ImageTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(ImageTest.class);
-
-	// public static void main(String[] args) {
-	// System.out.println(PackageUtil.getVendor());
-	// System.out.println(PackageUtil.getVersion());
-	// System.out.println(PackageUtil.getSpecificationTitle());
-	// }
-
+	
+//	@Before
+//	public void init() {
+//		ImageUtils.listImageIOServices();
+//		ImageUtils.registerImageIOServices();
+//		ImageUtils.listImageIOServices();
+//	}
+	
 	@Test
 	public void testReaders() throws IOException {
 
-		Image.testReaders();
+		ImageUtils.testReaders();
 
 	}
 
-//	@Test
+	@Test
 	public void testFromUrlToOpenCv() throws IOException {
 		logger.debug("testFromUrlToOpenCv");
 
@@ -40,23 +42,35 @@ public class ImageTest {
 
 			logger.info("Created opencv image for url: " + url);
 		}
+	}
+	
+	@Test
+	public void testFromUrlToBufferedImage() throws IOException {
+		logger.debug("testFromUrlToBufferedImage");
+
+		URL[] urls = { new URL("https://dbis-thure.uibk.ac.at/f/Get?fileType=orig&id=VJCQMQBNZFDFCZMAJZHKNJKW") };
+
+		for (URL url : urls) {
+			Image img = new Image(url);
+			try {
+				img.createType(Type.JAVA);
+			} catch (Exception e) {
+				logger.error("Could not create BufferedImage from URL resource!", e);
+				throw e;
+			}
+
+			logger.info("Created java image for url: " + url);
+		}
 
 	}
 	
-	
-		@Test
-		public void testFromUrlToBufferedImage() throws IOException {
-			logger.debug("testFromUrlToBufferedImage");
-
-			URL[] urls = { 
-					new URL("https://dbis-thure.uibk.ac.at/f/Get?fileType=orig&id=VJCQMQBNZFDFCZMAJZHKNJKW") };
-
-			for (URL url : urls) {
-				Image img = new Image(url);
-				img.createType(Type.JAVA);
-
-				logger.info("Created java image for url: " + url);
-			}
-
-		}
+	/**
+	 * A main for testing the behavior without JUnit
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws IOException {
+		new ImageTest().testFromUrlToBufferedImage();
+	}
 }

@@ -18,7 +18,6 @@ public class NativeProxyUtilsTest {
 		NativeLibRegistry.INSTANCE.addDirsToPath("/usr/local/share/OpenCV/java/");
 		NativeLibRegistry.INSTANCE.loadTranskribusInterfacesLib();
 		NativeLibRegistry.INSTANCE.loadLibrary("opencv_java310");
-		Image.registerImageIOServices();
 	}
 	
 	@Test

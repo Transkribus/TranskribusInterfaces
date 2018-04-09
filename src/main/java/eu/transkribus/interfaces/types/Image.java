@@ -9,20 +9,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.spi.IIORegistry;
-import javax.imageio.spi.ImageReaderWriterSpi;
-
 import org.opencv.core.Mat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi;
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
 
 import eu.transkribus.interfaces.types.util.ImageUtils;
 
@@ -31,7 +20,6 @@ import eu.transkribus.interfaces.types.util.ImageUtils;
  * @author gundram
  */
 public class Image {
-	private static final Logger logger = LoggerFactory.getLogger(Image.class);
 
 	private URL imageUrl;
 	private BufferedImage imageBufferedImage;
@@ -199,68 +187,6 @@ public class Image {
 		}
 	}
 	
-	static {
-		registerImageIOServices();
-		listImageIOServices();
-	}
-	
-	public static void listImageIOServices() {
-		IIORegistry registry = IIORegistry.getDefaultInstance();
-		logger.debug("image-io services:");
-		Iterator<Class<?>> cats = registry.getCategories();
-		while (cats.hasNext()) {
-			Class<?> cat = cats.next();
-			logger.debug("image-io category = " + cat);
-
-			Iterator<?> providers = registry.getServiceProviders(cat, true);
-			while (providers.hasNext()) {
-				logger.debug("image-io provider = " + providers.next());
-			}
-		}
-	}
-	
-	public static void registerImageIOServices() {
-		logger.debug("registering image readers / writers");
-		
-		IIORegistry registry = IIORegistry.getDefaultInstance();
-
-		// have to programmatically register tiff reader / writer in tomcat
-		registerImageIOService(registry, new TIFFImageWriterSpi(), javax.imageio.spi.ImageWriterSpi.class);
-		registerImageIOService(registry, new TIFFImageReaderSpi(), javax.imageio.spi.ImageReaderSpi.class);
-
-		registerImageIOService(registry, new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageWriterSpi(),
-				javax.imageio.spi.ImageWriterSpi.class);
-		registerImageIOService(registry, new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi(),
-				javax.imageio.spi.ImageReaderSpi.class);	
-	}
-	
-	private static <T extends ImageReaderWriterSpi> void registerImageIOService(IIORegistry registry, T provider, Class<T> clazz) {
-		if(registry == null || provider == null || clazz == null) {
-			throw new IllegalArgumentException("An argument is null!");
-		}
-		if(registry.registerServiceProvider(provider, clazz)) {
-			logger.info("Registered IIOServiceProvider: " + provider.getPluginClassName());
-		} else {
-			logger.info("Ignoring already registered IIOServiceProvider: " + provider.getPluginClassName());
-		}
-	}
-
-	public static void testReaders() throws IOException {
-		String[] formats = { "JPEG", "TIFF", "TIF", "PNG" };
-		for (String format : formats) {
-			logger.info("testing readers for format: " + format);
-			Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(format);
-
-			if (!readers.hasNext()) {
-				throw new IOException("No reader found for format: " + format);
-			}
-
-			while (readers.hasNext()) {
-				logger.info("reader: " + readers.next());
-			}
-		}
-	}
-	
 	public void dispose() {
 		if(imageBufferedImage != null) {
 			imageBufferedImage.flush();
@@ -271,9 +197,4 @@ public class Image {
 			imageOpenCVImage = null;
 		}
 	}
-	
-	public static void main(String[] args) throws IOException {
-		testReaders();
-	}
-
 }
