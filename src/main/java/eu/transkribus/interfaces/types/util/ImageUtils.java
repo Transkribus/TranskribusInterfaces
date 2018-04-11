@@ -159,16 +159,16 @@ public class ImageUtils {
     	}
     	if(!fails.isEmpty()) {
     		//Generate an error report
-    		StringBuffer sb = new StringBuffer("ImageReaders failed to read the source!");
+    		StringBuffer sb = new StringBuffer();
     		for(String s : fails) {
     			sb.append("\n"+s);
     		}
 	    	if(bi == null) {
 	    		//All suitable readers failed. Throw IIOExceptions with the report
-	    		throw new IIOException(sb.toString());
+	    		throw new IIOException("All ImageIO failed to read the source!" + sb.toString());
 	    	} else {
 	    		//Just log a warning
-	    		logger.warn(sb.toString());
+	    		logger.warn("Some ImageReaders failed on this source!" + sb.toString());
 	    	}
     	}
     	return bi;
@@ -362,8 +362,9 @@ public class ImageUtils {
     
     // ImageIO related methods ==========================================
     /**
-     * Java applications register plugins on the classpath automatically and in Tomcat the 
-     * ContextListener (included in the Twelvemonkeys servlet artifact) can be used for that.</br>
+     * Java applications register plugins on the classpath automatically.</br>
+     * web apps in Tomcat won't do that. 
+     * 
      * Check issue #4 before using this method!
      */
     public static void registerImageIOServices() {
@@ -400,17 +401,21 @@ public class ImageUtils {
 		}
 	}
 	
+	/**
+	 * this method logs all registered ImageIO service providers and the ClassLoader they belong to
+	 */
 	public static void listImageIOServices() {
 		IIORegistry registry = IIORegistry.getDefaultInstance();
-		logger.debug("image-io services:");
+		logger.info("ImageIO services:");
 		Iterator<Class<?>> cats = registry.getCategories();
 		while (cats.hasNext()) {
 			Class<?> cat = cats.next();
-			logger.debug("image-io category = " + cat);
+			logger.info("ImageIO category = " + cat);
 
 			Iterator<?> providers = registry.getServiceProviders(cat, true);
 			while (providers.hasNext()) {
-				logger.debug("image-io provider = " + providers.next());
+				Object o = providers.next();
+				logger.debug("ImageIO provider of type " + o.getClass().getCanonicalName() + " in " + o.getClass().getClassLoader());
 			}
 		}
 	}
