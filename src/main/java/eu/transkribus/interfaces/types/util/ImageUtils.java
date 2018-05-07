@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.spi.ImageReaderWriterSpi;
+import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageInputStream;
 
 import org.opencv.core.Core;
@@ -34,9 +36,6 @@ import org.opencv.core.Mat;
 //import org.opencv.highgui.Highgui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi;
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
 
 import eu.transkribus.interfaces.util.SysPathUtils;
 
@@ -51,6 +50,19 @@ public class ImageUtils {
 	private static final Logger logger = LoggerFactory.getLogger(ImageUtils.class);
 
 	private static final boolean USE_IMAGE_IO_READ_IMPL = false;
+	
+	private static List<ImageReaderSpi> iioReaderList = new ArrayList<>();
+	private static List<ImageWriterSpi> iioWriterList = new ArrayList<>();
+	
+	//Store instances of plugins to be registered AND unregistered. Not doing this will leave a mess in IIORegistry/Tomcat after hot (un)deployment
+	static {
+		//tiff writers
+		iioWriterList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi());
+		iioWriterList.add(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageWriterSpi());
+		//tiff readers
+		iioReaderList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi());
+		iioReaderList.add(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi());
+	}
 	
     public static BufferedImage convertToBufferedImage(Mat m) {
         // BufferedImage imageBufferedImage = new
@@ -144,11 +156,22 @@ public class ImageUtils {
     		    reader.setInput(iis, true, true);
     		    try {
     				bi = reader.read(0, param);
+    				logger.debug("Success with " + reader.getClass().getCanonicalName());
     			} catch(IIOException iioe) {
     				logger.debug(reader.getClass().getCanonicalName() + " failed to read image source!");
     				StackTraceElement ste = iioe.getStackTrace()[0];
     				fails.add(reader.getClass().getCanonicalName() + ": " + iioe.getMessage() 
-    					+ " (" + ste.getClassName() + "::" + ste.getMethodName() + " in " + ste.getFileName() + ")");
+    					+ " (IIOException at " + ste.toString() + ")");
+    			} 
+    		    catch (NoClassDefFoundError error) {
+    				/*
+    				 * This should never happen but it does in webapps/Tomcat when a stale reader plugin from a previous deployment is retrieved from IIORegistry.
+    				 * Proper cleanup of registered plugins should solve this in the long run (see TranskribusInterfaces #4) but for now we must handle it here
+    				 */
+    		    	logger.debug(reader.getClass().getCanonicalName() + ": " + error.getMessage());
+    				StackTraceElement ste = error.getStackTrace()[0];
+    				fails.add(reader.getClass().getCanonicalName() + ": " + error.getMessage() 
+    					+ " (NoClassDefFoundError at " + ste.toString() + ")");
     			} finally {
     				reader.dispose();
     			}
@@ -368,19 +391,30 @@ public class ImageUtils {
      * Check issue #4 before using this method!
      */
     public static void registerImageIOServices() {
-		logger.debug("registering image readers / writers");
-		
+		logger.debug("Registering ImageIO readers / writers");
 		IIORegistry registry = IIORegistry.getDefaultInstance();
 
-		// have to programmatically register tiff reader / writer in tomcat
-		registerImageIOService(registry, new TIFFImageWriterSpi(), javax.imageio.spi.ImageWriterSpi.class);
-		registerImageIOService(registry, new TIFFImageReaderSpi(), javax.imageio.spi.ImageReaderSpi.class);
-
-		registerImageIOService(registry, new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageWriterSpi(),
-				javax.imageio.spi.ImageWriterSpi.class);
-		registerImageIOService(registry, new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi(),
-				javax.imageio.spi.ImageReaderSpi.class);	
+		for(ImageReaderSpi spi : iioReaderList) {
+			registerImageIOService(registry, spi, javax.imageio.spi.ImageReaderSpi.class);
+		}
+		
+		for(ImageWriterSpi spi : iioWriterList) {
+			registerImageIOService(registry, spi, javax.imageio.spi.ImageWriterSpi.class);
+		}	
 	}
+    
+    public static void unregisterImageIOServices() {
+    	logger.debug("Unregistering ImageIO readers / writers");
+		IIORegistry registry = IIORegistry.getDefaultInstance();
+
+		for(ImageReaderSpi spi : iioReaderList) {
+			unregisterImageIOService(registry, spi, javax.imageio.spi.ImageReaderSpi.class);
+		}
+		
+		for(ImageWriterSpi spi : iioWriterList) {
+			unregisterImageIOService(registry, spi, javax.imageio.spi.ImageWriterSpi.class);
+		}	
+    }
 	
 	/**
 	 * @param registry the ImageIO registry to use
@@ -398,6 +432,25 @@ public class ImageUtils {
 			 * Actually ImageIO unregistered the old instance of the provider and registered the new one here!
 			 */
 			logger.debug("Replaced existing IIOServiceProvider in registry: " + provider.getPluginClassName());
+		}
+	}
+	
+	/**
+	 * @param registry the ImageIO registry to use
+	 * @param provider the service provider object to be registered.
+	 * @param category the category under which to register the provider.
+	 */
+	private static <T extends ImageReaderWriterSpi> void unregisterImageIOService(IIORegistry registry, T provider, Class<T> category) {
+		if(registry == null || provider == null || category == null) {
+			throw new IllegalArgumentException("An argument is null!");
+		}
+		if(registry.deregisterServiceProvider(provider, category)) {
+			logger.debug("Unregistered IIOServiceProvider: " + provider.getPluginClassName());
+		} else {
+			/*
+			 * Actually ImageIO unregistered the old instance of the provider and registered the new one here!
+			 */
+			logger.debug("Unregister failed. IIOServiceProvider was not in registry: " + provider.getPluginClassName());
 		}
 	}
 	
@@ -423,7 +476,7 @@ public class ImageUtils {
 	public static void testReaders() throws IOException {
 		String[] formats = { "JPEG", "TIFF", "TIF", "PNG" };
 		for (String format : formats) {
-			logger.info("testing readers for format: " + format);
+			logger.info("Testing readers for format: " + format);
 			Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(format);
 
 			if (!readers.hasNext()) {
@@ -431,7 +484,9 @@ public class ImageUtils {
 			}
 
 			while (readers.hasNext()) {
-				logger.info("reader: " + readers.next());
+				Object o = readers.next();
+				ClassLoader cl = o.getClass().getClassLoader();
+				logger.info("ImageReader: " + o + " in " + (cl == null ? "System ClassLoader" : cl));
 			}
 		}
 	}
