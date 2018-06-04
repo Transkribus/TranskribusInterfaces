@@ -96,7 +96,7 @@ public class ImageUtils {
         BufferedImage b = read(u);
         logger.debug("read buffered image from url: "+b);
         
-        if (b == null) {
+        if (b == null && u.getProtocol().startsWith("http")) {
             //ImageIO.read() can't handle 302 status code on url
             File tmpFile = ImageUtils.downloadImgFile(u);
             b = read(tmpFile);
@@ -115,11 +115,14 @@ public class ImageUtils {
     	if(USE_IMAGE_IO_READ_IMPL) {
     		return ImageIO.read(u);
     	} else {
-	    	try (
-	    			InputStream is = u.openStream();
-	    			ImageInputStream iis = ImageIO.createImageInputStream(is)
-	    		) {
-	    		return read(iis);
+	    	try (InputStream is = u.openStream();) {
+	    		ImageInputStream iis = ImageIO.createImageInputStream(is);
+	    		logger.debug("Got stream: " + iis);
+	    		BufferedImage bi =  read(iis);
+	    		if(bi == null) {
+	    			iis.close();
+	    		}
+	    		return bi;
 	    	}
     	}
     }
@@ -128,11 +131,47 @@ public class ImageUtils {
     	if(USE_IMAGE_IO_READ_IMPL) {
     		return ImageIO.read(f);
     	} else {
-	    	try (ImageInputStream iis = ImageIO.createImageInputStream(f)) {
-	    		return read(iis);
-	    	}
+	    	ImageInputStream iis = ImageIO.createImageInputStream(f);
+    		 if (iis == null) {
+	            throw new IIOException("Can't create an ImageInputStream!");
+	        }
+    		logger.debug("Got stream: " + iis);
+    	    try {
+    	    	return read(iis);
+    	    } catch (IIOException e) {
+    	    	iis.close();
+    	    	throw e;
+    	    }	    		
     	}
     }
+    
+//    public static ImageInputStream createImageInputStream(Object input) throws IOException {
+//            if (input == null) {
+//                throw new IllegalArgumentException("input == null!");
+//            }
+//
+//            Iterator<?> iter;
+//            // Ensure category is present
+//            try {
+//                iter = IIORegistry.getDefaultInstance().getServiceProviders(ImageInputStreamSpi.class,
+//                                                       true);
+//            } catch (IllegalArgumentException e) {
+//                return null;
+//            }
+//
+//            while (iter.hasNext()) {
+//                ImageInputStreamSpi spi = (ImageInputStreamSpi)iter.next();
+//                if (spi.getInputClass().isInstance(input)) {
+//                    try {
+//                        return spi.createInputStreamInstance(input);
+//                    } catch (IOException e) {
+//                        throw new IIOException("Can't create cache file!", e);
+//                    }
+//                }
+//            }
+//
+//            return null;
+//        }
     
     /**
      * Alternative implementation of ImageIO::read.</br>
@@ -178,6 +217,8 @@ public class ImageUtils {
     		    if(bi != null) {
     		    	break;
     		    }
+    		} else {
+    			logger.debug(rSpi.getPluginClassName() + " denied reading the source.");
     		}
     	}
     	if(!fails.isEmpty()) {
