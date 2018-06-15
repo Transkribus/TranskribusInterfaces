@@ -15,6 +15,9 @@ public class NativeProxyUtilsTest {
 
 	@Before
 	public void setupEnvironment() {
+		/*
+		 * If loading the interfaces wrapper fails, try exporting LD_LIBRARY_PATH=/usr/local/lib
+		 */
 		NativeLibRegistry.INSTANCE.addDirsToPath("/usr/local/share/OpenCV/java/");
 		NativeLibRegistry.INSTANCE.loadTranskribusInterfacesLib();
 		NativeLibRegistry.INSTANCE.loadLibrary("opencv_java310");
