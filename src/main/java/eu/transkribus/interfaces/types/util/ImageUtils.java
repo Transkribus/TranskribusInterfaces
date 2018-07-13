@@ -112,6 +112,7 @@ public class ImageUtils {
     }
     
     public static BufferedImage read(URL u) throws IOException {
+    	//TODO always try ImageIO::read first and only loop through all readers if null is returned.
     	if(USE_IMAGE_IO_READ_IMPL) {
     		return ImageIO.read(u);
     	} else {
@@ -128,6 +129,7 @@ public class ImageUtils {
     }
     
     public static BufferedImage read(File f) throws IOException {
+    	//TODO always try ImageIO::read first and only loop through all readers if null is returned.
     	if(USE_IMAGE_IO_READ_IMPL) {
     		return ImageIO.read(f);
     	} else {
