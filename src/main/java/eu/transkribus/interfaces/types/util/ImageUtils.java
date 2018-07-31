@@ -112,39 +112,40 @@ public class ImageUtils {
     }
     
     public static BufferedImage read(URL u) throws IOException {
-    	//TODO always try ImageIO::read first and only loop through all readers if null is returned.
-    	if(USE_IMAGE_IO_READ_IMPL) {
-    		return ImageIO.read(u);
-    	} else {
+    	//always try ImageIO::read first and only loop through all readers if null is returned.
+    	BufferedImage bi = ImageIO.read(u);
+    	if(bi == null) {
+    		logger.debug("ImageIO failed to read image. Checking other readers on URL: " + u);
 	    	try (InputStream is = u.openStream();) {
 	    		ImageInputStream iis = ImageIO.createImageInputStream(is);
 	    		logger.debug("Got stream: " + iis);
-	    		BufferedImage bi =  read(iis);
+	    		bi = read(iis);
 	    		if(bi == null) {
 	    			iis.close();
 	    		}
-	    		return bi;
 	    	}
     	}
+    	return bi;
     }
     
     public static BufferedImage read(File f) throws IOException {
-    	//TODO always try ImageIO::read first and only loop through all readers if null is returned.
-    	if(USE_IMAGE_IO_READ_IMPL) {
-    		return ImageIO.read(f);
-    	} else {
+    	//always try ImageIO::read first and only loop through all readers if null is returned.
+    	BufferedImage bi = ImageIO.read(f);
+    	if(bi == null) {
+    		logger.debug("ImageIO failed to read image. Checking other readers on file: " + f.getAbsolutePath());
 	    	ImageInputStream iis = ImageIO.createImageInputStream(f);
     		 if (iis == null) {
 	            throw new IIOException("Can't create an ImageInputStream!");
 	        }
     		logger.debug("Got stream: " + iis);
     	    try {
-    	    	return read(iis);
+    	    	bi = read(iis);
     	    } catch (IIOException e) {
     	    	iis.close();
     	    	throw e;
     	    }	    		
     	}
+    	return bi;
     }
     
 //    public static ImageInputStream createImageInputStream(Object input) throws IOException {
