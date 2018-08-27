@@ -15,6 +15,8 @@ clean_swig:
 	make -C $(SWIG_DIR) clean
 mvn: 
 	mvn clean install
+mvn_wot:
+	mvn clean install -Dmaven.test.skip=true	
 
 clean: clean_cpp clean_swig
 	rm src/main/resources/*.so
