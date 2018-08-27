@@ -57,10 +57,10 @@ public class ImageUtils {
 	//Store instances of plugins to be registered AND unregistered. Not doing this will leave a mess in IIORegistry/Tomcat after hot (un)deployment
 	static {
 		//tiff writers
-		iioWriterList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi());
+//		iioWriterList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi());
 		iioWriterList.add(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageWriterSpi());
 		//tiff readers
-		iioReaderList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi());
+//		iioReaderList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi());
 		iioReaderList.add(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi());
 	}
 	
@@ -147,34 +147,6 @@ public class ImageUtils {
     	}
     	return bi;
     }
-    
-//    public static ImageInputStream createImageInputStream(Object input) throws IOException {
-//            if (input == null) {
-//                throw new IllegalArgumentException("input == null!");
-//            }
-//
-//            Iterator<?> iter;
-//            // Ensure category is present
-//            try {
-//                iter = IIORegistry.getDefaultInstance().getServiceProviders(ImageInputStreamSpi.class,
-//                                                       true);
-//            } catch (IllegalArgumentException e) {
-//                return null;
-//            }
-//
-//            while (iter.hasNext()) {
-//                ImageInputStreamSpi spi = (ImageInputStreamSpi)iter.next();
-//                if (spi.getInputClass().isInstance(input)) {
-//                    try {
-//                        return spi.createInputStreamInstance(input);
-//                    } catch (IOException e) {
-//                        throw new IIOException("Can't create cache file!", e);
-//                    }
-//                }
-//            }
-//
-//            return null;
-//        }
     
     /**
      * Alternative implementation of ImageIO::read.</br>
