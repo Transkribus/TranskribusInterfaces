@@ -34,7 +34,7 @@ public class ImageTest {
 
 		URL[] urls = { new URL("http://www.austriatraveldirect.com/files/INNNORD01041.jpg"),
 				new URL("http://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"),
-				new URL("https://dbis-thure.uibk.ac.at/f/Get?fileType=bin&id=CFELMFJLDLMWBFVUUDQTTMXR") };
+				new URL("https://files-test.transkribus.eu/Get?fileType=bin&id=CFELMFJLDLMWBFVUUDQTTMXR") };
 
 		for (URL url : urls) {
 			Image img = new Image(url);
