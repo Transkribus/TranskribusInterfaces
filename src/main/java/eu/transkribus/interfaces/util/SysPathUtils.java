@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class SysPathUtils {
 		if(path == null) {
 			path = "";
 		}
-		return (List<String>) Arrays.asList(path.split(PATH_VAR_SEPERATOR));
+		return new ArrayList<String>(Arrays.asList(path.split(PATH_VAR_SEPERATOR)));
 	}
 	
 	private static String joinPath(List<String> parts) {
@@ -58,30 +59,40 @@ public class SysPathUtils {
 				.collect(Collectors.joining(PATH_VAR_SEPERATOR));
 	}
 	
-	public static String addDirToPath(String currentPath, String newDir, boolean isSuffix) {
+	public static String addDirToPath(String currentPath, boolean isSuffix, String... newDirs) {
 		if(currentPath == null) {
 			currentPath = "";
 		}
-		if(newDir == null) {
+		if(newDirs == null || newDirs.length == 0) {
 			return currentPath;
+		}
+		List<String> currentParts = splitPath(currentPath);
+		List<String> newParts = new ArrayList<>(newDirs.length);
+		//check if the path already contains joined parts
+		for(String d : newDirs) {
+			newParts.addAll(splitPath(d));
+		}
+		//reverse before prefixing to maintain order
+		if(!isSuffix) {
+			Collections.reverse(newParts);
 		}
 		
-		String newDirCan;
-		try {
-			newDirCan = new File(newDir).getCanonicalPath();
-		} catch (IOException e) {
-			logger.error("Cannot add path: " + newDir, e);
-			return currentPath;
-		}
-		//splitPath() returns a fixed-size list!
-		List<String> currentParts = new ArrayList<>(splitPath(currentPath));
-		if(currentParts.contains(newDirCan)) {
-			logger.info("Omitting already included dir '" + newDirCan + "' from being added to path: " + currentPath);
-		} else {
-			if (isSuffix) {
-				currentParts.add(newDirCan);
+		for(String newDir : newParts) {
+			String newDirCan;
+			try {
+				newDirCan = new File(newDir).getCanonicalPath();
+			} catch (IOException e) {
+				logger.error("Cannot add path: " + newDir, e);
+				return currentPath;
+			}
+			if(currentParts.contains(newDirCan)) {
+				logger.info("Omitting already included dir '" + newDirCan + "' from being added to path: " + currentPath);
 			} else {
-				currentParts.add(0, newDirCan);
+				if (isSuffix) {
+					currentParts.add(newDirCan);
+				} else {
+					currentParts.add(0, newDirCan);
+				}
 			}
 		}
 		return joinPath(currentParts);
@@ -94,6 +105,17 @@ public class SysPathUtils {
 		return splitPath(currentPath).stream()
 			.filter(d -> !dirToRemove.equals(d))
 			.collect(Collectors.joining(PATH_VAR_SEPERATOR));
+	}
+	
+	public static String addPrefixToRelativePaths(String path, String prefix) {
+		List<String> parts = splitPath(path);
+		prefix = new File(prefix).getAbsolutePath();
+		for(int i = 0; i < parts.size(); i++) {
+			if(!parts.get(i).startsWith(File.separator)) {
+				parts.set(i, prefix + File.separator + parts.get(i));				
+			}
+		}
+		return joinPath(parts);
 	}
 	
 	public static String getJavaLibraryPath() {
@@ -148,7 +170,7 @@ public class SysPathUtils {
 
 	public static boolean addDirToJavaLibraryPath(String newDir, boolean suffixPath) {
 		String currentPath = getJavaLibraryPath();
-		String newPath = addDirToPath(currentPath, newDir, suffixPath);
+		String newPath = addDirToPath(currentPath, suffixPath, newDir);
 		if(!currentPath.equals(newPath)) {
 			setJavaLibraryPath(newPath);
 			return true;
