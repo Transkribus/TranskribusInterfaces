@@ -52,10 +52,11 @@ public class TrpImageIO {
 		// tiff readers
 //		iioReaderList.add(new com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi());
 		iioReaderList.add(new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi());
+		
+		iioReaderList.add(new org.apache.pdfbox.jbig2.JBIG2ImageReaderSpi());
 	}
 
-	private TrpImageIO() {
-	}
+	private TrpImageIO() {}
 
 	/**
 	 * See {@link ImageIO#read(File)}<br>
