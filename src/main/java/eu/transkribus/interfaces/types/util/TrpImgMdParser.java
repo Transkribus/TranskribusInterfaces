@@ -26,26 +26,26 @@ public class TrpImgMdParser {
 
 	private TrpImgMdParser() {}
 	
-	public static ImageDimension readImageDimension(URL url) throws ImageProcessingException, IOException, MetadataException {
+	public static ImageTransformation readImageDimension(URL url) throws ImageProcessingException, IOException, MetadataException {
 		long time = System.currentTimeMillis();
 		try (InputStream is = url.openStream()) {
-			ImageDimension dim = readImageDimension(is);
+			ImageTransformation dim = readImageDimension(is);
 			logger.debug("Exif orientation read from URL in " + (System.currentTimeMillis() - time) + " ms");
 			return dim;
 		}
 	}
 
-	public static ImageDimension readImageDimension(File file)
+	public static ImageTransformation readImageDimension(File file)
 			throws FileNotFoundException, IOException, ImageProcessingException, MetadataException {
 		long time = System.currentTimeMillis();
 		try (InputStream is = new FileInputStream(file)) {
-			ImageDimension dim = readImageDimension(is);
+			ImageTransformation dim = readImageDimension(is);
 			logger.debug("Exif orientation read from File in " + (System.currentTimeMillis() - time) + " ms");
 			return dim;
 		}
 	}
 
-	public static ImageDimension readImageDimension(InputStream is)
+	public static ImageTransformation readImageDimension(InputStream is)
 			throws ImageProcessingException, IOException, MetadataException {
 		long time = System.currentTimeMillis();
 		Metadata metadata = ImageMetadataReader.readMetadata(is);
@@ -68,7 +68,8 @@ public class TrpImgMdParser {
 			final int orientation = getExifTagValueInt(exifIFD0Directory, DEFAULT_EXIF_ORIENTATION, 
 					ExifIFD0Directory.TAG_ORIENTATION);
 			logger.debug("Exif orientation read from stream in " + (System.currentTimeMillis() - time) + " ms");
-			return getTransformation(width, height, orientation);
+			
+			return getTransformation(new ImageDimension(orientation, width, height));
 		}
 	}
 
@@ -105,55 +106,68 @@ public class TrpImgMdParser {
 	 * @param exifOrientation an exifOrientation value. 1 is "normal", i.e. no transformation
 	 * @return
 	 */
-	public static ImageDimension getTransformation(int width, int height, int exifOrientation) {
+	public static ImageTransformation getTransformation(ImageDimension dimension) {
 		AffineTransform t = new AffineTransform();
-		int destWidth = width;
-		int destHeight = height;
-		switch (exifOrientation) {
+		int destWidth = dimension.getOriginalWidth();
+		int destHeight = dimension.getOriginalHeight();
+		switch (dimension.getExifOrientation()) {
 		case 2: // Flip X
 			t.scale(-1.0f, 1.0f);
-			t.translate(-width, 0);
+			t.translate(-dimension.getOriginalWidth(), 0);
 			break;
 		case 3: // PI rotation
-			t.translate(width, height);
+			t.translate(dimension.getOriginalWidth(), dimension.getOriginalHeight());
 			t.rotate(toRadiant(180));
 			break;
 		case 4: // Flip Y
 			t.scale(1.0f, -1.0f);
-			t.translate(0, -height);
+			t.translate(0, -dimension.getOriginalHeight());
 			break;
 		case 5: // - PI/2 and Flip X
-			destWidth = height;
-			destHeight = width;
+			destWidth = dimension.getOriginalHeight();
+			destHeight = dimension.getOriginalWidth();
 			t.rotate(toRadiant(-90));
 			t.scale(-1.0f, 1.0f);
 			break;
 		case 6: // -PI/2 and -width
 			logger.debug("detected clockwise 90° rotation");
-			destWidth = height;
-			destHeight = width;
-			t.translate(height, 0);
+			destWidth = dimension.getOriginalHeight();
+			destHeight = dimension.getOriginalWidth();
+			t.translate(dimension.getOriginalHeight(), 0);
 			t.rotate(toRadiant(90));
 			break;
 		case 7: // PI/2 and Flip
-			destWidth = height;
-			destHeight = width;
+			destWidth = dimension.getOriginalHeight();
+			destHeight = dimension.getOriginalWidth();
 			t.scale(-1.0f, 1.0f);
-			t.translate(-height, 0);
-			t.translate(0, width);
+			t.translate(-dimension.getOriginalHeight(), 0);
+			t.translate(0, dimension.getOriginalWidth());
 			t.rotate(toRadiant(270));
 			break;
 		case 8: // PI / 2
-			destWidth = height;
-			destHeight = width;
-			t.translate(0, width);
+			destWidth = dimension.getOriginalHeight();
+			destHeight = dimension.getOriginalWidth();
+			t.translate(0, dimension.getOriginalWidth());
 			t.rotate(toRadiant(270));
 			break;
 		default:
 			// orientation "1" or anything else: do nothing
 			break;
 		}
-		return new ImageDimension(t, exifOrientation, destWidth, destHeight);
+		return new ImageTransformation(dimension, t, destWidth, destHeight);
+	}
+	
+	/**
+	 * Create an {@link AffineTransform} according the exif orientation int value given
+	 * 
+	 * @param width
+	 * @param height
+	 * @param exifOrientation an exifOrientation value. 1 is "normal", i.e. no transformation
+	 * @return
+	 */
+	public static ImageTransformation getTransformation(int width, int height, int exifOrientation) {
+		ImageDimension dim = new ImageDimension(exifOrientation, width, height);
+		return getTransformation(dim);
 	}
 	
 	private static double toRadiant(int degree) {
@@ -161,23 +175,49 @@ public class TrpImgMdParser {
 	}
 	
 	/**
-	 * Contains metadata for an image that is necessary for displaying and processing it correctly, 
-	 * i.e. the width, height and an {@link AffineTransform} in case the image data has to be altered to bring 
-	 * it into the correct form, matching the given width and height values.
+	 * Contains metadata included in an image that is needed for display and processing purposes.
 	 *  
 	 * @author philip
 	 *
 	 */
-	public static class ImageDimension {
+	private static class ImageDimension {
+		private final int originalWidth;
+		private final int originalHeight;
+		private final int exifOrientation;
+		private ImageDimension(final Integer exifOrientation, final int originalWidth, final int originalHeight) {
+			this.originalWidth = originalWidth;
+			this.originalHeight = originalHeight;
+			this.exifOrientation = exifOrientation == null ? DEFAULT_EXIF_ORIENTATION : exifOrientation;
+		}
+		public int getOriginalWidth() {
+			return originalWidth;
+		}
+		public int getOriginalHeight() {
+			return originalHeight;
+		}
+		public int getExifOrientation() {
+			return exifOrientation;
+		}
+		public boolean isNonDefaultOrientation() {
+			return exifOrientation != DEFAULT_EXIF_ORIENTATION;
+		}
+	}
+	/**
+	 * Contains metadata read from an image that is needed for display and processing purposes, as well as 
+	 * additional information needed for bringing the data in a usable form e.g. {@link AffineTransform}.
+	 *  
+	 * @author philip
+	 *
+	 */
+	public static class ImageTransformation extends ImageDimension {
 		private final AffineTransform transformation;
 		private final int destinationWidth;
 		private final int destinationHeight;
-		private final int exifOrientation;
-		private ImageDimension(AffineTransform transformation, final Integer exifOrientation, final int destinationWidth, final int destinationHeight) {
+		private ImageTransformation(ImageDimension dimension, AffineTransform transformation, final int destinationWidth, final int destinationHeight) {
+			super(dimension.getExifOrientation(), dimension.getOriginalWidth(), dimension.getOriginalHeight());
 			this.transformation = transformation;
 			this.destinationWidth = destinationWidth;
 			this.destinationHeight = destinationHeight;
-			this.exifOrientation = exifOrientation == null ? DEFAULT_EXIF_ORIENTATION : exifOrientation;
 		}
 		public AffineTransform getTransformation() {
 			return transformation;
@@ -187,9 +227,6 @@ public class TrpImgMdParser {
 		}
 		public int getDestinationHeight() {
 			return destinationHeight;
-		}
-		public int getExifOrientation() {
-			return exifOrientation;
 		}
 	}
 }

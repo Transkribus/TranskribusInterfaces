@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.MetadataException;
 
-import eu.transkribus.interfaces.types.util.TrpImgMdParser.ImageDimension;
+import eu.transkribus.interfaces.types.util.TrpImgMdParser.ImageTransformation;
 
 /**
  * Methods taken from ImageIO and adapted to respect the image EXIF metadata's
@@ -76,7 +76,7 @@ public class TrpImageIO {
 			throw new IIOException("Can't read input file!");
 		}
 		// read orientation data
-		ImageDimension dim = null;
+		ImageTransformation dim = null;
 		try {
 			dim = TrpImgMdParser.readImageDimension(input);
 		} catch (ImageProcessingException | MetadataException e) {
@@ -116,7 +116,7 @@ public class TrpImageIO {
 			throw new IIOException("Can't get input stream from URL!", e);
 		}
 		// read orientation data
-		ImageDimension dim = null;
+		ImageTransformation dim = null;
 		try {
 			dim = TrpImgMdParser.readImageDimension(input);
 		} catch (ImageProcessingException | MetadataException e) {
@@ -156,7 +156,7 @@ public class TrpImageIO {
 			throw new IllegalArgumentException("input == null!");
 		}
 		//read orientation data
-        ImageDimension dim = null;
+        ImageTransformation dim = null;
         try {
 			dim = TrpImgMdParser.readImageDimension(input);
 		} catch (ImageProcessingException | MetadataException e) {
@@ -212,15 +212,14 @@ public class TrpImageIO {
 		return dim;
 	}
 
-	public static BufferedImage transformImage(BufferedImage image, ImageDimension rotation) {
-		if (rotation == null || rotation.getExifOrientation() == TrpImgMdParser.DEFAULT_EXIF_ORIENTATION) {
+	public static BufferedImage transformImage(BufferedImage image, ImageTransformation transformation) {
+		if (transformation == null || transformation.getExifOrientation() == TrpImgMdParser.DEFAULT_EXIF_ORIENTATION) {
 			return image;
 		}
 		logger.debug("Computing transformation for width = " + image.getWidth() + " height = " + image.getHeight()
-				+ " orientation = " + rotation.getExifOrientation());
-		AffineTransformOp op = new AffineTransformOp(rotation.getTransformation(), AffineTransformOp.TYPE_BICUBIC);
-		BufferedImage destinationImage = new BufferedImage(rotation.getDestinationWidth(),
-				rotation.getDestinationHeight(), image.getType());
+				+ " orientation = " + transformation.getExifOrientation());
+		AffineTransformOp op = new AffineTransformOp(transformation.getTransformation(), AffineTransformOp.TYPE_BICUBIC);
+		BufferedImage destinationImage = new RotatedBufferedImage(transformation, image.getType());
 		destinationImage = op.filter(image, destinationImage);
 		logger.debug("Destination image: width = " + destinationImage.getWidth() + " height = "
 				+ destinationImage.getHeight());
@@ -338,6 +337,27 @@ public class TrpImageIO {
 				ClassLoader cl = o.getClass().getClassLoader();
 				logger.info("ImageReader: " + o + " in " + (cl == null ? "System ClassLoader" : cl));
 			}
+		}
+	}
+	
+	/**
+	 * A subclass of {@link BufferedImage}, that is returned by the read methods in this class in case the EXIF orientation 
+	 * tag value required a transformation in the course of loading the image data.<br>
+	 * Subsequent processes can get the original width, height and orientation tag value by the {@link #getImageTransformation()()} method.<br>
+	 * {@link #getWidth()} and {@link #getHeight()} will return the values for the rotated image and not the ones of the raw image data!
+	 *  
+	 * @author philip
+	 *
+	 */
+	public static class RotatedBufferedImage extends BufferedImage {
+		protected final ImageTransformation transformation;
+		public RotatedBufferedImage(ImageTransformation transformation, int imageType) {
+			super(transformation.getDestinationWidth(), transformation.getDestinationHeight(), imageType);
+			this.transformation = transformation;
+		}
+		
+		public ImageTransformation getImageTransformation() {
+			return transformation;
 		}
 	}
 }
