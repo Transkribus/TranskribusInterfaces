@@ -116,7 +116,7 @@ public class ImageTest {
 	@Test
 	public void testImageOrientationOpenCv() throws IOException {
 		logger.debug("Test to load an image with exif orientation set.");
-		URL imgUrl = ImageTest.class.getClassLoader().getResource("img/exif_orientation_6.jpg");
+		URL imgUrl = new URL("https://files-test.transkribus.eu/Get?id=XBNTVRNUTFEDVFPPGIGIJRSN&fileType=view");
 		BufferedImage bi = ImageIO.read(imgUrl);
 		Image img = new Image(imgUrl);
 		Mat opencvImage = img.getImageOpenCVImage(true);
