@@ -82,7 +82,7 @@ public class TrpImageIO {
 		try {
 			dim = TrpImgMdParser.readImageDimension(input);
 		} catch (ImageProcessingException | MetadataException e) {
-			logger.error("Could not extract metadata from file: " + input.getAbsolutePath(), e);
+			logger.error("Could not extract metadata from file: " + input.getAbsolutePath() + " - " + e.getMessage());
 		}
 		ImageInputStream stream = ImageIO.createImageInputStream(input);
 		if (stream == null) {
@@ -123,7 +123,7 @@ public class TrpImageIO {
 		try {
 			dim = TrpImgMdParser.readImageDimension(input);
 		} catch (ImageProcessingException | MetadataException e) {
-			logger.error("Could not extract metadata from file: " + input, e);
+			logger.error("Could not extract metadata from URL: " + input + " - " + e.getMessage());
 		}
 		ImageInputStream stream = ImageIO.createImageInputStream(istream);
 		BufferedImage bi;
