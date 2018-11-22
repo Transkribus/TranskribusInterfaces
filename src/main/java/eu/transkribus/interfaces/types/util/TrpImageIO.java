@@ -113,7 +113,7 @@ public class TrpImageIO {
 
 		InputStream istream = null;
 		try {
-			//we might need to follow redirects. Use custom getInputStream() method
+			//we might need to follow redirects on http(s) URLs. Use custom getInputStream() method
 			istream = HttpUtils.getInputStream(input);
 		} catch (IOException e) {
 			throw new IIOException("Can't get input stream from URL!", e);

@@ -64,7 +64,7 @@ public class HttpUtils {
 	 */
 	public static InputStream getInputStream(URL imageUrl) throws IOException {
     	if(!imageUrl.getProtocol().startsWith("http")) {
-    		throw new IllegalArgumentException("Only http/https protocol is supported in image URL.");
+    		return imageUrl.openStream();
     	}
     	final HttpURLConnection conn = openConnection(imageUrl);
         FilterInputStream fis = new FilterInputStream(conn.getInputStream()) {
