@@ -233,8 +233,8 @@ public class TrpImgMdParser {
 		public int getExifOrientation() {
 			return exifOrientation;
 		}
-		public boolean isNonDefaultOrientation() {
-			return exifOrientation != DEFAULT_EXIF_ORIENTATION;
+		public boolean isDefaultOrientation() {
+			return exifOrientation == DEFAULT_EXIF_ORIENTATION;
 		}
 	}
 	/**
