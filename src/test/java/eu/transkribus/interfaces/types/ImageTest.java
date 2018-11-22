@@ -45,6 +45,7 @@ public class ImageTest {
 				new URL("https://files-test.transkribus.eu/Get?fileType=bin&id=CFELMFJLDLMWBFVUUDQTTMXR") };
 
 		for (URL url : urls) {
+			logger.debug("Trying URL: " + url);
 			Image img = new Image(url);
 			img.createType(Type.OPEN_CV);
 
@@ -56,9 +57,16 @@ public class ImageTest {
 	public void testFromUrlToBufferedImage() throws IOException {
 		logger.debug("testFromUrlToBufferedImage");
 
-		URL[] urls = { new URL("https://dbis-thure.uibk.ac.at/f/Get?fileType=orig&id=VJCQMQBNZFDFCZMAJZHKNJKW") };
+		URL[] urls = { 
+				new URL("https://dbis-thure.uibk.ac.at/f/Get?fileType=orig&id=VJCQMQBNZFDFCZMAJZHKNJKW"),
+				new URL("http://www.austriatraveldirect.com/files/INNNORD01041.jpg"),
+				//this URL will do a redirect to the HTTPS host
+				new URL("http://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"),
+				new URL("https://files-test.transkribus.eu/Get?fileType=bin&id=CFELMFJLDLMWBFVUUDQTTMXR")
+				};
 
 		for (URL url : urls) {
+			logger.debug("Trying URL: " + url);
 			Image img = new Image(url);
 			try {
 				img.createType(Type.JAVA);
@@ -98,15 +106,18 @@ public class ImageTest {
 
 	public BufferedImage testImageOrientation(URL imgUrl) throws IOException {
 		logger.debug("Test to load an image with exif orientation set: " + imgUrl);
+		//Use standard ImageIO as reference
 		BufferedImage bi = ImageIO.read(imgUrl);
 		Image img = new Image(imgUrl);
 		BufferedImage bi2 = img.getImageBufferedImage(true);
 		
 		int xRes = bi2.getWidth();
+		//xRes is original height for that image
 		final int xResWhenCorrectlyRotated = bi.getHeight();
 		Assert.assertEquals("Image orientation is incorrect. Width does not match expected value.", xResWhenCorrectlyRotated, xRes);
 		
 		int yRes = bi2.getHeight();
+		//yRes is original Width
 		final int yResWhenCorrectlyRotated = bi.getWidth();
 		Assert.assertEquals("Image orientation is incorrect. Height does not match expected value.", yResWhenCorrectlyRotated, yRes);
 		

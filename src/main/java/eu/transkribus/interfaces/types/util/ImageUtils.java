@@ -2,19 +2,13 @@ package eu.transkribus.interfaces.types.util;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -24,6 +18,7 @@ import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.transkribus.interfaces.util.HttpUtils;
 import eu.transkribus.interfaces.util.SysPathUtils;
 
 /**
@@ -65,12 +60,18 @@ public class ImageUtils {
     }
 
     public static BufferedImage convertToBufferedImage(URL u) throws IOException {
-        BufferedImage b = TrpImageIO.read(u);
-        logger.debug("read buffered image from url: "+b);
-        
+        BufferedImage b = null;
+        try {
+        	b = TrpImageIO.read(u);
+        	logger.debug("read buffered image from url: "+b);
+        } catch (IOException e) {
+        	logger.error(e.getMessage());
+        }
         if (b == null && u.getProtocol().startsWith("http")) {
-            //ImageIO.read() can't handle 302 status code on url
-            File tmpFile = ImageUtils.downloadImgFile(u);
+        	logger.debug("Downloading file from URL...");
+        	// TrpImageIO handles redirects and this block may be unnecessary now
+            //this was needed as ImageIO.read() can't handle 302 status code on url
+            File tmpFile = HttpUtils.downloadFile(u);
             b = TrpImageIO.read(tmpFile);
             logger.debug("read buffered image from file: "+b);
             if (!tmpFile.delete()) {
@@ -136,7 +137,7 @@ public class ImageUtils {
 				throw new IOException("Could get file for URL: " + u, e);
 			}
     	} else {
-    		tmpFile = ImageUtils.downloadImgFile(u);
+    		tmpFile = HttpUtils.downloadFile(u);
     	}
     	
         try {
@@ -175,65 +176,6 @@ public class ImageUtils {
         return m;
     }
 
-    public static File downloadImgFile(URL imageUrl) throws IOException {
-    	if(!imageUrl.getProtocol().startsWith("http")) {
-    		throw new IllegalArgumentException("Only http/https protocol is supported in image URL.");
-    	}
-        HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setInstanceFollowRedirects(true);
-        HttpURLConnection.setFollowRedirects(true);
-        conn.connect();
-
-        boolean redirect = false;
-        int status = conn.getResponseCode();
-        if (status != HttpURLConnection.HTTP_OK) {
-            if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-                    || status == HttpURLConnection.HTTP_SEE_OTHER) {
-                redirect = true;
-            }
-        }
-
-        if (redirect) {
-            // get redirect url from "location" header field
-            String newUrl = conn.getHeaderField("Location");
-            // open the new connnection again
-            conn = (HttpURLConnection) new URL(newUrl).openConnection();
-        }
-
-        String filename = null;
-
-        String contentDispHdr = conn.getHeaderField("Content-Disposition");
-
-        if (contentDispHdr != null && contentDispHdr.indexOf("=") != -1) {
-            String[] splits = contentDispHdr.split("=");
-            if (splits.length > 1) {
-                filename = contentDispHdr.split("=")[1].replaceAll("\"", "");
-            }
-        }
-        if (filename == null) {
-        	String splits[] = imageUrl.getPath().split("/");
-            filename = URLDecoder.decode(splits[splits.length - 1], "UTF-8");
-        }
-        if (filename == null) {
-            filename = "tmp-" + UUID.randomUUID();
-        }
-        logger.debug("filename = "+filename+" tmpdir = "+System.getProperty("java.io.tmpdir"));
-        File output = new File(System.getProperty("java.io.tmpdir") + File.separator + filename);
-
-        BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(output));
-        int inByte;
-
-        while ((inByte = bis.read()) != -1) {
-            bos.write(inByte);
-        }
-
-        bos.close();
-        conn.disconnect();
-        return output;
-    }
-
     public static File saveAsFile(Mat m, String path) throws IOException {
         try {
             Class<?> clazz = Class.forName("org.opencv.imgcodecs.Imgcodecs");
@@ -259,7 +201,7 @@ public class ImageUtils {
     }
 
     public static File saveAsFile(URL u, String path) throws IOException {
-        File tmp = downloadImgFile(u);
+        File tmp = HttpUtils.downloadFile(u);
         File f = new File(path);
         if (tmp.renameTo(f)) {
             return f;

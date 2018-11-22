@@ -19,6 +19,8 @@ import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
 
+import eu.transkribus.interfaces.util.HttpUtils;
+
 public class TrpImgMdParser {
 	private static final Logger logger = LoggerFactory.getLogger(TrpImgMdParser.class);
 	
@@ -28,7 +30,7 @@ public class TrpImgMdParser {
 	
 	public static ImageTransformation readImageDimension(URL url) throws ImageProcessingException, IOException, MetadataException {
 		long time = System.currentTimeMillis();
-		try (InputStream is = url.openStream()) {
+		try (InputStream is = HttpUtils.getInputStream(url)) {
 			ImageTransformation dim = readImageDimension(is);
 			logger.debug("Exif orientation read from URL in " + (System.currentTimeMillis() - time) + " ms");
 			return dim;

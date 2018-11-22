@@ -30,12 +30,14 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.MetadataException;
 
 import eu.transkribus.interfaces.types.util.TrpImgMdParser.ImageTransformation;
+import eu.transkribus.interfaces.util.HttpUtils;
 
 /**
  * Methods taken from ImageIO and adapted to respect the image EXIF metadata's
  * orientation tag.
  * Returned BufferedImage objects are already rotated according to that data.
- *
+ * If image can't be read, an IOException is thrown instead of returning null.
+ * Also, the {@link #read(URL)} method will follow redirects unlike the original ImageIO.
  */
 public class TrpImageIO {
 	private static final Logger logger = LoggerFactory.getLogger(TrpImageIO.class);
@@ -111,7 +113,8 @@ public class TrpImageIO {
 
 		InputStream istream = null;
 		try {
-			istream = input.openStream();
+			//we might need to follow redirects. Use custom getInputStream() method
+			istream = HttpUtils.getInputStream(input);
 		} catch (IOException e) {
 			throw new IIOException("Can't get input stream from URL!", e);
 		}
