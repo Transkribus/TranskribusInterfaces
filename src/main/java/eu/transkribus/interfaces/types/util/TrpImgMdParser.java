@@ -101,11 +101,11 @@ public class TrpImgMdParser {
 	}
 	
 	/**
-	 * Create an {@link AffineTransform} according the exif orientation int value given
+	 * Create an {@link AffineTransform} according the exif orientation int value included in dension
 	 * 
 	 * @param width
 	 * @param height
-	 * @param exifOrientation an exifOrientation value. 1 is "normal", i.e. no transformation
+	 * @param dimension {@link ImageDimension}
 	 * @return
 	 */
 	public static ImageTransformation getTransformation(ImageDimension dimension) {
