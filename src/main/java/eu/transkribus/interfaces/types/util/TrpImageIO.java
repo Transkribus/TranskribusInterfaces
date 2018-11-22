@@ -184,8 +184,28 @@ public class TrpImageIO {
 	 * @throws IOException
 	 */
 	public static Dimension readImageDimensions(File imgFile) throws FileNotFoundException, IOException {
-		Dimension dim = null;
 		ImageInputStream iis = new FileImageInputStream(imgFile);
+		return readImageDimensions(iis);
+	}
+	
+	/**
+	 * This method reads the image data and returns the pixel dimensions not taking into account information on the orientation!
+	 * First try {@link TrpImgMdParser#readImageDimension(File)} and use this if no EXIF data was found.
+	 * 
+	 * @param imgFile
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static Dimension readImageDimensions(URL url) throws IOException {
+		try (InputStream is = URLUtils.getInputStream(url)) {
+			ImageInputStream iis = ImageIO.createImageInputStream(is);
+			return readImageDimensions(iis);
+		}
+	}
+
+	private static Dimension readImageDimensions(ImageInputStream iis) throws IOException {
+		Dimension dim = null;
 		final Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 		while (readers.hasNext()) {
 			ImageReader reader = readers.next();
@@ -216,7 +236,7 @@ public class TrpImageIO {
 	}
 
 	public static BufferedImage transformImage(BufferedImage image, ImageTransformation transformation) {
-		if (transformation == null || transformation.getExifOrientation() == TrpImgMdParser.DEFAULT_EXIF_ORIENTATION) {
+		if (transformation == null || transformation.isDefaultOrientation()) {
 			return image;
 		}
 		logger.debug("Computing transformation for width = " + image.getWidth() + " height = " + image.getHeight()
