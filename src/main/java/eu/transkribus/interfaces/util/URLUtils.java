@@ -22,13 +22,13 @@ import org.slf4j.LoggerFactory;
  *
  *	TODO: Test multiple redirects
  */
-public class HttpUtils {
-	private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
+public class URLUtils {
+	private static final Logger logger = LoggerFactory.getLogger(URLUtils.class);
 	
-	private HttpUtils() {}
+	private URLUtils() {}
 
 	/**
-	 * Download the file to java.io.tmpdir
+	 * Download the file from an HTTP URL to java.io.tmpdir
 	 * 
 	 * @param url
 	 * @return

@@ -19,7 +19,7 @@ import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
 
-import eu.transkribus.interfaces.util.HttpUtils;
+import eu.transkribus.interfaces.util.URLUtils;
 
 public class TrpImgMdParser {
 	private static final Logger logger = LoggerFactory.getLogger(TrpImgMdParser.class);
@@ -28,15 +28,37 @@ public class TrpImgMdParser {
 
 	private TrpImgMdParser() {}
 	
+	/**
+	 * Inspect the image metadata for width, height and EXIF orientation tag value.
+	 * The returned {@link ImageTransformation} object includes this data as well as the width and height of the image
+	 * after rotating it according to the orienation tag value and an {@link AffineTransform} for doing so.
+	 * 
+	 * @param url
+	 * @return
+	 * @throws ImageProcessingException
+	 * @throws IOException
+	 * @throws MetadataException
+	 */
 	public static ImageTransformation readImageDimension(URL url) throws ImageProcessingException, IOException, MetadataException {
 		long time = System.currentTimeMillis();
-		try (InputStream is = HttpUtils.getInputStream(url)) {
+		try (InputStream is = URLUtils.getInputStream(url)) {
 			ImageTransformation dim = readImageDimension(is);
 			logger.debug("Exif orientation read from URL in " + (System.currentTimeMillis() - time) + " ms");
 			return dim;
 		}
 	}
 
+	/**
+	 * Inspect the image metadata for width, height and EXIF orientation tag value.
+	 * The returned {@link ImageTransformation} object includes this data as well as the width and height of the image
+	 * after rotating it according to the orienation tag value and an {@link AffineTransform} for doing so.
+	 * 
+	 * @param url
+	 * @return
+	 * @throws ImageProcessingException
+	 * @throws IOException
+	 * @throws MetadataException
+	 */
 	public static ImageTransformation readImageDimension(File file)
 			throws FileNotFoundException, IOException, ImageProcessingException, MetadataException {
 		long time = System.currentTimeMillis();
@@ -47,6 +69,17 @@ public class TrpImgMdParser {
 		}
 	}
 
+	/**
+	 * Inspect the image metadata for width, height and EXIF orientation tag value.
+	 * The returned {@link ImageTransformation} object includes this data as well as the width and height of the image
+	 * after rotating it according to the orienation tag value and an {@link AffineTransform} for doing so.
+	 * 
+	 * @param url
+	 * @return
+	 * @throws ImageProcessingException
+	 * @throws IOException
+	 * @throws MetadataException
+	 */
 	public static ImageTransformation readImageDimension(InputStream is)
 			throws ImageProcessingException, IOException, MetadataException {
 		long time = System.currentTimeMillis();

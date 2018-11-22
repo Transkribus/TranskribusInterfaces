@@ -30,7 +30,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.MetadataException;
 
 import eu.transkribus.interfaces.types.util.TrpImgMdParser.ImageTransformation;
-import eu.transkribus.interfaces.util.HttpUtils;
+import eu.transkribus.interfaces.util.URLUtils;
 
 /**
  * Methods taken from ImageIO and adapted to respect the image EXIF metadata's
@@ -114,7 +114,7 @@ public class TrpImageIO {
 		InputStream istream = null;
 		try {
 			//we might need to follow redirects on http(s) URLs. Use custom getInputStream() method
-			istream = HttpUtils.getInputStream(input);
+			istream = URLUtils.getInputStream(input);
 		} catch (IOException e) {
 			throw new IIOException("Can't get input stream from URL!", e);
 		}

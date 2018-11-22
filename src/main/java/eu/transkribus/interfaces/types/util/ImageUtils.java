@@ -18,7 +18,7 @@ import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.transkribus.interfaces.util.HttpUtils;
+import eu.transkribus.interfaces.util.URLUtils;
 import eu.transkribus.interfaces.util.SysPathUtils;
 
 /**
@@ -71,7 +71,7 @@ public class ImageUtils {
         	logger.debug("Downloading file from URL...");
         	// TrpImageIO handles redirects and this block may be unnecessary now
             //this was needed as ImageIO.read() can't handle 302 status code on url
-            File tmpFile = HttpUtils.downloadFile(u);
+            File tmpFile = URLUtils.downloadFile(u);
             b = TrpImageIO.read(tmpFile);
             logger.debug("read buffered image from file: "+b);
             if (!tmpFile.delete()) {
@@ -137,7 +137,7 @@ public class ImageUtils {
 				throw new IOException("Could get file for URL: " + u, e);
 			}
     	} else {
-    		tmpFile = HttpUtils.downloadFile(u);
+    		tmpFile = URLUtils.downloadFile(u);
     	}
     	
         try {
@@ -201,7 +201,7 @@ public class ImageUtils {
     }
 
     public static File saveAsFile(URL u, String path) throws IOException {
-        File tmp = HttpUtils.downloadFile(u);
+        File tmp = URLUtils.downloadFile(u);
         File f = new File(path);
         if (tmp.renameTo(f)) {
             return f;
