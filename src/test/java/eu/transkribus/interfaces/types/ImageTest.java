@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.transkribus.interfaces.types.Image.Type;
 import eu.transkribus.interfaces.types.util.ImageUtils;
+import eu.transkribus.interfaces.types.util.TrpImageIO;
+import eu.transkribus.interfaces.types.util.TrpImageIO.RotatedBufferedImage;
 
 public class ImageTest {
 
@@ -139,6 +141,15 @@ public class ImageTest {
 		int yRes = opencvImage.height();
 		final int yResWhenCorrectlyRotated = bi.getWidth();
 		Assert.assertEquals("Image orientation is incorrect. Height does not match expected value.", yResWhenCorrectlyRotated, yRes);
+	}
+	
+	@Test
+	public void testImageFromWindowsPhotoEditor() throws IOException {
+		//Image taken from doc ID=5869 on test server.
+		//It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
+		URL url = new URL("https://files-test.transkribus.eu/Get?id=JMWVACVZDPHVPOVGFWQVBHXP");
+		RotatedBufferedImage bi = (RotatedBufferedImage) TrpImageIO.read(url);
+		logger.info(bi.getImageTransformation().toString());
 	}
 	
 	/**

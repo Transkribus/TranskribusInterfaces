@@ -235,7 +235,7 @@ public class TrpImageIO {
 		return dim;
 	}
 
-	public static BufferedImage transformImage(BufferedImage image, ImageTransformation transformation) {
+	private static BufferedImage transformImage(BufferedImage image, ImageTransformation transformation) {
 		if (transformation == null || transformation.isDefaultOrientation()) {
 			return image;
 		}
