@@ -83,13 +83,8 @@ public class TrpImgMdParser {
 		Metadata metadata = ImageMetadataReader.readMetadata(is);
 		Collection<ExifDirectoryBase> dirs = metadata.getDirectoriesOfType(ExifDirectoryBase.class);
 		
-		if(logger.isDebugEnabled()) {
-			for (Directory directory : metadata.getDirectories()) {
-				logger.debug("Directory = " + directory.getName());
-			    for (Tag tag : directory.getTags()) {
-			    	logger.debug(tag + " (" + tag.getDirectoryName() + " -> " + tag.getTagType() + ")");
-			    }
-			}
+		if(logger.isTraceEnabled()) {
+			logMetadataContent(metadata);
 		}
 		
 		if(dirs.isEmpty()) {
@@ -102,8 +97,7 @@ public class TrpImgMdParser {
 			return orientation;
 		}
 	}
-	
-	
+
 	/**
 	 * Inspect the image metadata for width, height and EXIF orientation tag value.
 	 * The returned {@link ImageTransformation} object includes this data as well as the width and height of the image
@@ -190,13 +184,8 @@ public class TrpImgMdParser {
 		//That's why we have to check all EXIF directories here and not just the first ones.
 		Collection<ExifDirectoryBase> dirs = metadata.getDirectoriesOfType(ExifDirectoryBase.class);
 		
-		if(logger.isDebugEnabled()) {
-			for (Directory directory : metadata.getDirectories()) {
-				logger.debug("Directory = " + directory.getName());
-			    for (Tag tag : directory.getTags()) {
-			    	logger.debug(tag + " (" + tag.getDirectoryName() + " -> " + tag.getTagType() + ")");
-			    }
-			}
+		if(logger.isTraceEnabled()) {
+			logMetadataContent(metadata);
 		}
 		
 		if(dirs.isEmpty()) {
@@ -323,6 +312,15 @@ public class TrpImgMdParser {
 	
 	private static double toRadiant(int degree) {
 		return degree * Math.PI / 180;
+	}
+	
+	private static void logMetadataContent(Metadata metadata) {
+		for (Directory directory : metadata.getDirectories()) {
+			logger.debug("Directory = " + directory.getName());
+		    for (Tag tag : directory.getTags()) {
+		    	logger.debug(tag + " (" + tag.getDirectoryName() + " -> " + tag.getTagType() + ")");
+		    }
+		}
 	}
 	
 	/**
