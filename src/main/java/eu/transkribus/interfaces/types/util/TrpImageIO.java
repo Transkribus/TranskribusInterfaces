@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.MetadataException;
 
 import eu.transkribus.interfaces.types.util.TrpImgMdParser.ImageTransformation;
 import eu.transkribus.interfaces.util.URLUtils;
@@ -77,11 +76,11 @@ public class TrpImageIO {
 		if (!input.canRead()) {
 			throw new IIOException("Can't read input file!");
 		}
-		// read orientation data
-		ImageTransformation dim = null;
+		//read orientation data
+        int orientation = TrpImgMdParser.DEFAULT_EXIF_ORIENTATION;
 		try {
-			dim = TrpImgMdParser.readImageDimension(input);
-		} catch (ImageProcessingException | MetadataException e) {
+			orientation = TrpImgMdParser.readExifOrientationTag(input);
+		} catch (ImageProcessingException e) {
 			logger.error("Could not extract metadata from file: " + input.getAbsolutePath() + " - " + e.getMessage());
 		}
 		ImageInputStream stream = ImageIO.createImageInputStream(input);
@@ -94,7 +93,7 @@ public class TrpImageIO {
 			throw new IOException("Could not read image file: " + input.getName());
 		}
 		// fix orientation
-		return transformImage(bi, dim);
+		return transformImage(bi, orientation);
 	}
 
 	/**
@@ -118,11 +117,11 @@ public class TrpImageIO {
 		} catch (IOException e) {
 			throw new IIOException("Can't get input stream from URL!", e);
 		}
-		// read orientation data
-		ImageTransformation dim = null;
+		//read orientation data
+        int orientation = TrpImgMdParser.DEFAULT_EXIF_ORIENTATION;
 		try {
-			dim = TrpImgMdParser.readImageDimension(input);
-		} catch (ImageProcessingException | MetadataException e) {
+			orientation = TrpImgMdParser.readExifOrientationTag(input);
+		} catch (ImageProcessingException e) {
 			logger.error("Could not extract metadata from URL: " + input + " - " + e.getMessage());
 		}
 		ImageInputStream stream = ImageIO.createImageInputStream(istream);
@@ -136,7 +135,7 @@ public class TrpImageIO {
 		} finally {
 			istream.close();
 		}
-		return transformImage(bi, dim);
+		return transformImage(bi, orientation);
 	}
 
 	public static BufferedImage read(byte[] d) throws IOException {
@@ -159,10 +158,10 @@ public class TrpImageIO {
 			throw new IllegalArgumentException("input == null!");
 		}
 		//read orientation data
-        ImageTransformation dim = null;
+        int orientation = TrpImgMdParser.DEFAULT_EXIF_ORIENTATION;
         try {
-			dim = TrpImgMdParser.readImageDimension(input);
-		} catch (ImageProcessingException | MetadataException e) {
+			orientation = TrpImgMdParser.readExifOrientationTag(input);
+		} catch (ImageProcessingException e) {
 			logger.error("Could not extract metadata from stream", e);
 		}
 		ImageInputStream stream = ImageIO.createImageInputStream(input);
@@ -171,7 +170,7 @@ public class TrpImageIO {
 			stream.close();
 			throw new IOException("Could not read image from input stream.");
 		}
-		return transformImage(bi, dim);
+		return transformImage(bi, orientation);
 	}
 
 	/**
@@ -235,12 +234,14 @@ public class TrpImageIO {
 		return dim;
 	}
 
-	private static BufferedImage transformImage(BufferedImage image, ImageTransformation transformation) {
-		if (transformation == null || transformation.isDefaultOrientation()) {
+	private static BufferedImage transformImage(BufferedImage image, final int orientation) {
+		if (orientation == TrpImgMdParser.DEFAULT_EXIF_ORIENTATION) {
 			return image;
 		}
 		logger.debug("Computing transformation for width = " + image.getWidth() + " height = " + image.getHeight()
-				+ " orientation = " + transformation.getExifOrientation());
+				+ " orientation = " + orientation);
+		ImageTransformation transformation = TrpImgMdParser.getTransformation(image.getWidth(), image.getHeight(), orientation);	
+		
 		AffineTransformOp op = new AffineTransformOp(transformation.getTransformation(), AffineTransformOp.TYPE_BICUBIC);
 		BufferedImage destinationImage = new RotatedBufferedImage(transformation, image.getType());
 		destinationImage = op.filter(image, destinationImage);

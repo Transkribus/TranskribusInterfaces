@@ -15,10 +15,15 @@ import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.MetadataException;
+
 import eu.transkribus.interfaces.types.Image.Type;
 import eu.transkribus.interfaces.types.util.ImageUtils;
 import eu.transkribus.interfaces.types.util.TrpImageIO;
 import eu.transkribus.interfaces.types.util.TrpImageIO.RotatedBufferedImage;
+import eu.transkribus.interfaces.types.util.TrpImgMdParser;
+import eu.transkribus.interfaces.types.util.TrpImgMdParser.ImageTransformation;
 
 public class ImageTest {
 
@@ -144,12 +149,29 @@ public class ImageTest {
 	}
 	
 	@Test
-	public void testImageFromWindowsPhotoEditor() throws IOException {
+	public void testImageFromWindowsPhotoEditor() throws IOException, ImageProcessingException, MetadataException {
 		//Image taken from doc ID=5869 on test server.
 		//It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
 		URL url = new URL("https://files-test.transkribus.eu/Get?id=JMWVACVZDPHVPOVGFWQVBHXP");
 		RotatedBufferedImage bi = (RotatedBufferedImage) TrpImageIO.read(url);
-		logger.info(bi.getImageTransformation().toString());
+		logger.info("TrpImageIO result = " + bi.getImageTransformation().toString());
+		
+		ImageTransformation t = TrpImgMdParser.readImageDimension(url);
+		logger.info("TrpImgMdParser result = " + t.toString());
+	}
+	
+	
+	
+	@Test
+	public void testImageFromWindowsPhotoEditor2() throws IOException, ImageProcessingException, MetadataException {
+		//Image taken from doc ID=5869 on test server.
+		//It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
+		URL url = new URL("https://dbis-thure.uibk.ac.at/f/Get?id=BTCMSAGPZYLKPPLZWWQLSMKY");
+		RotatedBufferedImage bi = (RotatedBufferedImage) TrpImageIO.read(url);
+		logger.info("TrpImageIO result = " + bi.getImageTransformation().toString());
+		
+		ImageTransformation t = TrpImgMdParser.readImageDimension(url);
+		logger.info("TrpImgMdParser result = " + t.toString());
 	}
 	
 	/**
