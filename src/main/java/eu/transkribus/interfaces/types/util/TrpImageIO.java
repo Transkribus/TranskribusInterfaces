@@ -115,7 +115,7 @@ public class TrpImageIO {
 			//we might need to follow redirects on http(s) URLs. Use custom getInputStream() method
 			istream = URLUtils.getInputStream(input);
 		} catch (IOException e) {
-			throw new IIOException("Can't get input stream from URL!", e);
+			throw new IOException("Can't get input stream from URL: " + input, e);
 		}
 		//read orientation data
         int orientation = TrpImgMdParser.DEFAULT_EXIF_ORIENTATION;

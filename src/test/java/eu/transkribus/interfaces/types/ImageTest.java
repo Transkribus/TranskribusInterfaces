@@ -4,7 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -69,7 +71,9 @@ public class ImageTest {
 				new URL("http://www.austriatraveldirect.com/files/INNNORD01041.jpg"),
 				//this URL will do a redirect to the HTTPS host
 				new URL("http://dbis-thure.uibk.ac.at/f/Get?id=UNKRNHSATTZGUUMKZBSBNOUC"),
-				new URL("https://files-test.transkribus.eu/Get?fileType=bin&id=CFELMFJLDLMWBFVUUDQTTMXR")
+				new URL("https://files-test.transkribus.eu/Get?fileType=bin&id=CFELMFJLDLMWBFVUUDQTTMXR"),
+				//this jpg will fail with "Invalid JPEG file structure: two SOF markers" https://github.com/haraldk/TwelveMonkeys/issues/197
+//				new URL("file:/mnt/nmtera1/Content/fimagestore_trp/N/H/NHJCONKHIEQAHRGOBYVLFGOF/orig_Stadtratsprotokoll_1895-1898_0801.jpg")
 				};
 
 		for (URL url : urls) {
@@ -172,6 +176,14 @@ public class ImageTest {
 		
 		ImageTransformation t = TrpImgMdParser.readImageDimension(url);
 		logger.info("TrpImgMdParser result = " + t.toString());
+	}
+	
+	@Test
+	public void testSSLHandshake() throws IOException {
+		 URL url = new URL("https://dbis-thure.uibk.ac.at/f/Get?id=YFUDYKUQSUYVGAIFQOAAYEPW&fileType=view");
+		 try(InputStream is = url.openStream();) {
+			 //success
+		 }
 	}
 	
 	/**

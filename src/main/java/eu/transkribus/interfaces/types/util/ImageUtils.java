@@ -61,11 +61,13 @@ public class ImageUtils {
 
     public static BufferedImage convertToBufferedImage(URL u) throws IOException {
         BufferedImage b = null;
+        IOException initialException = null;
         try {
         	b = TrpImageIO.read(u);
         	logger.debug("read buffered image from url: "+b);
         } catch (IOException e) {
         	logger.error(e.getMessage());
+        	initialException = e;
         }
         if (b == null && u.getProtocol().startsWith("http")) {
         	logger.debug("Downloading file from URL...");
@@ -79,7 +81,11 @@ public class ImageUtils {
             }
         }
         if (b == null) {
-            throw new IOException("Could not read buffered image from URL: " + u.toString());
+        	if(initialException != null) {
+        		throw initialException;
+        	} else {
+	        	throw new IOException("Could not load image (" + u.toString() + ")", initialException);
+        	}
         }
         return b;
     }
