@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -26,6 +27,48 @@ public class URLUtils {
 	private static final Logger logger = LoggerFactory.getLogger(URLUtils.class);
 	
 	private URLUtils() {}
+	
+	public static String urlEncode(String s) throws UnsupportedEncodingException {
+		return URLEncoder.encode(s, "UTF-8");
+	}
+	
+	public static String urlDecode(String s, boolean specialTreatmentForPlusAndPercentSign) throws UnsupportedEncodingException {
+		if (specialTreatmentForPlusAndPercentSign) {
+			s = s.replaceAll("%(?![0-9a-fA-F]{2})", "%25");
+			s = s.replaceAll("\\+", "%2B");
+		}
+        return URLDecoder.decode(s, "utf-8");
+	}
+	
+	/**
+	 * Gets the filename from the content-disposition header field in the response.
+	 * <br><br>
+	 * FIXME: This method won't handle redirects in every case! Should use {@link #isRedirect(HttpURLConnection)
+	 * 
+	 * @param source
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getFilenameFromHeaderField(URL source) throws IOException {
+		HttpURLConnection huc = (HttpURLConnection)source.openConnection(); 
+		huc.setRequestMethod("GET"); //OR  huc.setRequestMethod ("HEAD"); 
+		huc.connect(); 
+		final int code = huc.getResponseCode();
+		if(code < 400) {
+			//do check on URL and handle 404 etc.
+			String raw = huc.getHeaderField("Content-Disposition");
+			// raw = "attachment; filename=abc.jpg"
+			if(raw != null && raw.indexOf("=") != -1) {
+			    String fileName = raw.split("=")[1]; //getting value after '='
+			    logger.debug("Filename from Content-Disposition " + fileName);
+			    return fileName;
+			} else {
+				logger.debug("No filename found in Content-Disposition");
+				return null;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Download the file from an HTTP URL to java.io.tmpdir
@@ -70,18 +113,24 @@ public class URLUtils {
         FilterInputStream fis = new FilterInputStream(conn.getInputStream()) {
         	@Override
         	public void close() throws IOException {
-        		super.close();
+//        		try {
+        			super.close();
+//        		} catch (IOException e) {
+//        			logger.debug("Stream from URL could not be closed.", e);
+//        		}
+        		logger.debug("Stream closed");
         		conn.disconnect();
+        		logger.debug("Connection closed");
         	}
         };
         return fis;
     }
 	
 	private static HttpURLConnection openConnection(URL url) throws IOException {
+		HttpURLConnection.setFollowRedirects(true);
     	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setInstanceFollowRedirects(true);
-        HttpURLConnection.setFollowRedirects(true);
         conn.connect();
         
         if (isRedirect(conn)) {
