@@ -104,6 +104,27 @@ public class ImageTest {
 		}
 	}
 	
+	
+	@Test 
+	public void testUnknownHost() throws MalformedURLException {
+		URL imgUrl = new URL("https://files-test.transkribus.eu/Get?id=XBNTVRNUTFEDVFPPGIGIJRSN&fileType=view");
+		URL invalidUrl = new URL("http://www.asdlakjdalskdjl.com");
+		for(int i = 0; i < 50; i++) {
+			try {
+				TrpImgMdParser.readExifOrientationTag(imgUrl);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				Assert.fail("Could not read img md: " + e.getMessage());
+			}
+			try {
+				TrpImgMdParser.readExifOrientationTag(invalidUrl);
+				Assert.fail();
+			} catch (Exception e) {
+				logger.debug(e.getClass().getSimpleName() + ": " + e.getMessage());
+			}
+		}
+	}
+	
 //	@Test
 //	public void testImageOrientationTif() throws IOException {
 //		URL imgUrl = ImageTest.class.getClassLoader().getResource("img/exif_orientation_6.tif");
