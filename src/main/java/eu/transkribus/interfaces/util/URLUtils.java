@@ -113,14 +113,10 @@ public class URLUtils {
         FilterInputStream fis = new FilterInputStream(conn.getInputStream()) {
         	@Override
         	public void close() throws IOException {
-//        		try {
-        			super.close();
-//        		} catch (IOException e) {
-//        			logger.debug("Stream from URL could not be closed.", e);
-//        		}
-        		logger.debug("Stream closed");
+       			super.close();
+        		logger.trace("Stream closed");
         		conn.disconnect();
-        		logger.debug("Connection closed");
+        		logger.trace("Connection closed");
         	}
         };
         return fis;
