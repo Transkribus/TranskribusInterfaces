@@ -17,7 +17,7 @@ public class UrlUtilsTest {
 	
 	@Test 
 	public void testUnknownHost() {
-		for(int i = 0; i < 10000; i++) {
+		for(int i = 0; i < 100; i++) {
 			try (InputStream is = URLUtils.getInputStream(new URL(existingHost))) {
 				//success
 			} catch (IOException e) {
