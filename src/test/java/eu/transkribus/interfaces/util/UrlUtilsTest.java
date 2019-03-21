@@ -26,7 +26,7 @@ public class UrlUtilsTest {
 			try (InputStream is = URLUtils.getInputStream(new URL(unknownHost))) {
 				Assert.fail("Could connect to invalid URL: " + unknownHost);
 			} catch (Exception e) {
-				logger.debug(e.getClass().getName() + ": " + e.getMessage());
+				logger.trace(e.getClass().getName() + ": " + e.getMessage());
 			}
 		}
 	}
