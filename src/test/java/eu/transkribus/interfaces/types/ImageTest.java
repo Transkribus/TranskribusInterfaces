@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -173,10 +174,16 @@ public class ImageTest {
 		Assert.assertEquals("Image orientation is incorrect. Height does not match expected value.", yResWhenCorrectlyRotated, yRes);
 	}
 	
+	/**
+	 * Image taken from doc ID=5869 on test server.
+	 * It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
+	 * 
+	 * @throws IOException
+	 * @throws ImageProcessingException
+	 * @throws MetadataException
+	 */
 	@Test
 	public void testImageFromWindowsPhotoEditor() throws IOException, ImageProcessingException, MetadataException {
-		//Image taken from doc ID=5869 on test server.
-		//It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
 		URL url = new URL("https://files-test.transkribus.eu/Get?id=JMWVACVZDPHVPOVGFWQVBHXP");
 		RotatedBufferedImage bi = (RotatedBufferedImage) TrpImageIO.read(url);
 		logger.info("TrpImageIO result = " + bi.getImageTransformation().toString());
@@ -187,16 +194,41 @@ public class ImageTest {
 	
 	
 	
+	/**
+	 * Image taken from doc ID=5869 on test server.
+	 * It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
+	 * 
+	 * @throws IOException
+	 * @throws ImageProcessingException
+	 * @throws MetadataException
+	 */
 	@Test
 	public void testImageFromWindowsPhotoEditor2() throws IOException, ImageProcessingException, MetadataException {
-		//Image taken from doc ID=5869 on test server.
-		//It seems it was edited with Windows Photo Editor 10.x which has pushed tags into a sub-dir on edit. Updated method should handle this.
 		URL url = new URL("https://dbis-thure.uibk.ac.at/f/Get?id=BTCMSAGPZYLKPPLZWWQLSMKY");
 		RotatedBufferedImage bi = (RotatedBufferedImage) TrpImageIO.read(url);
 		logger.info("TrpImageIO result = " + bi.getImageTransformation().toString());
 		
 		ImageTransformation t = TrpImgMdParser.readImageDimension(url);
 		logger.info("TrpImgMdParser result = " + t.toString());
+	}
+	
+	
+	/**
+	 * This image was taken with a Samsung smartphone and edited in Paint.net photo editor.
+	 * TrpImgMdParser erroneously respected the orientation tag from the thumbnail section in the exif data and rotated the image falsely.
+	 */
+	@Test
+	public void testImageFromPaintNet() throws IOException, URISyntaxException {
+		final String filePath = "img_orientation/view_20170929_124415.jpg";
+		URL url = this.getClass().getClassLoader().getResource(filePath);
+		File imgFile = new File(url.toURI());
+		logger.debug("File '{}' exists = {}", filePath, imgFile.isFile());
+		BufferedImage bi = TrpImageIO.read(imgFile);
+		
+		if(bi instanceof RotatedBufferedImage) {
+			//if we are here this is broken
+			Assert.fail("Image was erroneously rotated!");
+		}
 	}
 	
 	@Test

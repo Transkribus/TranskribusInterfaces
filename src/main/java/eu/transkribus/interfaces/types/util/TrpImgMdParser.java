@@ -21,6 +21,7 @@ import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifThumbnailDirectory;
 
 import eu.transkribus.interfaces.util.URLUtils;
 
@@ -32,6 +33,13 @@ public class TrpImgMdParser {
 	private static final int UNDEFINED_DIM_VALUE = -1;
 
 	private TrpImgMdParser() {}
+	
+	/**
+	 * Array with Exif directory names (as defined in the metadata-extractor) to be ignored when reading image metadata regarding the main image
+	 */
+	private static final String[] EXIF_DIR_NAME_BLACKLIST = { 
+			new ExifThumbnailDirectory().getName()
+		};
 	
 
 	/**
@@ -222,20 +230,39 @@ public class TrpImgMdParser {
 	 */
 	private static int getExifTagValueInt(Collection<ExifDirectoryBase> dirs, int defaultValue, final int... tags) {
 		for(ExifDirectoryBase dir : dirs) {
+			if(isIgnoredExifDirectory(dir)) {
+				continue;
+			}
 			for(int tag : tags) {
 				if(dir.containsTag(tag)) {
 					try {
-						logger.debug("Found value in Exif directory '" + dir.getName() + "' for tag: " + tag + " = " + dir.getInt(tag));
+						logger.debug("Found value in Exif directory {} '{}' for tag: {} = {}", 
+								dir.getClass().getSimpleName(), dir.getName(), tag, dir.getInt(tag));
 						return dir.getInt(tag);
 					} catch (MetadataException e) {
 						logger.error("Could not extract Exif data value from directory '" + dir.getName() + "' for tag: " + tag, e);
 					}
 				} else {
-					logger.debug("No value set in Exif directory '" + dir.getName() + "' for tag: " + tag);
+					logger.debug("No value set in Exif directory '{}' for tag: {}",  dir.getName(), tag);
 				}
 			}
 		}
 		return defaultValue;
+	}
+	
+	/**
+	 * Test if the ExifDirectory is to be ignored when handling the main image. E.g. we do not want to respect data in the {@link ExifThumbnailDirectory}.<br>
+	 * Dir names to be ignored are defined by {@link #EXIF_DIR_NAME_BLACKLIST}
+	 * @return true if the directory name is blacklisted
+	 */
+	private static boolean isIgnoredExifDirectory(ExifDirectoryBase dir) {
+		for(String ignoredDirName : EXIF_DIR_NAME_BLACKLIST) {
+			if(ignoredDirName.equals(dir.getName())) {
+				logger.debug("Ignoring Exif directory: {}", dir.getName());
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
